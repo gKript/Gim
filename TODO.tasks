@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Personale" place="0"/>
+  <category title="Affari" place="1"/>
+  <category title="Non classificati" place="2"/>
+</gtodo>

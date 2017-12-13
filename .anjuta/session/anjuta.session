@@ -1,0 +1,29 @@
+[Anjuta]
+Maximized=1
+Geometry=1920x990+0+32
+
+[File Loader]
+Files=../../gim_stat/gimstat.cc#107%%%../../src/gim_lexical.cc#65%%%../../src/gim_string.cc#1%%%../../include/gim_string.h#109%%%../../include/gim_custom_type.h#102%%%../../include/gim_gkp_utils.h#1%%%../../include/gim_lexical.h#115%%%../../src/gim_gkp_utils.cc#39%%%../../gim_gkfp/gkfp.cc#85
+
+[Document Manager]
+bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
+
+[Execution]
+Program uri=../../../../Projects/gim3/gim_shell/gimshell
+Run in terminal=2
+Working directories=../../../../Projects/gim3
+
+[Project Manager]
+Shortcut=gim3//gim_shell//gimshell%%%gim3//gim_stat//gimstat%%%gim3//src//libgim.a%%%gim3//gim_gkdp//gkdp%%%gim3//gim_gkfp//gkfp
+Expand=gkfp%%%gim3%%%gim3//gim_gkfp%%%gim3//gim_gkfp//gkfp%%%gim3//gim_shell%%%gim3//include%%%gim3//include//libgim_include%%%gim3//src%%%gim3//src//libgim.a
+
+[Debugger]
+Stop at beginning=2
+
+[Build]
+Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
+Selected Configuration=Optimized
+BuildArgs/Default=--enable-maintainer-mode
+BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
+BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
+BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
