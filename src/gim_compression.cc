@@ -27,14 +27,14 @@
 gim_compression_obj * gim_compression;
 
 gim_compression_obj::gim_compression_obj() {
-	gim_error->set( "gim_compress_obj::gim_compress_obj" , "Start self test" );
+/*	gim_error->set( "gim_compress_obj::gim_compress_obj" , "Start self test" );
 	if ( self_test() == __GIM_OK ) {
 		gim_error->set( "gim_compress_obj::gim_compress_obj" , "OK... Self test succesfully passed" );
 	}
 	else {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_compress_obj::gim_compress_obj" , "Hmmm...Sorry but the self test has failed" , __GIM_ERROR );
 	}
-}
+*/}
 
 _gim_buffer	gim_compression_obj::Compress( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 * destlen ) {
 	int	bz_len ;
@@ -47,8 +47,8 @@ _gim_buffer	gim_compression_obj::Compress( _gim_flag comp_type , _gim_buffer sou
 			bz_len = soulen + ( soulen / 100 ) + ( sizeof( char ) * 600 ) ;
 			sprintf( message , "%d ORIGINAL -  %d for BZ2" , soulen , bz_len  );
 			gim_error->set( "gim_compress_obj::compress" , message );
-			//resb = (_gim_buffer) gim_memory->Alloc_unlocked( (size_t)( bz_len * sizeof(char) ) );
-			resb = Encode_BZ2( soub, soulen. destlen);
+			resb = (_gim_buffer) gim_memory->Alloc_unlocked( (size_t)( bz_len * sizeof(char) ) );
+			//resb = Encode_BZ2( soub, soulen. destlen);
 /*			if ( BZ2_bzBuffToBuffCompress( resb , destlen , soub , soulen , __GIM_BZ_BLOCKSIZE100K , __GIM_BZ_VERBOSITY , __GIM_BZ_WORKFACTOR ) == BZ_OK )
 				gim_error->set( "gim_compress_obj::compress" , "Bzip2 succesfull" );
 			else
@@ -115,7 +115,7 @@ _gim_buffer	gim_compression_obj::Uncompress	( _gim_flag comp_type , _gim_buffer 
 
 
 _gim_flag	gim_compression_obj::self_test( void ) {
-	_gim_buffer	to_test , compressed , uncompressed;
+/*	_gim_buffer	to_test , compressed , uncompressed;
 	_gim_rand	mt;
 	_gim_Uint32	count = 0 , comp_len;
 	char 		md5_comp[256] , md5_ori[256] , message[256];
@@ -129,6 +129,6 @@ _gim_flag	gim_compression_obj::self_test( void ) {
 	}
 	gim_error->set( "gim_compress_obj::self_test" , message );
 	compressed = (_gim_buffer)Compress( __GIM_BZ2 , to_test , (sizeof(char) * 1024 * 1024 ) , &comp_len );
-	//~ strcpy( md5_comp , gim_checksum->sha1( compressed , comp_len ) );
+*/	//~ strcpy( md5_comp , gim_checksum->sha1( compressed , comp_len ) );
 }
 
