@@ -27,13 +27,13 @@
 gim_compression_obj * gim_compression;
 
 gim_compression_obj::gim_compression_obj() {
-	//~ gim_error->set( "gim_compress_obj::gim_compress_obj" , "Start self test" );
-	//~ if ( self_test() == __GIM_OK ) {
-		//~ gim_error->set( "gim_compress_obj::gim_compress_obj" , "OK... Self test succesfully passed" );
-	//~ }
-	//~ else {
-		//~ gim_error->set( GIM_ERROR_CRITICAL , "gim_compress_obj::gim_compress_obj" , "Hmmm...Sorry but the self test has failed" , __GIM_ERROR );
-	//~ }
+	gim_error->set( "gim_compress_obj::gim_compress_obj" , "Start self test" );
+	if ( self_test() == __GIM_OK ) {
+		gim_error->set( "gim_compress_obj::gim_compress_obj" , "OK... Self test succesfully passed" );
+	}
+	else {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_compress_obj::gim_compress_obj" , "Hmmm...Sorry but the self test has failed" , __GIM_ERROR );
+	}
 }
 
 _gim_buffer	gim_compression_obj::Compress( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 * destlen ) {
@@ -47,11 +47,12 @@ _gim_buffer	gim_compression_obj::Compress( _gim_flag comp_type , _gim_buffer sou
 			bz_len = soulen + ( soulen / 100 ) + ( sizeof( char ) * 600 ) ;
 			sprintf( message , "%d ORIGINAL -  %d for BZ2" , soulen , bz_len  );
 			gim_error->set( "gim_compress_obj::compress" , message );
-			resb = (_gim_buffer) gim_memory->Alloc_unlocked( (size_t)( bz_len * sizeof(char) ) );
-			if ( BZ2_bzBuffToBuffCompress( resb , destlen , soub , soulen , __GIM_BZ_BLOCKSIZE100K , __GIM_BZ_VERBOSITY , __GIM_BZ_WORKFACTOR ) == BZ_OK )
+			//resb = (_gim_buffer) gim_memory->Alloc_unlocked( (size_t)( bz_len * sizeof(char) ) );
+			resb = Encode_BZ2( soub, soulen. destlen);
+/*			if ( BZ2_bzBuffToBuffCompress( resb , destlen , soub , soulen , __GIM_BZ_BLOCKSIZE100K , __GIM_BZ_VERBOSITY , __GIM_BZ_WORKFACTOR ) == BZ_OK )
 				gim_error->set( "gim_compress_obj::compress" , "Bzip2 succesfull" );
 			else
-				gim_error->set( "gim_compress_obj::compress" , "Bzip2 UNSUCCESFULL" );
+				gim_error->set( "gim_compress_obj::compress" , "Bzip2 UNSUCCESFULL" );*/
 			break;
 		}
 		case __GIM_LZH  : {

@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1920x990+0+32
+Geometry=1920x993+0+32
 
 [File Loader]
-Files=../../gim_stat/gimstat.cc#107%%%../../src/gim_lexical.cc#65%%%../../src/gim_string.cc#1%%%../../include/gim_string.h#109%%%../../include/gim_custom_type.h#102%%%../../include/gim_gkp_utils.h#1%%%../../include/gim_lexical.h#115%%%../../src/gim_gkp_utils.cc#39%%%../../gim_gkfp/gkfp.cc#85
+Files=../../../../../gKtwister.cc#6%%%../../../../../gkh32_test.cc#87%%%../../gim_stat/gimstat.cc#47%%%../../src/gim.cc#1%%%../../gim_gkfp/gkfp.cc#71%%%../../src/gim_gkfp_file_data.cc#1%%%../../src/gim_gkfp_file_list.cc#37%%%../../src/gim_gkfp_header.cc#1%%%../../src/gim_gkl.cc#1%%%../../src/gim_gkl_commands.cc#1%%%../../src/gim_gkl_variable.cc#1%%%../../src/gim_gkp.cc#1%%%../../src/gim_gkp_cryptography.cc#1%%%../../src/gim_gkp_file_data.cc#1%%%../../src/gim_compression.cc#55%%%../../src/gim_bz2_compress_bzlib.cc#5%%%../../include/gim_compression.h#1%%%../../include/gim_bz2_bzlib.h#1%%%../../include/gim_bz2_bzlib_private.h#1%%%../../src/gim_bz2_bzlib.cc#1%%%../../src/gim_lzh_compress.cc#21
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -14,8 +14,8 @@ Run in terminal=2
 Working directories=../../../../Projects/gim3
 
 [Project Manager]
-Shortcut=gim3//gim_shell//gimshell%%%gim3//gim_stat//gimstat%%%gim3//src//libgim.a%%%gim3//gim_gkdp//gkdp%%%gim3//gim_gkfp//gkfp
-Expand=gkfp%%%gim3%%%gim3//gim_gkfp%%%gim3//gim_gkfp//gkfp%%%gim3//gim_shell%%%gim3//include%%%gim3//include//libgim_include%%%gim3//src%%%gim3//src//libgim.a
+Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat
+Expand=gimstat%%%trunk%%%trunk//gim_gkfp%%%trunk//gim_gkfp//gkfp%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
 
 [Debugger]
 Stop at beginning=2

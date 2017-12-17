@@ -48,8 +48,8 @@ int main ( int argc , char *argv[] ) {
 
 	gim_obj		* gim = new gim_obj;
 
-	gim_utils_obj   *util = new gim_utils_obj;
 	
+	gim_utils_obj   *util = new gim_utils_obj;
 	char	*ch;
 	unsigned char nch=0;
 	_gim_handler	* source;
@@ -70,6 +70,7 @@ int main ( int argc , char *argv[] ) {
 	_gim_Uint32 c = 0;
 		
 	unsigned int gmin=0,gmax=0,gused=0,gdelta=0;
+	char chmax , chmin;
 	unsigned int cntrl=0,graph=0,space=0,others=0;
 
 	_gim_flag   multisin=0;
@@ -104,7 +105,7 @@ int main ( int argc , char *argv[] ) {
 	
 				source = gim->file_manager->open( argv[e] , __GIM_FILE_MAPPING , __GIM_READ );
 
-				printf("%-60s" , argv[e] );
+				printf("%60s" , Lexical.string_trunc( argv[e] , 60 ));
 				fflush(stdout);
 
 
@@ -300,8 +301,9 @@ int main ( int argc , char *argv[] ) {
 		}
 	
 		for ( c = 0 ; c < 256 ; c++) {
-			 if ( gstat[c] > gmax ) {
+			if ( gstat[c] > gmax ) {
 				gmax = gstat[c];
+				chmax = c;
 	//			printf("M %u\n",gmax);
 			 }
 		}
@@ -311,6 +313,7 @@ int main ( int argc , char *argv[] ) {
 		for ( c = 0 ; c < 256 ; c++) {
 			if (( gstat[c] > 0 ) && (gstat[c] < gmin)) {
 				gmin = gstat[c];
+				chmin = c;
 	//			printf("m %u\n",gmin);
 			}
 		}
@@ -325,7 +328,7 @@ int main ( int argc , char *argv[] ) {
 		printf("Others        : (%3.1f%%) %d\n\n", (float)((float)others/(float)source->size)*100.00 , others);
 
 		puts("Extension and Distribuition statistics");
-		printf("Used          : %u\nMin times     : %u\nMax times     : %u\nDelta         : %u\n\n"  , gused, gmin,gmax, gdelta);
+		printf("Used          : %10u\nMin times     : %10u - %3d\nMax times     : %10u - %3d\nDelta         : %10u\n\n"  , gused, gmin , (unsigned char)chmin , gmax , (unsigned char)chmax , gdelta);
 
 		fflush (stdout);
 

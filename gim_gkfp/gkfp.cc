@@ -63,12 +63,12 @@ int main ( int argc , char *argv[] ) {
 		puts( "Generating mode" );
 		gkp_file_name.cat( ".gkp" );
 		if ( argc == 4 ) {
-			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_FOG , __GIM_NO , __GIM_YES );
+			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_FOG , __GIM_YES , __GIM_YES );
 			gkp->set_password( argv[3] );
 			puts("Crypt ACTIVATED");
 		}
 		else {
-			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_SUN , __GIM_NO , __GIM_YES );
+			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_SUN , __GIM_YES , __GIM_YES );
 			puts("Crypt NOT acivated");
 		}
 		printf("Generating %s..." , gkp_file_name.c_str() );
