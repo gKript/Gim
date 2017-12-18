@@ -45,43 +45,43 @@
 #ifndef _GIM_GKL_VARIABLE_H
 #define _GIM_GKL_VARIABLE_H
 
-	//~ enum var_ntt_type {
-		//~ __GKL_UNKNOW = -1,
-		//~ __GKL_INT = 1,
-		//~ __GKL_FLOAT,
-		//~ __GKL_CHAR,
-	//~ };
+	enum var_ntt_type {
+		__GKL_UNKNOW = -1,
+		__GKL_INT = 1,
+		__GKL_FLOAT,
+		__GKL_CHAR,
+	};
 	
-	//~ enum var_ntt_mode {
-		//~ __GKL_VARIABLE = 1,
-		//~ __GKL_CONSTANT,
-	//~ };
+	enum var_ntt_mode {
+		__GKL_VARIABLE = 1,
+		__GKL_CONSTANT,
+	};
 
-	//~ struct variable_ntt {
-		//~ char		name[32];
-		//~ _gim_flag	type;
-		//~ _gim_flag	mode;
+	struct variable_ntt {
+		char		name[32];
+		_gim_flag	type;
+		_gim_flag	mode;
 		
-		//~ struct variable_ntt	* next;
-	//~ };
+		struct variable_ntt	* next;
+	};
 
-	//~ class gkl_variable_entity_obj {
-		//~ public:
-			//~ void		add( char * name , _gim_flag type , _gim_flag mode );
-			//~ _gkl_var	get( char * name );
+	class gkl_variable_entity_obj {
+		public:
+			void		add( char * name , _gim_flag type , _gim_flag mode );
+			_gkl_var	get( char * name );
 			
-		//~ private:
-			//~ _gkl_var	* start;
-			//~ _gkl_var	* current;
+		private:
+			_gkl_var	* start;
+			_gkl_var	* current;
 
-		//~ public:
-			//~ inline gkl_variable_entity_obj() {
+		public:
+			inline gkl_variable_entity_obj() {
 				
-			//~ };
+			};
 			
-			//~ ~gkl_variable_entity_obj() {
+			~gkl_variable_entity_obj() {
 				
-			//~ };
-	//~ };
+			};
+	};
 
 #endif /* _GIM_GKL_VARIABLE_H */

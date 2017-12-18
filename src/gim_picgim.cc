@@ -1,9 +1,9 @@
 //
-// gim_gkl_commands.h
+//  gim_picgim.cc
 //
-// Gim  -  Generic Information Manager static library
-// Version 1.0-0
-// AsYntote - SkyMatrix
+//  Gim - Generic Information Manager
+//  Version 2.4-1  -  Milestone 2.5
+//  Creator - asyntote
 //
 //  [http://www.gkript.org]
 //  [http://phorus.nibbles.it/trac/gkript/milestone/Gim%201.0?by=version]
@@ -31,38 +31,11 @@
 
 #############################################################################*/
 //
-// Gim is developed with Anjuta version 1.2.4
+// Gim is developed with Anjuta version 1.2.4  - 2.32.1.1
 //
 
-/*!	\file		gim_gkl_commands.h
-	\version	1.1-0
-	\brief		Copyright (C) 2002, 2003<BR>
-				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
-				[ http://www.gkript.org/gkript-gpl.html ]
-*/ 		
 
-#ifndef _GIM_GKL_COMMANDS_H
-#define _GIM_GKL_COMMANDS_H
+#include    "../include/gim_base_header.h"
+#include    "../include/gim_picgim.h"
 
-	#include	"gim_gkl_custom_types.h"
 
-	enum commands_ntt {
-		__GKL_COMMAND_UNKNOWN = 0,
-		__GKL_DEFINE,
-		__GKL_NEW,
-		__GKL_LET,
-		__GKL_ECHO,
-	};
-	
-	struct gkl_commands_properities {
-		_gim_flag	comm_name;
-		_gim_flag	ret_value;
-		_gim_int32	default_value;
-		_gim_Uint8	arguments;
-		_gim_Uint8	parameter;
-		_gim_flag	output;
-	};
-	
-	
-#endif /* _GIM_GKL_COMMANDS_H */

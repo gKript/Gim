@@ -171,7 +171,7 @@ am_libgim_a_OBJECTS = libgim_a-gim.$(OBJEXT) \
 	libgim_a-gim_sha256.$(OBJEXT) libgim_a-gim_sha512.$(OBJEXT) \
 	libgim_a-gim_signal.$(OBJEXT) libgim_a-gim_string.$(OBJEXT) \
 	libgim_a-gim_time.$(OBJEXT) libgim_a-gim_version.$(OBJEXT) \
-	libgim_a-gim_list.$(OBJEXT)
+	libgim_a-gim_list.$(OBJEXT) libgim_a-gim_picgim.$(OBJEXT)
 libgim_a_OBJECTS = $(am_libgim_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -392,7 +392,8 @@ libgim_a_SOURCES = \
 	gim_string.cc    \
 	gim_time.cc    \
 	gim_version.cc    \
-	gim_list.cc
+	gim_list.cc    \
+	gim_picgim.cc
 
 libgim_a_CXXFLAGS = \
 	-O3 \
@@ -518,6 +519,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_lzh_compress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_md5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_memory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_picgim.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_private_key.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_sha1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_sha256.Po@am__quote@
@@ -1268,6 +1270,20 @@ libgim_a-gim_list.obj: gim_list.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_list.cc' object='libgim_a-gim_list.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_list.obj `if test -f 'gim_list.cc'; then $(CYGPATH_W) 'gim_list.cc'; else $(CYGPATH_W) '$(srcdir)/gim_list.cc'; fi`
+
+libgim_a-gim_picgim.o: gim_picgim.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_picgim.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_picgim.Tpo -c -o libgim_a-gim_picgim.o `test -f 'gim_picgim.cc' || echo '$(srcdir)/'`gim_picgim.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_picgim.Tpo $(DEPDIR)/libgim_a-gim_picgim.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_picgim.cc' object='libgim_a-gim_picgim.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_picgim.o `test -f 'gim_picgim.cc' || echo '$(srcdir)/'`gim_picgim.cc
+
+libgim_a-gim_picgim.obj: gim_picgim.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_picgim.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_picgim.Tpo -c -o libgim_a-gim_picgim.obj `if test -f 'gim_picgim.cc'; then $(CYGPATH_W) 'gim_picgim.cc'; else $(CYGPATH_W) '$(srcdir)/gim_picgim.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_picgim.Tpo $(DEPDIR)/libgim_a-gim_picgim.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_picgim.cc' object='libgim_a-gim_picgim.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_picgim.obj `if test -f 'gim_picgim.cc'; then $(CYGPATH_W) 'gim_picgim.cc'; else $(CYGPATH_W) '$(srcdir)/gim_picgim.cc'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

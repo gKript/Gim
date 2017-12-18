@@ -45,7 +45,7 @@
 #ifndef _GIM_GKL_CUSTOM_TYPES_H
 #define _GIM_GKL_CUSTOM_TYPES_H
 
-	//~ typedef	struct	variable_ntt	_gkl_var;
-	//~ typedef	_gim_flag				_gkl_com;
+	typedef	struct	variable_ntt	_gkl_var;
+	typedef	_gim_flag				_gkl_com;
 	
 #endif /* _GIM_GKL_CUSTOM_TYPES_H */

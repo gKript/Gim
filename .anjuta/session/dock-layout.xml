@@ -7,10 +7,11 @@
           <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
             <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
             <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            <item name="snippets_browser" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           </notebook>
           <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </paned>
-        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="728">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="604">
           <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="1">
             <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>

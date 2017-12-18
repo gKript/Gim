@@ -108,13 +108,6 @@ int main ( int argc , char *argv[] ) {
 				printf("%60s" , Lexical.string_trunc( argv[e] , 60 ));
 				fflush(stdout);
 
-
-	/*			printf("File size     : %d\n\n" , source->size );
-				fflush (stdout);
-	*/
-			//	gim->file_manager->load ( source );
-	
-			//	ch = source->loadp;
 				ch = source->fm;	
 
 				for ( c = 0 ; c < source->size ; c++) {
@@ -142,7 +135,6 @@ int main ( int argc , char *argv[] ) {
 				for ( c = 0 ; c < 256 ; c++) {
 					 if ( gstat[c] > gmax ) {
 						gmax = gstat[c];
-			//			printf("M %u\n",gmax);
 					 }
 				}
 
@@ -151,24 +143,11 @@ int main ( int argc , char *argv[] ) {
 				for ( c = 0 ; c < 256 ; c++) {
 					if (( gstat[c] > 0 ) && (gstat[c] < gmin)) {
 						gmin = gstat[c];
-			//			printf("m %u\n",gmin);
 					}
 				}
 
 				gdelta = gmax - gmin;
 
-			//	unsigned int	cntrl=0 , graph=0 , space=0 , others=0;
-				/*puts("Character statistics");
-				printf("Control       : (%3.1f%%) %d\n",   (float)((float)cntrl/(float)source->size)*100.00 , cntrl );
-				printf("Printable     : (%3.1f%%) %d\n",   (float)((float)graph/(float)source->size)*100.00 ,graph );
-				printf("Spaces        : (%3.1f%%) %d\n",   (float)((float)space/(float)source->size)*100.00 ,space );
-				printf("Others        : (%3.1f%%) %d\n\n", (float)((float)others/(float)source->size)*100.00 , others);
-
-				puts("Extension and Distribuition statistics");
-				printf("Used          : %u\nMin times     : %u\nMax times     : %u\nDelta         : %u\n\n"  , gused, gmin,gmax, gdelta);
-
-				fflush (stdout);
-	*/
 				for ( c = 0 ; c < 64 ; c++ ) {
 					qgvarianza[0] += gvarianza[c];
 					qgvarianza[1] += gvarianza[c+64];
@@ -190,23 +169,11 @@ int main ( int argc , char *argv[] ) {
 				qgmedie[2] /= 64;
 				qgmedie[3] /= 64;
 	
-				gcaos[0] = abs((qgmedie[0]*100)/abs((source->size) / gused));
+/*				gcaos[0] = abs((qgmedie[0]*100)/abs((source->size) / gused));
 				gcaos[1] = abs((qgmedie[1]*100)/abs((source->size) / gused));
 				gcaos[2] = abs((qgmedie[2]*100)/abs((source->size) / gused));
 				gcaos[3] = abs((qgmedie[3]*100)/abs((source->size) / gused));
-
-			//	CH used : 256 - CH min : 125286 - CH max : 126860 - CH delta : 1574
-			//	Blk 1   : 099%- Blk 2  99%   - Blk 3 100%   - Blk 4  99%
-			//  Blk 4    :
-			//	Mean value :
-	/*			puts("Leveling statistics");
-				printf("Average value : %u\n" , abs((source->size) / gused));
-				printf("Blk 1         : %3.2f%%\n", (float)((float)qgmedie[0]*100.00)/(float)abs((source->size) / (float)gused) );
-				printf("Blk 2         : %3.2f%%\n", (float)((float)qgmedie[1]*100.00)/(float)abs((source->size) / (float)gused) );
-				printf("Blk 3         : %3.2f%%\n", (float)((float)qgmedie[2]*100.00)/(float)abs((source->size) / (float)gused) );
-				printf("Blk 4         : %3.2f%%\n\n", (float)((float)qgmedie[3]*100.00)/(float)abs((source->size) / (float)gused) );
-				fflush (stdout);
-	*/		 
+*/		 
 				gcaos[0] = abs( 100 - abs((qgmedie[0]*100)/abs((source->size) / gused)));
 				gcaos[1] = abs( 100 - abs((qgmedie[1]*100)/abs((source->size) / gused)));
 				gcaos[2] = abs( 100 - abs((qgmedie[2]*100)/abs((source->size) / gused)));
@@ -217,14 +184,7 @@ int main ( int argc , char *argv[] ) {
 				gqcaos_levelling = (float)abs( 100.00 - (float)( (float)( (float)gcaos[0] + (float)gcaos[1] + (float)gcaos[2] + (float)gcaos[3]) / 4.00) );
 				gqcaos = (float)((float)((float)gqcaos_extension + (float)gqcaos_distribuition + (float)gqcaos_levelling) / 3.00);
 
-			//	        Average value :
-	/*			puts("Chaos parameters");
-				printf("Extension     : %3.1f%%\n" , gqcaos_extension);
-				printf("Distribuition : %3.1f%%\n" , gqcaos_distribuition);
-				printf("Leveling      : %3.1f%%\n\n" , gqcaos_levelling);
-	*/
 				printf("  -  gKaos : %3.1f%%\n" , gqcaos);
-				//printf("gKaos result  : %d%%\n\n" , (int)gqcaos);
 
 				if( source->size < MIN_SIZE) {
 					puts("    WARNING:The file size is too small. The result for this file is not reliable");

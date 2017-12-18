@@ -2,17 +2,20 @@
 Maximized=1
 Geometry=1920x993+0+32
 
+[File Loader]
+Files=../../src/gim.cc#1
+
+[Document Manager]
+bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
+
 [Execution]
 Program uri=../../../../Projects/gim3/gim_shell/gimshell
 Run in terminal=2
 Working directories=../../../../Projects/gim3
 
-[Document Manager]
-bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
-
 [Project Manager]
 Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat
-Expand=gimstat%%%trunk%%%trunk//gim_gkfp%%%trunk//gim_gkfp//gkfp%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
+Expand=gimstat%%%trunk%%%trunk//include%%%trunk//src%%%trunk//src//libgim.a
 
 [Debugger]
 Stop at beginning=2

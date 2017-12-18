@@ -46,6 +46,9 @@
 	#include "gim_string.h"
 	#include "gim_file.h"
 
+	#define	 GIM_HTML_INDENT	"    "
+
+
 	/*!	\struct		gim_html_page
 		\warning	\n <b>It is not possible to use directly this struct.</b>
 		\internal
@@ -230,18 +233,23 @@
 				\return	\a __GIM_OK if success or \a __GIM_NOT_OK if fail
 			*/
 			_gim_flag	Export_with_tag			( const char *  tag , const char * to_export );
+
+
 			
 		private:
 			void		destroy_prop_list		( void );
+			void		make_indent				( void );
 			
 			gim_html_page			* page;
 			gim_html_properities	* start_prop;
 			gim_html_properities	* cur_prop;
+			_gim_Uint8				indent_level;
 				
 		public:
 			
 			inline gim_html_obj() {
 				gim_error->set( "gim_html_obj::gim_html_obj" , "page initialization start" );
+				indent_level = 0;
 				page = (gim_html_page *)gim_memory->Alloc( sizeof( gim_html_page )  , __GIM_HTML_PAGE , __GIM_HIDE );
 				if ( page == NULL ) {
 					gim_error->set( GIM_ERROR_CRITICAL , "gim_html_obj::gim_html_obj" , "    Memory NOT CORRECTLY allocated succesfully" , __GIM_ERROR );

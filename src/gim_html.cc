@@ -39,6 +39,7 @@ gim_html_obj	* gim_html;
 _gim_flag	gim_html_obj::Export( const char * to_export ) {
 	if ( page->fh != NULL ) {
 		if ( to_export != NULL ) {
+			make_indent();
 			fprintf( page->fh->fp , "%s\n" , to_export );
 		}
 		else {
@@ -58,8 +59,10 @@ _gim_flag	gim_html_obj::Export_tag_open( const char * tag ) {
 	char compose[64];
 	if ( page->fh != NULL ) {
 		if ( tag != NULL ) {
+			make_indent();
 			sprintf( compose , "<%s>" , tag );
 			fprintf( page->fh->fp , "%s\n" , compose );
+			indent_level++;
 		}
 		else {
 			gim_error->set( GIM_ERROR_WARNING , "gim_html_obj::Export_tag_open" , "You cannot pass NULL as parameter" , __GIM_NOT_OK );
@@ -78,6 +81,7 @@ _gim_flag	gim_html_obj::Export_tag( const char * tag ) {
 	char compose[64];
 	if ( page->fh != NULL ) {
 		if ( tag != NULL ) {
+			make_indent();
 			sprintf( compose , "<%s>" , tag );
 			fprintf( page->fh->fp , "%s\n" , compose );
 		}
@@ -98,6 +102,8 @@ _gim_flag	gim_html_obj::Export_tag_close( const char * tag ) {
 	char compose[64];
 	if ( page->fh != NULL ) {
 		if ( tag != NULL ) {
+			indent_level--;
+			make_indent();
 			sprintf( compose , "</%s>" , tag );
 			fprintf( page->fh->fp , "%s\n" , compose );
 		}
@@ -118,6 +124,7 @@ _gim_flag	gim_html_obj::Export_with_tag( const char *  tag , const char * to_exp
 	char compose[8192];
 	if ( page->fh != NULL ) {
 		if ( ( to_export != NULL ) && ( tag != NULL ) ) {
+			make_indent();
 			sprintf( compose , "<%s>%s</%s>\n" , tag , to_export , tag );
 			fprintf( page->fh->fp , "%s" , compose );
 		}
@@ -170,4 +177,14 @@ _gim_flag	gim_html_obj::close_page( void ) {
 	Export_tag_close( "html" );
 	gim_file_manager->close( page->fh );
 	return __GIM_OK;
+}
+
+
+void	gim_html_obj::make_indent( void ) {
+	char ind[256];
+	__GIM_CLEAR( ind , 256 , char );
+	for( int c = 0 ; c < indent_level ; c++ ) {
+		strcat( ind , GIM_HTML_INDENT );
+	}
+	fprintf( page->fh->fp , "%s" , ind );	
 }
