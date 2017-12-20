@@ -54,7 +54,8 @@ libgim_include_HEADERS = \
 	gim_version.h           \
 	gim_list.h           \
 	gim_picgim.h           \
-	gim_picgim_GKH32.h
+	gim_picgim_GKH32.h           \
+	gim_getopt.h
 
 libgim_includedir = \
 	$(pkgincludedir)
