@@ -36,9 +36,9 @@
 #ifndef	GIMBMAKE_VERSIONING                                   
 #define	GIMBMAKE_VERSIONING                                 
 
-        #define GIMAUTHOR                   AsYntote                 
-        #define GIMBMAKE_TOTAL_BUILD        7                 
-        #define GIMBMAKE_BUILD              5                 
-        #define GIMBMAKE_LAST_BUILD         "Monday 12-09-2011 22:27:27"           
+        #define GIMAUTHOR                   asyntote                 
+        #define GIMBMAKE_TOTAL_BUILD        4                 
+        #define GIMBMAKE_BUILD              4                 
+        #define GIMBMAKE_LAST_BUILD         "Monday 18-12-2017 10:42:37"           
 
 #endif

@@ -59,7 +59,8 @@
 	*/
 
 	#define GIM_NAME			"Gim"
-	#define GIM_EXTENDED_NAME	"Gim <Generic Information Manager> c++ static library made by AsYntote"
+	#define GIM_EXTENDED_NAME	"Gim <Generic Information Manager> c++ static library made by gKript.org"
+	#define GIM_LICENSE			"Released under the terms of the GNU General Public License v3"
 	#define GIM_SINCE			"07/12/2003"
 
 	#define __GIM_CLEAR( point , len , type)		memset( point , 0 , sizeof( type ) * len )

@@ -206,6 +206,10 @@ void	gim_error_obj::set	( const char * function , int index ) {
 
 void	gim_error_obj::get	( void ) {
 	if ( value || always_verbose ) {
+		if ( ( ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )  &&  ( verbose_on_critical == __GIM_YES ) ) ) {
+			fprintf ( stderr , "[%s] %s%-40s:#%2d: | %s \n" , error_time.process() , type , function , value , message );
+			fflush( stderr );
+		}
 		if ( ( ( ! ( strcmp ( type , GIM_ERROR_FATAL ) ) )  &&  ( on_fatal_verbose == __GIM_YES ) ) || ( always_verbose ) ) {
 			fprintf ( stderr , "[%s] %s%-40s:#%2d: | %s \n" , error_time.process() , type , function , value , message );
 			fflush( stderr );
@@ -233,17 +237,22 @@ void	gim_error_obj::set( _gim_int8 cmd , _gim_flag val ) {
 			autoget = val;
 			break;
 		}
+		case GIM_VERBOSE_ON_CRITICAL : {
+			verbose_on_critical = val;
+			break;
+		}
 	}
 }
 
 
 _gim_flag	gim_error_obj::get( _gim_int8 cmd ) {
 	switch(cmd) {
-		case GIM_ON_FATAL_EXIT :	return ( on_fatal_exit );
-		case GIM_ON_FATAL_VERBOSE :	return ( on_fatal_verbose );
-		case GIM_ALWAYSE_VERBOSE :	return ( always_verbose );
-		case GIM_AUTOGET :			return ( autoget );
-		default :					return __GIM_ERROR;
+		case GIM_ON_FATAL_EXIT :		return ( on_fatal_exit );
+		case GIM_ON_FATAL_VERBOSE :		return ( on_fatal_verbose );
+		case GIM_ALWAYSE_VERBOSE :		return ( always_verbose );
+		case GIM_AUTOGET :				return ( autoget );
+		case GIM_VERBOSE_ON_CRITICAL :	return ( verbose_on_critical );
+		default :						return __GIM_ERROR;
 	}
 }
 

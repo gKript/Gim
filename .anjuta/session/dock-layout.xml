@@ -2,8 +2,8 @@
 <dock-layout>
   <layout name="__default__">
     <dock name="__dock_1" floating="no" width="-1" height="-1" floatx="0" floaty="0" skip-taskbar="yes">
-      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="316">
-        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="482">
+      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="315">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="425">
           <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
             <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
             <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
@@ -11,11 +11,11 @@
           </notebook>
           <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </paned>
-        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="604">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="532">
           <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
-          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="1">
+          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
             <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
-            <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
           </notebook>
         </paned>
       </paned>

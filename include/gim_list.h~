@@ -64,24 +64,24 @@
 
     class gim_list_obj {
 		public:
-			_gim_int32		size			( void );
-			void			size			( _gim_int32 mem_size );
-			_gim_flag		add_item		( void * member );
-			_gim_flag		del_item		( _gim_Uint32 index );
-			_gim_list_item	get_item		( void );
-			_gim_list_item	get_item		( _gim_Uint32 index );
-			void			next_item		( void );
-			void			rewind			( void );
-			_gim_flag		seek			( _gim_Uint32 index );
+			_gim_int32			size			( void );
+			void				size			( _gim_int32 mem_size );
+			_gim_flag			add_item		( void * member );
+			_gim_flag			del_item		( _gim_Uint32 index );
+			_gim_list_item *	get_item		( void );
+			_gim_list_item *	get_item		( _gim_Uint32 index );
+			_gim_flag			next_item		( void );
+			_gim_flag			rewind			( void );
+			_gim_flag			seek			( _gim_Uint32 index );
 			
 		private:
-			_gim_int32		item_size;
-			_gim_Uint32		item_counter;
-			void *			startlist;
-			void *			endlist;
-			void *			currentlist;
+			_gim_int32			item_size;
+			_gim_Uint32			item_counter;
+			_gim_list_item *	startlist;
+			_gim_list_item *	endlist;
+			_gim_list_item *	currentlist;
 
-			void			destroy_list	( void );
+			void				destroy_list	( void );
 
 		public:
 

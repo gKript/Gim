@@ -81,7 +81,8 @@
 		GIM_ON_FATAL_VERBOSE,	/*!<	if \a __GIM_YES when a \a FATAL error happens print on \a STDERR the error message */
 		GIM_ALWAYSE_VERBOSE,	/*!<	if \a __GIM_YES when whichever error happens print on \a STDERR the error 
 										message, if \a GIM_AUTOGET is \a __GIM_YES */
-		GIM_AUTOGET				/*!<	if \a __GIM_YES when an error is setted Gim automatically call the \a get function */
+		GIM_AUTOGET,				/*!<	if \a __GIM_YES when an error is setted Gim automatically call the \a get function */
+		GIM_VERBOSE_ON_CRITICAL
 	};
 
 	struct gim_error_message {
@@ -171,6 +172,7 @@
 				on_fatal_exit		= __GIM_YES;
 				on_fatal_verbose	= __GIM_YES;
 				always_verbose		= __GIM_NO;
+				verbose_on_critical = __GIM_YES;
 				autoget				= __GIM_YES;
 				log_enable			= __GIM_YES;
 				first_in			= NULL;
@@ -195,6 +197,7 @@
 			_gim_flag	always_verbose;		//Se ON scrive qualsiasi messaggio - ON o OFF
 			_gim_flag	autoget;			//Se ON fa la Get subito dopo la Set in maniera automatica - ON o OFF
 			_gim_flag   log_enable;
+			_gim_flag   verbose_on_critical;
 		
 			gim_time_obj	error_time;
 		

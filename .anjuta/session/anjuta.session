@@ -1,9 +1,8 @@
 [Anjuta]
-Maximized=1
-Geometry=1920x993+0+32
+Geometry=1914x987+-76+112
 
 [File Loader]
-Files=../../src/gim.cc#1
+Files=../../src/gim_environment.cc#434%%%../../src/gim_kvalue.cc#911%%%../../include/gim_kvalue.h#1%%%../../include/gim_environment.h#1
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -15,10 +14,13 @@ Working directories=../../../../Projects/gim3
 
 [Project Manager]
 Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat
-Expand=gimstat%%%trunk%%%trunk//include%%%trunk//src%%%trunk//src//libgim.a
+Expand=libgim.a%%%gimstat%%%trunk%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
 
 [Debugger]
 Stop at beginning=2
+
+[Commit Logs]
+Logs=Little variations
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -27,6 +29,3 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
-
-[Commit Logs]
-Logs=Little variations

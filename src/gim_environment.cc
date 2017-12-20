@@ -161,37 +161,39 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddSection( "version" );
 			gim_conf->AddSection( "system" );
 			gim_conf->AddSection( "debug" );
+			gim_conf->AddSection( "error" );
 			gim_conf->AddSection( "memory" );
 			gim_conf->AddSection( "crypt" );
 			gim_conf->AddSection( "alias" );
 			gim_conf->AddSection( "compatibility" );
 			gim_conf->AddSection( "key" );
 			gim_conf->AddSection( "Programs" );
-			gim_conf->AddKey(		"version" 			, "name"			, GIM_NAME  );
-			gim_conf->AddKey(		"version" 			, "major"			, GIM_MAJOR );
-			gim_conf->AddKey(		"version" 			, "minor"			, GIM_MINOR );
-			gim_conf->AddKey(		"version" 			, "subminor"		, GIM_SUBMINOR );
-			gim_conf->AddKey(		"version" 			, "built"			, GIM_BUILD );
-			gim_conf->AddKey(		"version" 			, "version"			, gim_version_small() );
-			gim_conf->AddKeyFlag(	"system" 			, "sig_trap"		, __GIM_ON );
-			gim_conf->AddKey(		"crypt" 			, "iterations"		, 2 );
-			gim_conf->AddKey( 		"debug"				, "debug_format"	, DEBUG_FORMAT_DEFAULT );
-			gim_conf->AddKeyFlag(	"debug"				, "debug"			, __GIM_NO );
-			gim_conf->AddKeyFlag(	"debug"				, "f_debug"			, __GIM_NO );
-			gim_conf->AddKey( 		"debug"				, "f_debug_file"	, fdebug_name );
-			gim_conf->AddKeyFlag(	"memory"			, "hide_in_log"		, __GIM_YES );
-			gim_conf->AddKeyFlag(	"memory"			, "virtual_memory"	, __GIM_OFF );
-			gim_conf->AddKeyFlag(	"memory"			, "alloc_limit"		, __GIM_YES );
-			gim_conf->AddKey(		"memory"			, "limit"			, "75%" );
-			gim_conf->AddKeyFlag(	"memory"			, "default_lock"	, __GIM_MEM_LOCK );
-			gim_conf->AddKeyFlag(	"alias"				 , "enable"			, __GIM_YES );
-			gim_conf->AddKeyFlag(	"alias"				, "lex"				, __LEX_A );
-			gim_conf->AddKeyFlag(	"compatibility"		, "enable"			, __GIM_NO );
-			gim_conf->AddKeyFlag(	"compatibility"		, "lex"				, __LEX_A );
-			gim_conf->AddKey(		"key"				, "priv_path"		, env_data->PrivateKeyPath );
-			gim_conf->AddKey(		"key"				, "other_path"		, env_data->OtherKeysPath );
-			gim_conf->AddKey(		"Programs"			, "generic_path"	, env_data->Programs );
-			gim_conf->AddKey(		"Programs"			, "program_path"	, env_data->home );
+			gim_conf->AddKey(		"version" 			, "name"				, GIM_NAME  );
+			gim_conf->AddKey(		"version" 			, "major"				, GIM_MAJOR );
+			gim_conf->AddKey(		"version" 			, "minor"				, GIM_MINOR );
+			gim_conf->AddKey(		"version" 			, "subminor"			, GIM_SUBMINOR );
+			gim_conf->AddKey(		"version" 			, "built"				, GIM_BUILD );
+			gim_conf->AddKey(		"version" 			, "version"				, gim_version_small() );
+			gim_conf->AddKeyFlag(	"system" 			, "sig_trap"			, __GIM_ON );
+			gim_conf->AddKey(		"crypt" 			, "iterations"			, 2 );
+			gim_conf->AddKeyFlag(	"error"				, "verbose_on_critical"	, __GIM_YES );
+			gim_conf->AddKey( 		"debug"				, "debug_format"		, DEBUG_FORMAT_DEFAULT );
+			gim_conf->AddKeyFlag(	"debug"				, "debug"				, __GIM_NO );
+			gim_conf->AddKeyFlag(	"debug"				, "f_debug"				, __GIM_NO );
+			gim_conf->AddKey( 		"debug"				, "f_debug_file"		, fdebug_name );
+			gim_conf->AddKeyFlag(	"memory"			, "hide_in_log"			, __GIM_YES );
+			gim_conf->AddKeyFlag(	"memory"			, "virtual_memory"		, __GIM_OFF );
+			gim_conf->AddKeyFlag(	"memory"			, "alloc_limit"			, __GIM_YES );
+			gim_conf->AddKey(		"memory"			, "limit"				, "75%" );
+			gim_conf->AddKeyFlag(	"memory"			, "default_lock"		, __GIM_MEM_LOCK );
+			gim_conf->AddKeyFlag(	"alias"				 , "enable"				, __GIM_YES );
+			gim_conf->AddKeyFlag(	"alias"				, "lex"					, __LEX_A );
+			gim_conf->AddKeyFlag(	"compatibility"		, "enable"				, __GIM_NO );
+			gim_conf->AddKeyFlag(	"compatibility"		, "lex"					, __LEX_A );
+			gim_conf->AddKey(		"key"				, "priv_path"			, env_data->PrivateKeyPath );
+			gim_conf->AddKey(		"key"				, "other_path"			, env_data->OtherKeysPath );
+			gim_conf->AddKey(		"Programs"			, "generic_path"		, env_data->Programs );
+			gim_conf->AddKey(		"Programs"			, "program_path"		, env_data->home );
 			
 			add_default_comment();
 			gim_conf->Write();
@@ -209,6 +211,13 @@ void	gim_home_obj::up( void ) {
 					gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "Gim signal handler ACTIVATED per default" , __GIM_ERROR );
 					gim_signal_handler();
 				}
+			}
+			IF_EXIST_KEY_IN_CONF( "error" , "verbose_on_critical" ) {
+				gim_error->set( GIM_VERBOSE_ON_CRITICAL , gim_conf->GetKeyFLAG( "error" , "verbose_on_critical" ) );
+				if ( gim_error->get( GIM_VERBOSE_ON_CRITICAL ) == __GIM_YES )
+					gim_error->set( "gim_home_obj::up" , "verbose_on_critical activated" );
+				else
+					gim_error->set( "gim_home_obj::up" , "verbose_on_critical de-activated" );
 			}
 			IF_EXIST_KEY_IN_CONF( "debug" , "debug" ) {
 				internal_gim->debug = gim_conf->GetKeyFLAG( "debug" , "debug" );
