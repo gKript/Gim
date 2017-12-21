@@ -68,11 +68,12 @@
 			void				size			( _gim_int32 mem_size );
 			_gim_flag			add_item		( void * member );
 			_gim_flag			del_item		( _gim_Uint32 index );
-			_gim_list_item *	get_item		( void );
-			_gim_list_item *	get_item		( _gim_Uint32 index );
+			void *				get_item		( void );
+			void *				get_item		( _gim_Uint32 index );
 			_gim_flag			next_item		( void );
 			_gim_flag			rewind			( void );
 			_gim_flag			seek			( _gim_Uint32 index );
+			_gim_Uint32			items			( void );
 			
 		private:
 			_gim_int32			item_size;

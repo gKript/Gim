@@ -61,22 +61,32 @@
 		
 
 	struct gim_option_st {
-		char		option;
-		char *		argument;
+		char		option;				//  the option character found
+		char *		argument;			//  the argument found
+		int			opterror;			//  the character with argument missing
+		_gim_flag   status;				//  the status of this option
 	};
 
 		
     class gim_getopt_obj {
 		public:
-			
-		private:
+			void			setopt( const char * useropt );
+			void			scanopt( int argc, char * const argv[] );
+			gim_option_st * getoption( void );
+			void			nextoption( void );
 
+		private:
+			char			options[64];
+			//gim_list_obj *	optlist() = new gim_list_obj;
+			
 		public:
 
 			/*!gim_picgim_obj constructor
 		    */
 		    inline gim_getopt_obj() {
 				gim_error->set( "gim_getopt_obj::gim_getopt_obj()" , "Getopt object allocated" );
+				//gim_list_obj *  tmplist( sizeof( gim_option_st ) = new gim_list_obj; 
+				//optlist->size( sizeof( gim_option_st );
 				opterr = 0;
 		    };
 
@@ -84,6 +94,7 @@
 		    /*!gim_picgim_obj distructor
 		    */
 		    inline ~gim_getopt_obj() {
+				//optlist.destroy_list();
 				gim_error->set( "gim_getopt_obj::gim_getopt_obj()" , "Getopt object deleted" );
 		    };
     };

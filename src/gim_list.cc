@@ -205,17 +205,9 @@ _gim_flag  gim_list_obj::seek( _gim_Uint32 index ) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+_gim_Uint32		gim_list_obj::items( void ) {
+	return item_counter;
+}
 
 
 

@@ -73,8 +73,11 @@
 			_gim_flag			next_item		( void );
 			_gim_flag			rewind			( void );
 			_gim_flag			seek			( _gim_Uint32 index );
+			_gim_Uint32			items			( void );
 			
 		private:
+	friend	class	gim_getopt_obj;
+			
 			_gim_int32			item_size;
 			_gim_Uint32			item_counter;
 			_gim_list_item *	startlist;
