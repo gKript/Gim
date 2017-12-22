@@ -88,8 +88,8 @@
 
 	/*! \class 		gim_obj
 		\brief		Generic Information Manager Documentation base object
-		\author		Danilo Zannoni  -  asyntote@gkript.org
-		\author		Corrado Tumiati - skymatrix@gkript.org
+		\author		Danilo Zannoni
+		\author		Corrado Tumiati
 		\version	2.0-0
 		\date		2003-2008
 	*/

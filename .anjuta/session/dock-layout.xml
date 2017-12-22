@@ -10,10 +10,10 @@
           <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </notebook>
         <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="700">
-          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="195">
-            <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
             <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
-          </paned>
+            <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+          </notebook>
           <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </paned>
       </paned>

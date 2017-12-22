@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1920x993+0+32
+Geometry=1920x1113+0+32
 
 [File Loader]
-Files=../../include/gim_list.h#53%%%../../src/gim_list.cc#209%%%../../include/gim_picgim.h#1%%%../../include/gim_getopt.h#89%%%../../include/gim_environment.h#133%%%../../src/gim_getopt.cc#1
+Files=../../include/gim_getopt.h#76%%%../../src/gim_getopt.cc#71%%%../../include/gim_list.h#69%%%../../include/gim.h#70%%%../../src/gim_list.cc#57%%%../../include/gim_memory.h#123
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n

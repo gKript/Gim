@@ -62,6 +62,14 @@
 	#include "gim_interface.h"
 	#include "gim_signal.h"
 	#include "gim_string.h"
+	#include "gim_list.h"
+	#include "gim_getopt.h"
+	#include "gim_list.h"
+
+	#include "gim_picgim.h"
+	#include "gim_picgim_GKH32.h"
+
+		
 
 	#include "gim_file.h"
 	#include "gim_mersennetwister.h"

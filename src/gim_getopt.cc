@@ -40,33 +40,35 @@
 
 void	gim_getopt_obj::setopt( const char * useropt ) {
 	strcpy( options , useropt );
-	gim_error->set( GIM_ERROR_CRITICAL , "gim_getopt_obj::setopt()" , "Item NOT FOUND" , __GIM_ERROR );
+//	gim_error->set( GIM_ERROR_CRITICAL , "gim_getopt_obj::setopt()" , "Item NOT FOUND" , __GIM_ERROR );
 }
 
 
 void	gim_getopt_obj::scanopt( int argc, char * const argv[] ) {
-	gim_option_st *  temp_opt = NULL;
+	gim_option_item *  temp_opt = NULL;
 	char c;
 
 	while ( ( c = getopt ( argc , argv , options )) != -1 ) {
-		temp_opt = (gim_option_st *)gim_memory->Alloc ( sizeof( gim_option_st ) );
+		temp_opt = (gim_option_item *)gim_memory->Alloc ( sizeof( gim_option_item ) , __GIM_GETOPT_ITEM , __GIM_HIDE  );
 		temp_opt->option = c;
 		temp_opt->argument = optarg;
 		temp_opt->opterror = optopt;
-
-		if ( c == '?' ) {
+		if ( c != '?' ) {
+			temp_opt->status = __GIM_OPT_OK;
+			optlist->add_item( (void *)temp_opt );
+		}
+		else {
 			if ( ( optopt == c ) && ( optarg == NULL ) ) 
 				temp_opt->status = __GIM_OPT_NO_ARG;
 			else if ( optopt != c )
 				temp_opt->status = __GIM_OPT_UNKNOWN;
+			errlist->add_item( (void *)temp_opt );
 		}
-		else 
-			temp_opt->status = __GIM_OPT_OK;
-		//optlist.add_item( (void *)temp_opt );
 	}
-
-
 }
+
+
+
 
 
 

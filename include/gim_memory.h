@@ -119,7 +119,9 @@
 	#define	__GIM_MEM_DB_TABLE				0xff000030		/*!<	caller is gim_db_obj::add_table */
 	#define __GIM_MEM_DIRECTORY_FLIST_ADD	0xff000031		/*!<	caller is gim_directory_obj::add */
  	#define __GIM_MEM_DIRECTORY_ITEM		0xff000032		/*!<	caller is gim_directory_obj::add */
- 	#define __GIM_LIST_ITEM					0xff000051		/*!<	caller is gim_directory_obj::add */
+ 	#define __GIM_LIST_ITEM					0xff000033		/*!<	caller is gim_directory_obj::add */
+ 	#define __GIM_GETOPT_ITEM				0xff000034		/*!<	caller is gim_directory_obj::add */
+	
 
 	#define __GIM_MEM_PAGE_ADD				0xff002000		/*!<	gim_memory_page_obj::add */
 

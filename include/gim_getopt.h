@@ -47,10 +47,11 @@
         \date        2003-2017
 */
 
-#ifndef _GIM_PICGIM_OBJ_H_
-#define _GIM_PICGIM_OBJ_H_
+#ifndef _GIM_GETOPT_OBJ_H_
+#define _GIM_GETOPT_OBJ_H_
 
-	#include <unistd.h>
+#include    "gim_list.h"
+
 
 	enum gim_option_enum {
 		__GIM_OPT_OK = 0,
@@ -60,7 +61,7 @@
 	};
 		
 
-	struct gim_option_st {
+	struct gim_option_item {
 		char		option;				//  the option character found
 		char *		argument;			//  the argument found
 		int			opterror;			//  the character with argument missing
@@ -70,34 +71,43 @@
 		
     class gim_getopt_obj {
 		public:
-			void			setopt( const char * useropt );
-			void			scanopt( int argc, char * const argv[] );
-			gim_option_st * getoption( void );
-			void			nextoption( void );
-
+			void				setopt( const char * useropt );
+			void				scanopt( int argc, char * const argv[] );
+			gim_option_item *   getoption( void );
+			gim_option_item *   geterror( void );
+			void				nextoption( void );
+			void				nexterror( void );
+			_gim_Uint32			opt_members( void );
+			_gim_Uint32			err_members( void );
+			
 		private:
-			char			options[64];
-			//gim_list_obj *	optlist() = new gim_list_obj;
+			char				options[64]; 
+			
+			_gim_list *    		optlist;
+			_gim_list *			errlist;
 			
 		public:
 
-			/*!gim_picgim_obj constructor
+			/*!gim_getopt_obj constructor
 		    */
 		    inline gim_getopt_obj() {
 				gim_error->set( "gim_getopt_obj::gim_getopt_obj()" , "Getopt object allocated" );
-				//gim_list_obj *  tmplist( sizeof( gim_option_st ) = new gim_list_obj; 
-				//optlist->size( sizeof( gim_option_st );
+				optlist = new gim_list_obj;	
+				errlist = new gim_list_obj;
+				optlist->size( sizeof( gim_option_item ) );
+				errlist->size( sizeof( gim_option_item ) );
 				opterr = 0;
 		    };
 
 
-		    /*!gim_picgim_obj distructor
+		    /*!gim_getopt_obj distructor
 		    */
 		    inline ~gim_getopt_obj() {
-				//optlist.destroy_list();
+				optlist->destroy_list();
+				errlist->destroy_list();
 				gim_error->set( "gim_getopt_obj::gim_getopt_obj()" , "Getopt object deleted" );
 		    };
     };
 
-#endif // _GIM_PICGIM_OBJ_H_
+#endif //_GIM_GETOPT_OBJ_H_
 
