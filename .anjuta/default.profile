@@ -1,10 +1,5 @@
 <?xml version="1.0"?>
 <anjuta>
-    <plugin name="Tools" mandatory="no">
-        <require group="Anjuta Plugin"
-                 attribute="Location"
-                 value="anjuta-tools:ATPPlugin"/>
-    </plugin>
     <plugin name="Terminal" mandatory="no">
         <require group="Anjuta Plugin"
                  attribute="Location"
@@ -24,5 +19,10 @@
         <require group="Anjuta Plugin"
                  attribute="Location"
                  value="anjuta-subversion:Subversion"/>
+    </plugin>
+    <plugin name="Tools" mandatory="no">
+        <require group="Anjuta Plugin"
+                 attribute="Location"
+                 value="anjuta-tools:ATPPlugin"/>
     </plugin>
 </anjuta>

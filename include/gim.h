@@ -69,8 +69,6 @@
 	#include "gim_picgim.h"
 	#include "gim_picgim_GKH32.h"
 
-		
-
 	#include "gim_file.h"
 	#include "gim_mersennetwister.h"
 	#include "gim_private_key.h"
@@ -367,8 +365,8 @@
 	friend	class gim_gkfp_file_list_obj;
 	friend	class gim_gkfp_file_data_obj;
 
-			char			file_name[256];
-			_gim_handler	* hand;	
+			char				file_name[256];
+			_gim_handler *		hand;	
 
 			void 				linit( void );
 			void 				lrelease( void );
@@ -378,16 +376,17 @@
 			char				old_root[2048];
 			char				new_root[2048];
 			
-			_gim_gkp_flist	* startlist;
-			_gim_gkp_flist	* currentlist;
-			_gim_gkp_flist	* endlist;
+			_gim_gkp_flist *	startlist;
+			_gim_gkp_flist *	currentlist;
+			_gim_gkp_flist *	endlist;
 
-			char *		hread	( _gim_map map );
-			_gim_flag	hwrite	( _gim_handler * out );
+			char *				hread	( _gim_map map );
+			_gim_flag			hwrite	( _gim_handler * out );
 
-			char		prog[32];
+			char				prog[32];
 
 		public:
+			
 			inline gim_gkfp_obj() {
 				__GIM_CLEAR( file_name , 256  , char );
 				__GIM_CLEAR( &header  , 1   , gim_file_header_struct );

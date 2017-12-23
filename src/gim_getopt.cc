@@ -45,31 +45,73 @@ void	gim_getopt_obj::setopt( const char * useropt ) {
 
 
 void	gim_getopt_obj::scanopt( int argc, char * const argv[] ) {
-	gim_option_item *  temp_opt = NULL;
+	_gim_option *  temp_opt = NULL;
 	char c;
 
 	while ( ( c = getopt ( argc , argv , options )) != -1 ) {
-		temp_opt = (gim_option_item *)gim_memory->Alloc ( sizeof( gim_option_item ) , __GIM_GETOPT_ITEM , __GIM_HIDE  );
+		temp_opt = (_gim_option *)gim_memory->Alloc ( sizeof( _gim_option ) , __GIM_GETOPT_ITEM , __GIM_HIDE  );
 		temp_opt->option = c;
-		temp_opt->argument = optarg;
+		if ( optarg == NULL ) 
+			temp_opt->argument = NULL;
+		else
+			temp_opt->argument = strdup( optarg );
 		temp_opt->opterror = optopt;
-		if ( c != '?' ) {
+/*		printf( "opt %c - arg %s - optopt %X\n" , c , optarg , optopt );
+		printf( "opt %c - arg %s - optopt %X\n" , temp_opt->option , temp_opt->argument , temp_opt->opterror );
+*/		if ( ( c != '?' ) && ( c != ':' ) ) {
 			temp_opt->status = __GIM_OPT_OK;
-			optlist->add_item( (void *)temp_opt );
+			optlist->add_item( temp_opt );
 		}
 		else {
-			if ( ( optopt == c ) && ( optarg == NULL ) ) 
-				temp_opt->status = __GIM_OPT_NO_ARG;
-			else if ( optopt != c )
-				temp_opt->status = __GIM_OPT_UNKNOWN;
-			errlist->add_item( (void *)temp_opt );
+			temp_opt->option = optopt;
+			if ( options[0] == ':' ) {
+				if ( c == ':' ) 
+					temp_opt->status = __GIM_OPT_NO_ARG;
+				if ( c == '?' )
+					temp_opt->status = __GIM_OPT_UNKNOWN;
+			}
+			else {
+				if ( c == '?' )
+					temp_opt->status = __GIM_OPT_NOT_OK;
+			}
+			errlist->add_item( temp_opt );
 		}
 	}
 }
 
 
+gim_option_item *   gim_getopt_obj::getoption( void ) {
+	return (gim_option_item *)optlist->get_item();
+}
 
 
+gim_option_item *   gim_getopt_obj::geterror( void ) {
+	return (gim_option_item *)errlist->get_item();
+}
 
 
+void	gim_getopt_obj::nextoption( void ) {
+	optlist->next_item();
+}
+
+
+void	gim_getopt_obj::nexterror( void ) {
+	errlist->next_item();
+}
+
+
+_gim_Uint32	gim_getopt_obj::opt_members( void ) {
+	return  optlist->items();
+}
+
+
+_gim_Uint32	gim_getopt_obj::err_members( void ) {
+	return  errlist->items();
+}
+
+
+void	gim_getopt_obj::rewind( void ) {
+	optlist->rewind();
+	errlist->rewind();
+}
 

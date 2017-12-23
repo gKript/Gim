@@ -51,23 +51,22 @@ void		gim_list_obj::size( _gim_int32 mem_size ) {
 
 _gim_flag	gim_list_obj::add_item( void *member ) {
 	_gim_list_item *	temp_item;
-	if ( item_size == 0 ) {
-		return __GIM_ERROR;
-	}
 	temp_item = (gim_list_item *)gim_memory->Alloc ( sizeof( gim_list_item ) , __GIM_LIST_ITEM , __GIM_HIDE );
 	if ( temp_item == NULL ) {
 		return __GIM_ERROR;
 	}
 	temp_item->index = ++item_counter;
 	temp_item->item = member;
-	temp_item->previtem = endlist;
 	temp_item->nextitem = NULL;
 	if ( startlist == NULL ) {
 		startlist = temp_item;
 		currentlist = startlist;
+//		puts("primo item");
 	}
-	else
+	else {
 		endlist->nextitem = temp_item;
+//		puts("ulteriore item");
+	}
 	endlist = temp_item;
 	gim_error->set( "gim_list_obj::add_item()" , "New item allocated" );
 	return __GIM_OK;
@@ -138,11 +137,11 @@ void * gim_list_obj::get_item( void ) {
 		return NULL;
 	}
 
-	void *	tmp = currentlist->item;
+//	void *	tmp = currentlist->item;
 
-	currentlist = currentlist->nextitem;
-	gim_error->set( "gim_list_obj::get_item()" , "Item successfully obtained. set on the next item." );
-	return tmp;
+//	currentlist = currentlist->nextitem;
+	gim_error->set( "gim_list_obj::get_item()" , "Item successfully obtained." );
+	return currentlist->item;
 }
 
 
@@ -167,10 +166,11 @@ void *  gim_list_obj::get_item( _gim_Uint32 index ) {
 
 
 _gim_flag   gim_list_obj::next_item( void ) {
-	if ( currentlist->nextitem == NULL ) {
+	if ( currentlist == NULL ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item()" , "Endlist reached" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
+	currentlist = currentlist->nextitem;
 	gim_error->set( "gim_list_obj::next_item()" , "Next item set" );
 	return __GIM_OK;
 }

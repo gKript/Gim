@@ -79,6 +79,7 @@
 			void				nexterror( void );
 			_gim_Uint32			opt_members( void );
 			_gim_Uint32			err_members( void );
+			void				rewind( void );
 			
 		private:
 			char				options[64]; 
@@ -94,8 +95,8 @@
 				gim_error->set( "gim_getopt_obj::gim_getopt_obj()" , "Getopt object allocated" );
 				optlist = new gim_list_obj;	
 				errlist = new gim_list_obj;
-				optlist->size( sizeof( gim_option_item ) );
-				errlist->size( sizeof( gim_option_item ) );
+//				optlist->size( sizeof( _gim_option ) );
+//				errlist->size( sizeof( _gim_option ) );
 				opterr = 0;
 		    };
 

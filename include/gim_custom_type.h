@@ -140,6 +140,7 @@
 	typedef	class	gim_string_obj			_gim_string;
 	typedef class	gim_personal_log_obj	_gim_log;
 	typedef	struct	gim_list_item 			_gim_list_item;
+	typedef	struct	gim_option_item			_gim_option;
 	typedef	class	gim_list_obj 			_gim_list;
 
 
