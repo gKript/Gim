@@ -53,6 +53,10 @@
 #include    "gim_list.h"
 
 
+	#define			GIM_GETOPT_OK( a )		for( ; (_gim_option *)a->getoption() != NULL ; a->nextoption() )
+	#define			GIM_GETOPT_ERROR( a )	for( ; (_gim_option *)a->geterror() != NULL ; a->nexterror() )
+
+		
 	enum gim_option_enum {
 		__GIM_OPT_OK = 0,
 		__GIM_OPT_NO_ARG,
@@ -73,15 +77,19 @@
 		public:
 			void				setopt( const char * useropt );
 			void				scanopt( int argc, char * const argv[] );
+			void				scanopt( int argc, char * const argv[] , const char * useropt );
 			gim_option_item *   getoption( void );
 			gim_option_item *   geterror( void );
 			void				nextoption( void );
 			void				nexterror( void );
+			_gim_flag			errors_present( void );
 			_gim_Uint32			opt_members( void );
 			_gim_Uint32			err_members( void );
 			void				rewind( void );
-			
+			_gim_flag			search( char opt );
+				
 		private:
+			
 			char				options[64]; 
 			
 			_gim_list *    		optlist;
@@ -95,8 +103,6 @@
 				gim_error->set( "gim_getopt_obj::gim_getopt_obj()" , "Getopt object allocated" );
 				optlist = new gim_list_obj;	
 				errlist = new gim_list_obj;
-//				optlist->size( sizeof( _gim_option ) );
-//				errlist->size( sizeof( _gim_option ) );
 				opterr = 0;
 		    };
 

@@ -40,7 +40,6 @@
 
 void	gim_getopt_obj::setopt( const char * useropt ) {
 	strcpy( options , useropt );
-//	gim_error->set( GIM_ERROR_CRITICAL , "gim_getopt_obj::setopt()" , "Item NOT FOUND" , __GIM_ERROR );
 }
 
 
@@ -80,6 +79,12 @@ void	gim_getopt_obj::scanopt( int argc, char * const argv[] ) {
 }
 
 
+void	gim_getopt_obj::scanopt( int argc, char * const argv[] , const char * useropt ) {
+	setopt( useropt );
+	scanopt( argc , argv );
+}
+
+
 gim_option_item *   gim_getopt_obj::getoption( void ) {
 	return (gim_option_item *)optlist->get_item();
 }
@@ -114,4 +119,24 @@ void	gim_getopt_obj::rewind( void ) {
 	optlist->rewind();
 	errlist->rewind();
 }
+
+
+_gim_flag   gim_getopt_obj::errors_present( void ) {
+	if ( err_members() )
+		return __GIM_YES;
+	return __GIM_NO;
+}
+
+
+_gim_flag   gim_getopt_obj::search( char opt ) {
+	optlist->rewind();
+	for( ; optlist->get_item() != NULL ; optlist->next_item() ) {
+		_gim_option * tmp = (_gim_option *)optlist->get_item();
+		if ( tmp->option == opt ) 
+			return __GIM_YES;
+	}
+	return __GIM_NO;
+}
+
+
 

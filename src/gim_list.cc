@@ -210,5 +210,7 @@ _gim_Uint32		gim_list_obj::items( void ) {
 }
 
 
-
+_gim_Uint32		gim_list_obj::get_id( void ) {
+	return currentlist->index;
+}
 

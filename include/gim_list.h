@@ -74,6 +74,7 @@
 			_gim_flag			rewind			( void );
 			_gim_flag			seek			( _gim_Uint32 index );
 			_gim_Uint32			items			( void );
+			_gim_Uint32			get_id			( void );
 			
 		private:
 	friend	class	gim_getopt_obj;
