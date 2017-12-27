@@ -249,7 +249,7 @@
 						\a __ERROR if some error occurred
 			 	\todo	Near in the future ( inside 2.5 milestone )
 			*/
-			_gim_int16	GetHowManyKey( const char * section_name );
+			_gim_int8	GetHowManyKey( const char * section_name );
 			
 			/*! \fn		char * GetKeyName( const char * section_name , _gim_int16 kindex )
 				\brief	To get the name of a specific section number
@@ -448,6 +448,10 @@
 			*/
 			_gim_flag	ExistKey( const char * section_name , const char * key );
 
+
+			_gim_flag   ParserIsUp( void );
+
+			_gim_flag   ThereIsASection( void );
 	
 			/*!
 				\brief	The constructor

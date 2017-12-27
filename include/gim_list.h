@@ -75,6 +75,8 @@
 			_gim_flag			seek			( _gim_Uint32 index );
 			_gim_Uint32			items			( void );
 			_gim_Uint32			get_id			( void );
+			void				backup			( void );
+			void				restore			( void );
 			
 		private:
 	friend	class	gim_getopt_obj;
@@ -84,6 +86,7 @@
 			_gim_list_item *	startlist;
 			_gim_list_item *	endlist;
 			_gim_list_item *	currentlist;
+			_gim_list_item *	savelist;
 
 			void				destroy_list	( void );
 
@@ -95,6 +98,7 @@
 				startlist = NULL;
 				endlist = NULL;
 				currentlist = NULL;
+				savelist = NULL;
 //				item_size = 0;
 				item_counter = 0;
 				gim_error->set( "gim_list_obj::gim_list_obj()" , "A new list allocated and inizialized" );

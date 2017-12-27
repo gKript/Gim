@@ -129,11 +129,14 @@ _gim_flag   gim_getopt_obj::errors_present( void ) {
 
 
 _gim_flag   gim_getopt_obj::search( char opt ) {
+	optlist->backup();
 	optlist->rewind();
 	for( ; optlist->get_item() != NULL ; optlist->next_item() ) {
 		_gim_option * tmp = (_gim_option *)optlist->get_item();
-		if ( tmp->option == opt ) 
+		if ( tmp->option == opt ) {
+			optlist->restore();
 			return __GIM_YES;
+		}
 	}
 	return __GIM_NO;
 }

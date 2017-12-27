@@ -404,6 +404,7 @@ _gim_flag	gim_prsr_obj::ExistKey( const char * section_name , const char * key )
 	return __GIM_NOT_EXIST;
 }
 
+
 _gim_flag	gim_prsr_obj::Down( void ) {
 	prsr_kvalue_section	* tmp_section  = NULL;
 	prsr_kvalue_section	* tmp2_section = NULL;
@@ -429,6 +430,7 @@ _gim_flag	gim_prsr_obj::Down( void ) {
 	gim_error->set( "gim_prsr_obj::Down" , "Done!" );
 	return __GIM_OK;
 }
+
 
 _gim_flag	gim_prsr_obj::List( void ) {
 	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
@@ -487,7 +489,14 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 		if ( Lex == __LEX_A ) {
 			fprintf( prsr_obj->fp , "\n" );
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
-				fprintf( prsr_obj->fp , "%s%s\n" , PRSR_START_SECTION , tmp_section->section_name );
+				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_BEFORE ) )
+					fprintf( prsr_obj->fp , "\n    # %s\n" , tmp_section->comment );
+				fprintf( prsr_obj->fp , "%s%s" , PRSR_START_SECTION , tmp_section->section_name );
+				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_INLINE ) )
+					fprintf( prsr_obj->fp , "        # %s" , tmp_section->comment );
+				fprintf( prsr_obj->fp , "\n" );
+				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_AFTER ) )
+					fprintf( prsr_obj->fp , "    # %s\n\n" , tmp_section->comment );
 				if ( tmp_section->first_field ) {
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
 						if ( ( tmp_field->comment != NULL ) && ( tmp_field->comment_position == PRSR_BEFORE ) )
@@ -506,7 +515,15 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 		else {
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
 				if ( tmp_section->first_field ) {
-					fprintf( prsr_obj->fp , "\n  %s\n" , tmp_section->section_name );
+					if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_BEFORE ) )
+						fprintf( prsr_obj->fp , "\n    # %s\n" , tmp_section->comment );
+					fprintf( prsr_obj->fp , "\n  %s" , tmp_section->section_name );
+					if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_INLINE ) )
+						fprintf( prsr_obj->fp , "        # %s" , tmp_section->comment );
+					fprintf( prsr_obj->fp , "\n" );
+					if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_AFTER ) )
+						fprintf( prsr_obj->fp , "    # %s\n\n" , tmp_section->comment );
+					
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
 						if ( ( tmp_field->comment != NULL ) && ( tmp_field->comment_position == PRSR_BEFORE ) )
 							fprintf( prsr_obj->fp , "    # %s\n" , tmp_field->comment );
@@ -525,6 +542,7 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 	Close( __NO_FLUSH );
 	return __GIM_OK;
 }
+
 
 _gim_flag gim_prsr_obj::Read( const char * filename ) {
 	_gim_int8	scan_result;
@@ -546,6 +564,7 @@ _gim_flag gim_prsr_obj::Read( const char * filename ) {
 			}
 			else {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Read" , "some problem with the file" , __GIM_ERROR );
+				return __GIM_NOT_OK;
 			}
 		}
 		case __LEX_UNKNOW : {
@@ -589,6 +608,7 @@ _gim_flag	gim_prsr_obj::Close( _gim_flag flush ) {
 		return ( Write() );
 	fclose( prsr_obj->fp );
 	prsr_obj->fp = NULL;
+	gim_error->set( "gim_prsr_obj::Close" , "Configuration file close." );
 	return __GIM_OK;
 }
 
@@ -664,9 +684,71 @@ float	gim_prsr_obj::GetKeyFLT( const char * section_name , const char * key ) {
 	return __GIM_ERROR;
 }
 
+
+_gim_int8	gim_prsr_obj::GetHowManyKey( const char * section_name ) {
+	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
+	prsr_kvalue_field	* tmp_field;
+	char * tmp_section_name;
+	_gim_Uint8  cont = 0;
+	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	if ( prsr_obj == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetHowManyKey" , "No parser object defined" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+	if ( prsr_obj->first_section != NULL ) {
+		for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
+			if( ! strcmp(  tmp_section_name , tmp_section->section_name ) ) {
+				if ( tmp_section->first_field ) {
+					for( tmp_field = tmp_section->first_field ; tmp_field ; tmp_field = tmp_field->next_field ) {
+						cont++;	
+					}
+				}
+			}
+		}
+	}
+	else {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetHowManyKey" , "No section defined" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+	return cont;
+}
+
+
+char *  gim_prsr_obj::GetKeyName( const char * section_name , _gim_int16 kindex ) {
+	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
+	prsr_kvalue_field	* tmp_field;
+	char * tmp_section_name;
+	_gim_int16  cont = 0;
+	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	if ( prsr_obj == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyName" , "No parser object defined" , __GIM_ERROR );
+		return NULL;
+	}
+	if ( prsr_obj->first_section != NULL ) {
+		for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
+			if( ! strcmp(  tmp_section_name , tmp_section->section_name ) ) {
+				if ( tmp_section->first_field ) {
+					for( tmp_field = tmp_section->first_field ; tmp_field ; tmp_field = tmp_field->next_field , cont++ ) {
+						if ( kindex == cont )
+							return tmp_field->key;
+					}
+				}
+			}
+		}
+	}
+	else {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyName" , "No section defined" , __GIM_ERROR );
+		return NULL;
+	}
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyName" , "Index not found" , __GIM_ERROR );
+	return NULL;
+}
+
+
 _gim_int16	gim_prsr_obj::GetHowManySection( void ) {
 	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
 	_gim_int16 c;
+
 	if ( prsr_obj == NULL ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetHowManySection" , "No parser object defined" , __GIM_ERROR );
 		return __GIM_ERROR;
@@ -683,6 +765,7 @@ _gim_int16	gim_prsr_obj::GetHowManySection( void ) {
 }
 
 char *  gim_prsr_obj::GetSectionName( _gim_int16 secindex ) {
+	
 	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
 	_gim_int16 c = 0;
 	if ( prsr_obj == NULL ) {
@@ -912,6 +995,32 @@ _gim_flag	gim_prsr_obj::AddKeyComment( const char * section_name , const char * 
 }
 
 
+_gim_flag	gim_prsr_obj::AddSectionComment( const char * section_name , _gim_flag position , char * comment ) {
+	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
+	prsr_kvalue_field	* tmp_field;
+	char * tmp_section_name;
+	char * tmp_key_name;
+	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	if ( comment == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKeyComment" , "Comment must not be NULL. I cannot add this comment" , __GIM_ERROR );
+		return __GIM_NOT_OK;
+	}
+	if ( strlen( comment ) > 10240 ) {
+		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddKeyComment" , "Comment is too long. It will be skipped" , __GIM_ERROR );
+		return __GIM_NOT_OK;
+	}
+	if ( prsr_obj->first_section != NULL ) {
+		for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
+			if( ! strcmp(  tmp_section_name , tmp_section->section_name ) ) {
+				tmp_section->comment_position = position;
+				strcpy( tmp_section->comment , comment );
+			}
+		}
+	}
+	return __GIM_NOT_EXIST;
+}
+
+
 _gim_flag	gim_prsr_obj::AddComment( const char * comment ) {
 	if ( strlen( comment ) > 10240 ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddComment" , "Comment is too long. It will be skipped" , __GIM_ERROR );
@@ -920,3 +1029,29 @@ _gim_flag	gim_prsr_obj::AddComment( const char * comment ) {
 	strcpy( this->prsr_obj->comment , comment );
 	return __GIM_OK;
 }
+
+
+_gim_flag   gim_prsr_obj::ParserIsUp( void ) {
+	if ( prsr_obj == NULL )
+		return __GIM_NO;
+	return __GIM_YES;
+}
+
+
+_gim_flag   gim_prsr_obj::ThereIsASection( void ) {
+	if ( ParserIsUp() == __GIM_YES ) {
+		gim_error->set( "gim_prsr_obj::ThereIsASection" , "Yes, parser is UP." );
+		if ( prsr_obj->first_section != NULL ) {
+			gim_error->set( "gim_prsr_obj::ThereIsASection" , "And yes, there is at least a section." );
+			return __GIM_YES;
+		}
+		else
+			gim_error->set( "gim_prsr_obj::ThereIsASection" , "But no, there is no one section." );
+	}
+	else
+		gim_error->set( "gim_prsr_obj::ThereIsASection" , "No, no parser in memory." );
+	return __GIM_NO;
+}
+
+
+

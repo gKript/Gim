@@ -68,14 +68,14 @@ _gim_flag	gim_list_obj::add_item( void *member ) {
 //		puts("ulteriore item");
 	}
 	endlist = temp_item;
-	gim_error->set( "gim_list_obj::add_item()" , "New item allocated" );
+	gim_error->set( "gim_list_obj::add_item" , "New item allocated" );
 	return __GIM_OK;
 }
 
 
 _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 	if ( index = 0 ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::del_item()" , "index cannot be 0" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::del_item" , "index cannot be 0" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 
@@ -86,7 +86,7 @@ _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 	if( index == 0 ) {
 		startlist = startlist->nextitem;
 		currentlist = startlist;
-		gim_error->set( "gim_list_obj::add_item()" , "Item deleted" );
+		gim_error->set( "gim_list_obj::add_item" , "Item deleted" );
 	}
 
 	while ( tmplist != NULL ) {
@@ -96,12 +96,12 @@ _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 			beforelist->nextitem = afterlist;
 			afterlist->previtem = beforelist;
 			gim_memory->Unlock_and_free ( tmplist );
-			gim_error->set( "gim_list_obj::add_item()" , "Item found and deleted" );
+			gim_error->set( "gim_list_obj::add_item" , "Item found and deleted" );
 			return __GIM_OK;
 		}
 		tmplist = tmplist->nextitem;
 	}
-	gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::del_item()" , "Item NOT FOUND" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::del_item" , "Item NOT FOUND" , __GIM_ERROR );
 	return __GIM_NOT_OK;
 }
 
@@ -110,44 +110,44 @@ void		gim_list_obj::destroy_list( void ) {
 	_gim_list_item *	temp_item;
 	_gim_list_item *	temp_free;
 	if ( startlist == NULL )
-		gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list()" , "The list is already empty." );
+		gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "The list is already empty." );
 	temp_item = startlist;
 	while ( temp_item != NULL ) {
 		if ( temp_item->item != NULL ) {
 			if ( gim_memory->Check ( temp_item->item ) == __GIM_EXIST ) {
 				gim_memory->Unlock_and_free ( temp_item->item );
-				gim_error->set( "gim_list_obj::destroy_list()" , "Item found and deallocated succesfully" );
+				gim_error->set( "gim_list_obj::destroy_list" , "Item found and deallocated succesfully" );
 			}
 			else
-				gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list()" , "Item not found" );
+				gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "Item not found" );
 		}
 		else 
-			gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list()" , "Item was NULL" );
+			gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "Item was NULL" );
 		temp_free = temp_item;
 		temp_item = temp_item->nextitem;
 		gim_memory->Free ( temp_free );
-		gim_error->set( "gim_list_obj::destroy_list()" , "Item list deallocated" );
+		gim_error->set( "gim_list_obj::destroy_list" , "Item list deallocated" );
 	}
 }
 
 
 void * gim_list_obj::get_item( void ) {
 	if ( currentlist == NULL ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item()" , "Endlist reached" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item" , "Endlist reached" , __GIM_ERROR );
 		return NULL;
 	}
 
 //	void *	tmp = currentlist->item;
 
 //	currentlist = currentlist->nextitem;
-	gim_error->set( "gim_list_obj::get_item()" , "Item successfully obtained." );
+	gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
 	return currentlist->item;
 }
 
 
 void *  gim_list_obj::get_item( _gim_Uint32 index ) {
 	if ( index = 0 ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item()" , "index cannot be 0" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item" , "index cannot be 0" , __GIM_ERROR );
 		return NULL;
 	}
 
@@ -155,52 +155,52 @@ void *  gim_list_obj::get_item( _gim_Uint32 index ) {
 
 	while ( tmplist != NULL ) {
 		if ( tmplist->index == index ) {
-			gim_error->set( "gim_list_obj::get_item()" , "Item successfully obtained." );
+			gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
 			return tmplist->item;
 		}
 		tmplist = tmplist->nextitem;
 	}
-	gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item()" , "Item NOT FOUND" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::get_item" , "Item NOT FOUND" , __GIM_ERROR );
 	return NULL;
 }
 
 
 _gim_flag   gim_list_obj::next_item( void ) {
 	if ( currentlist == NULL ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item()" , "Endlist reached" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item" , "Endlist reached" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	currentlist = currentlist->nextitem;
-	gim_error->set( "gim_list_obj::next_item()" , "Next item set" );
+	gim_error->set( "gim_list_obj::next_item" , "Next item set" );
 	return __GIM_OK;
 }
 
 
 _gim_flag	gim_list_obj::rewind( void ) {
 	if ( startlist == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::rewind()" , "The list is empty" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::rewind" , "The list is empty" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	currentlist = startlist;
-	gim_error->set( "gim_list_obj::rewind()" , "Startlit set" );
+	gim_error->set( "gim_list_obj::rewind" , "Startlit set" );
 	return __GIM_OK;
 }	
 
 
 _gim_flag  gim_list_obj::seek( _gim_Uint32 index ) {
 	if ( index = 0 ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::seek()" , "index cannot be 0" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::seek" , "index cannot be 0" , __GIM_ERROR );
 		return NULL;
 	}
 	currentlist = startlist;
 	while ( currentlist != NULL ) {
 		if ( currentlist->index == index ) {
-			gim_error->set( "gim_list_obj::seek()" , "Item successfully sought." );
+			gim_error->set( "gim_list_obj::seek" , "Item successfully sought." );
 			return __GIM_OK;
 		}
 		currentlist = currentlist->nextitem;
 	}
-	gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::seek()" , "Item NOT FOUND" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::seek" , "Item NOT FOUND" , __GIM_ERROR );
 	return NULL;
 }
 
@@ -212,5 +212,16 @@ _gim_Uint32		gim_list_obj::items( void ) {
 
 _gim_Uint32		gim_list_obj::get_id( void ) {
 	return currentlist->index;
+}
+
+
+void	gim_list_obj::backup( void ) {
+	savelist = currentlist;
+}
+
+
+void	gim_list_obj::restore( void ) {
+	currentlist = savelist;
+	savelist = NULL;
 }
 
