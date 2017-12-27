@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1920x993+0+32
+Geometry=1920x1113+0+32
 
 [File Loader]
-Files=../../include/gim_getopt.h#89%%%../../src/gim_getopt.cc#137%%%../../include/gim_list.h#73%%%../../include/gim.h#66%%%../../src/gim_list.cc#213%%%../../src/gim_environment.cc#91%%%../../include/gim_environment.h#1%%%../../include/gim_kvalue.h#1
+Files=../../include/gim_getopt.h#89%%%../../src/gim_getopt.cc#137%%%../../include/gim_list.h#1%%%../../include/gim.h#70%%%../../src/gim_list.cc#1%%%../../src/gim_environment.cc#330%%%../../include/gim_environment.h#1%%%../../include/gim_kvalue.h#341%%%../../include/gim_ascii_buffer.h#74%%%../../src/gim_ascii_buffer.cc#41%%%../../include/gim_version.h#52%%%../../src/gim_version.cc#40
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -25,8 +25,8 @@ BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
 
-[Debugger]
-Stop at beginning=2
-
 [Commit Logs]
 Logs=Little variations
+
+[Debugger]
+Stop at beginning=2

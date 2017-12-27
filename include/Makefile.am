@@ -6,7 +6,6 @@ EXTRA_DIST = \
 libgim_include_HEADERS = \
 	gim.h           \
 	gim_base_header.h           \
-	gim_bmake.h           \
 	gim_bz2_bzlib.h           \
 	gim_bz2_bzlib_private.h           \
 	gim_checksum.h           \

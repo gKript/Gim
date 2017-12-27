@@ -49,10 +49,10 @@
 	#include "gim_lexical.h"
 	
 	//~ #ifdef	DEBUG_LEVEL_0
-	//~	#define		BMAKE_VERSIONING
+	//~	#define		GKMAKE_VERSIONING
 	//~ #endif
 	
-	#include	"gim_bmake.h"
+	//#include	"gim_bmake.h"
 	
 	#define GIM_VERSION_STATE   "dev"  // "rel" for release or "dev" for devel
 
@@ -62,14 +62,13 @@
 	#define	GIM_MAJOR		2			/*!<	The major version of Gim	*/
 	#define	GIM_MINOR		6			/*!<	The minor version of Gim	*/
 
-	#ifdef		BMAKE_VERSIONING		/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
-		#define GIM_SUBMINOR		GIM_BMAKE_BUILD
+	#ifdef		GKMAKE_VERSIONING		/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
+		#define GIM_SUBMINOR		GIM_GKMAKE_BUILD
+		#define	GIM_BUILD_LAST		GIM_GKMAKE_LAST_BUILD
 	#else
 		#define GIM_SUBMINOR		0	
 	#endif
 	
-	#define	GIM_BUILD			GIM_BMAKE_BUILD 
-	#define	GIM_BUILD_LAST		GIM_BMAKE_LAST_BUILD
 
 
 	/*!	\fn		char * gim_version( void )

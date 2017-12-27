@@ -172,7 +172,9 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddKey(		"version" 			, "major"				, GIM_MAJOR );
 			gim_conf->AddKey(		"version" 			, "minor"				, GIM_MINOR );
 			gim_conf->AddKey(		"version" 			, "subminor"			, GIM_SUBMINOR );
+#ifdef GKMAKE_VERSIONING
 			gim_conf->AddKey(		"version" 			, "built"				, GIM_BUILD );
+#endif
 			gim_conf->AddKey(		"version" 			, "version"				, gim_version_small() );
 			gim_conf->AddKeyFlag(	"system" 			, "sig_trap"			, __GIM_ON );
 			gim_conf->AddKey(		"crypt" 			, "iterations"			, 2 );
@@ -317,6 +319,7 @@ void	gim_home_obj::up( void ) {
 					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim subminor version updated" , __GIM_ERROR );
 				}
 			}
+#ifdef GKMAKE_VERSIONING
 			IF_EXIST_KEY_IN_CONF( "version" , "built" ) {
 				if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_BUILD ) {
 					gim_conf->ChangeKey( "version" , "built" , GIM_BUILD );
@@ -324,6 +327,7 @@ void	gim_home_obj::up( void ) {
 					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
 				}
 			}
+#endif
 			IF_EXIST_KEY_IN_CONF( "version" , "version" ) {
 				if ( Lexical.str_equal( gim_conf->GetKeySTR( "version" , "version" ) , GIM_VERSION ) == __GIM_NO ) {
 					gim_conf->ChangeKey( "version" , "version" , GIM_VERSION );

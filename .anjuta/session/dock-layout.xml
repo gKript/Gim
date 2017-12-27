@@ -10,7 +10,7 @@
           <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </notebook>
         <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="700">
-          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
+          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="1">
             <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
             <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           </notebook>
