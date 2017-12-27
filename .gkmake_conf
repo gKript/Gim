@@ -1,0 +1,14 @@
+< gKmakeconfigurationfile
+
+  [ GIM
+    author = asyntote
+    prefix = GIM
+    include_path = ./include
+    documentation_path = ./documentation
+    documentation_command = ./make_doc.sh
+    use_sudo = YES
+    total_build_number = 493
+    succesful_build_number = 439
+  ]
+
+>

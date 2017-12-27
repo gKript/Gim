@@ -46,8 +46,11 @@ int main ( int argc , char *argv[] ) {
 
 	gim_obj		* gim = new gim_obj;
 	_gim_gkfp	* gkp = new _gim_gkfp;
+
+	int stat=0;
 	
 	_gim_string	gkp_file_name( argv[1] );
+	_gim_string	gkp_system( "gimstat " );
 	
 	if ( gkp_file_name.find( ".gkp" ) == __GIM_NO ) {
 		if ( ( argc < 3 ) || ( argc > 4 ) ) {
@@ -60,12 +63,12 @@ int main ( int argc , char *argv[] ) {
 		puts( "Generating mode" );
 		gkp_file_name.cat( ".gkp" );
 		if ( argc == 4 ) {
-			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_FOG , __GIM_NO , __GIM_YES );
+			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_FOG , __GIM_YES , __GIM_YES );
 			gkp->set_password( argv[3] );
 			puts("Crypt ACTIVATED");
 		}
 		else {
-			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_SUN , __GIM_NO , __GIM_YES );
+			gkp->New( gkp_file_name.c_str() , __GIM_YES , __GIM_SUN , __GIM_YES , __GIM_YES );
 			puts("Crypt NOT acivated");
 		}
 		printf("Generating %s..." , gkp_file_name.c_str() );
@@ -74,6 +77,14 @@ int main ( int argc , char *argv[] ) {
 		gkp->New_path( argv[2] );
 		gkp->Write();
 		puts( "Done!");
+		gkp_system.cat( gkp_file_name.c_str() );
+		stat = system( gkp_system.c_str() );
+//		printf("%d - %d\n" , stat , stat/256);
+		if ( (stat/256) < 60 ) {
+			puts("WARNING:");
+			puts("The content of this file does not have a high level of gKaos and could be violated.\nWe recommend to repeat now this command with the encryption option activated simply typing a password after the file name and the path.");
+			puts( "\ngkfp nome.gkp path [password]\n" );
+		}
 	}
 	else {
 		if ( ( argc < 2 ) || ( argc > 3 ) ) {

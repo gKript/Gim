@@ -172,7 +172,8 @@ am_libgim_a_OBJECTS = libgim_a-gim.$(OBJEXT) \
 	libgim_a-gim_signal.$(OBJEXT) libgim_a-gim_string.$(OBJEXT) \
 	libgim_a-gim_time.$(OBJEXT) libgim_a-gim_version.$(OBJEXT) \
 	libgim_a-gim_list.$(OBJEXT) libgim_a-gim_picgim.$(OBJEXT) \
-	libgim_a-gim_getopt.$(OBJEXT)
+	libgim_a-gim_getopt.$(OBJEXT) \
+	libgim_a-gim_ascii_buffer.$(OBJEXT)
 libgim_a_OBJECTS = $(am_libgim_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -395,7 +396,8 @@ libgim_a_SOURCES = \
 	gim_version.cc    \
 	gim_list.cc    \
 	gim_picgim.cc    \
-	gim_getopt.cc
+	gim_getopt.cc    \
+	gim_ascii_buffer.cc
 
 libgim_a_CXXFLAGS = \
 	-O3 \
@@ -478,6 +480,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_ascii_buffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_blocksort.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_bzlib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_compress.Po@am__quote@
@@ -1301,6 +1304,20 @@ libgim_a-gim_getopt.obj: gim_getopt.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_getopt.cc' object='libgim_a-gim_getopt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_getopt.obj `if test -f 'gim_getopt.cc'; then $(CYGPATH_W) 'gim_getopt.cc'; else $(CYGPATH_W) '$(srcdir)/gim_getopt.cc'; fi`
+
+libgim_a-gim_ascii_buffer.o: gim_ascii_buffer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_ascii_buffer.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_ascii_buffer.Tpo -c -o libgim_a-gim_ascii_buffer.o `test -f 'gim_ascii_buffer.cc' || echo '$(srcdir)/'`gim_ascii_buffer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_ascii_buffer.Tpo $(DEPDIR)/libgim_a-gim_ascii_buffer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_ascii_buffer.cc' object='libgim_a-gim_ascii_buffer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_ascii_buffer.o `test -f 'gim_ascii_buffer.cc' || echo '$(srcdir)/'`gim_ascii_buffer.cc
+
+libgim_a-gim_ascii_buffer.obj: gim_ascii_buffer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_ascii_buffer.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_ascii_buffer.Tpo -c -o libgim_a-gim_ascii_buffer.obj `if test -f 'gim_ascii_buffer.cc'; then $(CYGPATH_W) 'gim_ascii_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/gim_ascii_buffer.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_ascii_buffer.Tpo $(DEPDIR)/libgim_a-gim_ascii_buffer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_ascii_buffer.cc' object='libgim_a-gim_ascii_buffer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_ascii_buffer.obj `if test -f 'gim_ascii_buffer.cc'; then $(CYGPATH_W) 'gim_ascii_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/gim_ascii_buffer.cc'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

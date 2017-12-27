@@ -58,7 +58,7 @@ PROJECT_LOGO           =
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = html
+OUTPUT_DIRECTORY       = .
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -163,7 +163,8 @@ FULL_PATH_NAMES        = YES
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
 STRIP_FROM_PATH        = /home/asyntote/projects/gim/trunk/documentation/ \
-                         /home/asyntote/projects/gim/trunk/include/
+                         /home/asyntote/projects/gim/trunk/include/ \
+                         /home/asyntote/projects/gim/trunk/src/
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which
@@ -172,9 +173,9 @@ STRIP_FROM_PATH        = /home/asyntote/projects/gim/trunk/documentation/ \
 # specify the list of include paths that are normally passed to the compiler
 # using the -I flag.
 
-STRIP_FROM_INC_PATH    = /home/asyntote/projects/gim3/trunk/documentation \
+STRIP_FROM_INC_PATH    = /home/asyntote/projects/gim3/trunk/documentation/ \
                          /home/asyntote/projects/gim3/trunk/include/ \
-                         /home/asyntote/projects/gim3/trunk/src
+                         /home/asyntote/projects/gim3/trunk/src/
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter (but
 # less readable) file names. This can be useful is your file systems doesn't
@@ -784,7 +785,8 @@ WARN_LOGFILE           = /home/asyntote/projects/gim3/trunk/documentation/Doxyfi
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = .
+INPUT                  = ../include \
+                         ../src
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1002,7 +1004,7 @@ SOURCE_BROWSER         = YES
 # classes and enums directly into the documentation.
 # The default value is: NO.
 
-INLINE_SOURCES         = NO
+INLINE_SOURCES         = YES
 
 # Setting the STRIP_CODE_COMMENTS tag to YES will instruct doxygen to hide any
 # special comment blocks from generated source code fragments. Normal C, C++ and
@@ -1158,7 +1160,7 @@ HTML_FILE_EXTENSION    = .html
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_HEADER            = /home/asyntote/projects/gim3/trunk/documentation/gim_header_dg.html
+HTML_HEADER            = gim_header_dg.html
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank doxygen will generate a standard
@@ -1168,7 +1170,7 @@ HTML_HEADER            = /home/asyntote/projects/gim3/trunk/documentation/gim_he
 # that doxygen normally uses.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_FOOTER            = /home/asyntote/projects/gim3/trunk/documentation/gim_footer.html
+HTML_FOOTER            = gim_footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading style
 # sheet that is used by each HTML page. It can be used to fine-tune the look of
@@ -1479,7 +1481,7 @@ DISABLE_INDEX          = NO
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-GENERATE_TREEVIEW      = YES
+GENERATE_TREEVIEW      = NO
 
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values that
 # doxygen will group on one line in the generated HTML documentation.
@@ -2395,7 +2397,7 @@ INTERACTIVE_SVG        = NO
 # found. If left blank, it is assumed the dot tool can be found in the path.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_PATH               = 
+DOT_PATH               = ../../../../../../usr/bin
 
 # The DOTFILE_DIRS tag can be used to specify one or more directories that
 # contain dot files that are included in the documentation (see the \dotfile

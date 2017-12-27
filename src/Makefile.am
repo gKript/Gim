@@ -68,7 +68,8 @@ libgim_a_SOURCES = \
 	gim_version.cc    \
 	gim_list.cc    \
 	gim_picgim.cc    \
-	gim_getopt.cc
+	gim_getopt.cc    \
+	gim_ascii_buffer.cc
 
 libgim_a_CXXFLAGS = \
 	-O3 \
