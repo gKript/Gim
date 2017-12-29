@@ -340,6 +340,8 @@
 			*/
 			_gim_flag	ChangeKey( const char * section_name , const char * key , int value );
 
+			_gim_flag	ChangeKeyFlag( const char * section_name , const char * key , _gim_flag flag );
+
 			/*!	\fn		_gim_flag	DelKey( const char * section_name , const char * key )
 				\brief	To delete an existing key
 				\param	section_name	The name of the section from which you want to delete a key\n

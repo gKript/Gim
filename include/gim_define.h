@@ -42,28 +42,9 @@
 #ifndef _GIM_DEFINE_H
 #define _GIM_DEFINE_H
 
-	/*!	\def	GIM_NAME
-				Is the \a short name of this library
-		\def	GIM_EXTENDED_NAME
-				Is the \a long name of this library
-		\def	GIM_SINCE
-				The official first release on http://gkript.org/
-		\def	__GIM_CLEAR( point , len , type )
-				With this macro you can \a clear a buffer filling it with '0'
-			\param	point	Is the pointer to a buffer you want to clean
-			\param	len		Is the \a lenght of the buffer
-			\param	type	Is the \a type of the buffer (e.g. char)
-		
-		\def	MTRAND_TEST_CYCLE
-				Describe how many iterations will be necessry for the MersenneTwister test
-	*/
 
-	#define GIM_NAME			"Gim"
-	#define GIM_EXTENDED_NAME	"Gim <Generic Information Manager> c++ static library made by gKript.org"
-	#define GIM_LICENSE			"Released under the terms of the GNU General Public License v3"
-	#define GIM_SINCE			"07/12/2003"
-
-	#define __GIM_CLEAR( point , len , type)		memset( point , 0 , sizeof( type ) * len )
+	#define __GIM_CLEAR( point , len , type )				memset( point , 0 , sizeof( type ) * len )
+	#define __GIM_VCLEAR( point , len , type , value )		memset( point , value , sizeof( type ) * len )
 	
 	#define	MTRAND_TEST_CYCLE	50000
 

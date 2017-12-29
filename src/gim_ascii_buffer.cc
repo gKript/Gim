@@ -38,5 +38,139 @@
 #include    "../include/gim_base_header.h"
 #include    "../include/gim_ascii_buffer.h"
 
+_gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
+	if ( ( dimension == 0 ) && ( size > 0 ) )  {
+		dimension = size;
+		chrbuf = (char *)gim_memory->Alloc( sizeof( char ) * dimension , __GIM_ASCII_BUFFER , __GIM_HIDE );
+		if ( chrbuf == NULL ) {
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::set_dimension" , "Allocation of a new file list member failed"  , __GIM_ERROR );
+			return __GIM_ERROR;
+		}
+		__GIM_VCLEAR( chrbuf , dimension , char , '\0' );
+		return __GIM_OK;
+	}
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::set_dimension" , "Buffer already defined." , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::set_dimension" , "Please, use change_dimension method instead" , __GIM_ERROR );
+	return __GIM_ERROR;
+}
+
+
+_gim_flag	gim_ascii_file_obj::append( char * to_append ) {
+	this->seek( __GIM_LAST );
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		strcat( chrbuf , to_append );
+		this->seek( __GIM_LAST );
+		return __GIM_OK;
+	}
+	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
+	return __GIM_ERROR;
+}
+
+
+/*_gim_flag	gim_ascii_file_obj::append( const char * to_append ) {
+	this->seek( __GIM_LAST );
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		strcat( chrbuf , to_append );
+		this->seek( __GIM_LAST );
+		return __GIM_OK;
+	}
+	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
+	return __GIM_ERROR;
+}*/
+
+
+_gim_flag	gim_ascii_file_obj::append( const char * format , ... ) {
+	char	message[1024];
+	_gim_flag   res;
+	
+	va_list	VAList;
+	va_start( VAList , format );
+	vsprintf( message , format , VAList );
+	va_end( VAList );
+	res = append( message );
+	return res;
+}
+
+
+_gim_int32	gim_ascii_file_obj::lenght( void ) {
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		return strlen( chrbuf );
+	}
+	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::leght" , "Buffer not defined" , __GIM_ERROR );
+	return __GIM_ERROR;
+}
+
+
+_gim_int32	gim_ascii_file_obj::lines( void ) {
+	_gim_int32 c = 0 , res = 0;
+
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		while ( chrbuf[c] != '\0' ) {
+			if ( chrbuf[c] == '\n' ) 
+				res++;
+		}
+		return res;
+	}
+	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::lines" , "Buffer not defined" , __GIM_ERROR );
+	return __GIM_ERROR;
+}
+
+
+_gim_flag	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		
+
+	}
+}
+
+
+_gim_flag	gim_ascii_file_obj::seek( _gim_flag position ) {
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		switch ( position ) {
+			case __GIM_FIRST : {
+				index = 0;
+				return __GIM_OK;
+			}
+			case __GIM_LAST : {
+				index = this->lenght();
+				return __GIM_OK;
+			}
+			default : {
+				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Position flag unknown" , __GIM_ERROR );
+				return __GIM_ERROR;
+			}
+		}
+	}
+}
+
+
+_gim_flag	gim_ascii_file_obj::seek( _gim_int32 position ) {
+	_gim_int32 c = 0;
+	if ( position > this->lenght() ) {
+		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Requested position is beyond the end of buffer" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		while ( ( chrbuf[c] != '\0' ) || ( c == position  ) ) {
+			index = c++;
+		}
+		if ( c == position ) 
+			return __GIM_OK;
+		else {
+			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Reached the end of buffer before the requested position" , __GIM_ERROR );
+			return __GIM_ERROR;
+		}
+	}
+	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Buffer not defined" , __GIM_ERROR );
+	return __GIM_ERROR;
+}
+
+
+char *	gim_ascii_file_obj::get_buffer( void ) {
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) )
+		return chrbuf;
+	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::get_buffer" , "Buffer not defined" , __GIM_ERROR );
+	return NULL;
+}
 
 

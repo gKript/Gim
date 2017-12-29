@@ -3,12 +3,16 @@
   [ GIM
     author = asyntote
     prefix = GIM
-    include_path = ./include
-    documentation_path = ./documentation
+    include_path = include/
+    documentation_path = documentation/
     documentation_command = ./make_doc.sh
+    multi_threads_enable = YES
+    number_of_threads = 4
+    total_build_number = 37
+    succesful_build_number = 479
+    clean = NO
     use_sudo = YES
-    total_build_number = 497
-    succesful_build_number = 442
+    project_header_generation = NO
   ]
 
 >

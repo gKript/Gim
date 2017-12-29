@@ -217,7 +217,7 @@
 				\param	fname	The name of the file you want to remove
 				\return	\a __GIM_OK if the file is removed or __GIM_NOT_OK if not
 			*/
-			_gim_flag				DELETE  ( const char * fname );
+			_gim_flag				DELETE  ( const char * fname );  e
 
 		private:
 	friend	class gim_file_obj;

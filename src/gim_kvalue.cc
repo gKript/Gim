@@ -1055,3 +1055,53 @@ _gim_flag   gim_prsr_obj::ThereIsASection( void ) {
 
 
 
+_gim_flag	gim_prsr_obj::ChangeKeyFlag( const char * section_name , const char * key , _gim_flag flag ) {
+	static char tmp[64];
+	__GIM_CLEAR( tmp , 64 , char );
+
+	switch (flag) {
+		case __GIM_YES : {
+			sprintf( tmp , "YES" );
+			break;
+		}
+		case __GIM_NO : {
+			sprintf( tmp , "NO" );
+			break;
+		}
+		case __LEX_A : {
+			sprintf( tmp , "A" );
+			break;
+		}
+		case __LEX_B : {
+			sprintf( tmp , "B" );
+			break;
+		}
+		case __GIM_ON : {
+			sprintf( tmp , "ON" );
+			break;
+		}
+		case __GIM_OFF : {
+			sprintf( tmp , "OFF" );
+			break;
+		}
+		case __GIM_MEM_LOCK : {
+			sprintf( tmp , "LOCKED" );
+			break;
+		}
+		case __GIM_MEM_UNLOCK : {
+			sprintf( tmp , "UNLOCKED" );
+			break;
+		}
+		case __GIM_LOG_TEXT : {
+			sprintf( tmp , "HTML" );
+			break;
+		}
+		case __GIM_LOG_HTML : {
+			sprintf( tmp , "TEXT" );
+			break;
+		}
+	}	
+	return ChangeKey( section_name , key , tmp );
+}
+
+

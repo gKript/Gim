@@ -1,0 +1,18 @@
+[ gKmake configuration file ]
+
+  .PROJECT
+  ::project_name = Gim
+  ::author = asyntote
+  ::prefix = GIM
+  ::include_path = ./include
+  ::documentation_path = ./documentation
+
+  .BUILD
+  ::documentation_command = make_doc.sh
+  ::use_sudo = YES
+  ::clean = YES
+  ::total_build_number = 524
+  ::succesful_build_number = 452
+  
+
+
