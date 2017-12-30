@@ -21,6 +21,7 @@ AC_OUTPUT([
 Makefile
 documentation/Makefile
 gim_stat/Makefile
+gkmake/Makefile
 gim_gkdp/Makefile
 gim_gkfp/Makefile
 gim_shell/Makefile

@@ -7,7 +7,8 @@ SUBDIRS = src \
 	gim_gkfp \
 	gim_shell \
 	documentation \
-	gim_stat 
+	gim_stat \
+	gkmake 
 
 EXTRA_DIST = $(gimdoc_DATA) \
 	$(documentation_DATA)
