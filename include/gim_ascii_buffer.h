@@ -69,7 +69,7 @@
 					 _gim_flag				is_in_buffer( char * to_find );
 //					 _gim_flag				is_in_buffer( _gim_string * to_find );
 					 char *					get_buffer( void );					 
-					 _gim_flag				seek( _gim_flag position );
+					 _gim_flag				seekf( _gim_flag position );
 					 _gim_flag				seek( _gim_int32 position );
 					 
 		private:

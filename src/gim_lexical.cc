@@ -641,7 +641,7 @@ char *		prsr_lexical_class::string_trunc( const char * string , _gim_int16 trunc
 	_gim_Uint8	len = 0 , offset = 0; 
 	int	c;
 	char	tmp[4096];
-	char	* newstr;
+	static char	* newstr;
 	strcpy( tmp , string );
 	len = strlen( string );
 	if ( len > trunc ) {

@@ -59,7 +59,7 @@ _gim_flag	gim_ascii_file_obj::append( char * to_append ) {
 	this->seek( __GIM_LAST );
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
 		strcat( chrbuf , to_append );
-		this->seek( __GIM_LAST );
+		this->seekf( __GIM_LAST );
 		return __GIM_OK;
 	}
 	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
@@ -124,7 +124,7 @@ _gim_flag	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 }
 
 
-_gim_flag	gim_ascii_file_obj::seek( _gim_flag position ) {
+_gim_flag	gim_ascii_file_obj::seekf( _gim_flag position ) {
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
 		switch ( position ) {
 			case __GIM_FIRST : {
