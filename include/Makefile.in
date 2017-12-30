@@ -316,7 +316,8 @@ libgim_include_HEADERS = \
 	gim_picgim.h           \
 	gim_picgim_GKH32.h           \
 	gim_getopt.h           \
-	gim_ascii_buffer.h
+	gim_ascii_buffer.h           \
+	gim_gkmake.h
 
 libgim_includedir = \
 	$(pkgincludedir)

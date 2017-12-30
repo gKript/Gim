@@ -173,7 +173,7 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddKey(		"version" 			, "minor"				, GIM_MINOR );
 			gim_conf->AddKey(		"version" 			, "subminor"			, GIM_SUBMINOR );
 #ifdef GKMAKE_VERSIONING
-			gim_conf->AddKey(		"version" 			, "built"				, GIM_BUILD );
+			gim_conf->AddKey(		"version" 			, "built"				, GIM_GKMAKE_BUILD );
 #endif
 			gim_conf->AddKey(		"version" 			, "version"				, gim_version_small() );
 			gim_conf->AddKeyFlag(	"system" 			, "sig_trap"			, __GIM_ON );
@@ -321,8 +321,8 @@ void	gim_home_obj::up( void ) {
 			}
 #ifdef GKMAKE_VERSIONING
 			IF_EXIST_KEY_IN_CONF( "version" , "built" ) {
-				if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_BUILD ) {
-					gim_conf->ChangeKey( "version" , "built" , GIM_BUILD );
+				if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_GKMAKE_BUILD ) {
+					gim_conf->ChangeKey( "version" , "built" , GIM_GKMAKE_BUILD );
 					changed = __GIM_YES;
 					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
 				}

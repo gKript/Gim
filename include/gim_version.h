@@ -49,10 +49,10 @@
 	#include "gim_lexical.h"
 	
 	//~ #ifdef	DEBUG_LEVEL_0
-	//~	#define		GKMAKE_VERSIONING
+	#define		GKMAKE_VERSIONING
 	//~ #endif
-	
-	//#include	"gim_bmake.h"
+
+	#include	"gim_gkmake.h"
 
 	/*!	\def	GIM_NAME
 				Is the \a short name of this library

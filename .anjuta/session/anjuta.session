@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1680x963+0+32
+Geometry=1920x993+0+32
 
 [File Loader]
-Files=../../include/gim_kvalue.h#341%%%../../include/gim_ascii_buffer.h#69%%%../../src/gim_ascii_buffer.cc#48%%%../../include/gim_define.h#47%%%../../include/gim_custom_type.h#53%%%../../include/gim_lexical.h#107%%%../../src/gim_lexical.cc#154
+Files=../../include/gim_file.h#220%%%../../include/gim_version.h#87%%%../../src/gim_environment.cc#325%%%../../src/gim_log.cc#271%%%../../src/gim_ascii_buffer.cc#157%%%../../src/gim_lexical.cc#644
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -17,10 +17,6 @@ Working directories=../../../../Projects/gim3
 Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat
 Expand=libgim.a%%%gimstat%%%trunk%%%trunk//include%%%trunk//include//libgim_include
 
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2
-
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
 Selected Configuration=Optimized
@@ -31,3 +27,7 @@ BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
 
 [Commit Logs]
 Logs=Little variations
+
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
+Stop at beginning=2

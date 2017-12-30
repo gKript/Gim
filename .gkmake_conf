@@ -8,11 +8,12 @@
     documentation_command = ./make_doc.sh
     multi_threads_enable = YES
     number_of_threads = 4
-    total_build_number = 37
-    succesful_build_number = 479
+    total_build_number = 547
+    succesful_build_number = 499
     clean = NO
     use_sudo = YES
-    project_header_generation = NO
+    project_header_generation = YES
+    header_file_name = gim_gkmake.h
   ]
 
 >

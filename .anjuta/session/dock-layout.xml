@@ -2,19 +2,19 @@
 <dock-layout>
   <layout name="__default__">
     <dock name="__dock_1" floating="no" width="-1" height="-1" floatx="0" floaty="0" skip-taskbar="yes">
-      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="316">
+      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="311">
         <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
           <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           <item name="snippets_browser" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </notebook>
-        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="582">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="743">
           <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
             <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
             <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           </notebook>
-          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="yes" closed="yes"/>
         </paned>
       </paned>
     </dock>
