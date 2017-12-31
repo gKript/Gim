@@ -640,8 +640,9 @@ _gim_flag	prsr_lexical_class::str_equal( const char * str , const char * str1 ) 
 char *		prsr_lexical_class::string_trunc( const char * string , _gim_int16 trunc ) {
 	_gim_Uint8	len = 0 , offset = 0; 
 	int	c;
-	char	tmp[4096];
+	static char	tmp[4096];
 	static char	* newstr;
+	__GIM_VCLEAR( tmp , sizeof( tmp ) , char , '\0' );
 	strcpy( tmp , string );
 	len = strlen( string );
 	if ( len > trunc ) {
@@ -651,6 +652,7 @@ char *		prsr_lexical_class::string_trunc( const char * string , _gim_int16 trunc
 			newstr[c] = '.' ;
 	}
 	else {
+		
 		for( c = len ; c < trunc ; c++ )
 			strcat(tmp," ");
 		newstr = tmp ;

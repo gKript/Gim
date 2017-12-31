@@ -42,6 +42,7 @@ void print_help( void ) {
 	puts( "   -I (path) -   -   Includes path." );
 	puts( "   -H (YES/NO)   -   Project header file generation." );
 	puts( "   -F (name) -   -   Header file name." );
+	puts( "   -E (command)  -   The command for the editor you prefere to use." );
 	puts( "   -D (path) -   -   Documentation path." );
 	puts( "   -X (command)  -   Documentation command." );
 	puts( "   -S (YES/NO)   -   Always use SUDO to install the project. Save this decision on the configuration file." );
@@ -54,52 +55,56 @@ void print_help( void ) {
 	puts( "   -t ([1-n])-   -   Make the project in multi thread with the specify cores number." );
 	puts( "   -c    -   -   -   Clean before make." );
 	puts( "   -n    -   -   -   Distclean for the project." );
-	puts( "   -d    -   -   -   Build the documentation also." );
+	puts( "   -z    -   -   -   Generate the the project tarball." );
+	puts( "   -d    -   -   -   Build the documentation." );
 	puts( "   -i    -   -   -   Install the project." );
 	puts( "   -s    -   -   -   Use SUDO to install." );
 	puts( "   -a    -   -   -   Launch autotools." );
 	puts( "" );
 	puts( "  Build details:" );
-	puts( "   -h	-   -   -   Print this help text." );
+	puts( "   -o    -   -   -   Print the configuration file for this project." );
+	puts( "   -e    -   -   -   Edit the configuration file for this project." );
+	puts( "   -h    -   -   -   Print this help text." );
 	puts( "" );
-	puts( "    Example :" );
-	puts( "        gkmake -Ngkmake -Aasyntote -PGKM -I./include -P4" );
+	puts( "  Example :" );
+	puts( "         gkmake -Ngkmake -Aasyntote -PGKM -P4" );
 	puts( "" );
 }
 
 
 void	make_header( void ) {
 	header->append("/***************************************************************************\n" );
-	header->append(" *            gkmake.h                                                       \n" );
-	header->append(" *                                                                          \n" );
+	header->append(" *            %s\n" , gkmake.header_file_name );
+	header->append(" *\n" );
 	header->append(" *  %s\n" , gkmake.last_build );
 	header->append(" *  Copyright  2006  %s\n" , gkmake.author  );
 	header->append(" *  gkmake version : %s\n" , GKMAKE_VERSION );
-	header->append(" *  asyntote@gkript.org                                                     \n" );
+	header->append(" *  asyntote@gkript.org\n" );
 	header->append(" ***************************************************************************\n" );
-	header->append(" *                                                                          \n" );
-	header->append(" *                                                                          \n" );
-	header->append(" *  This program is free software; you can redistribute it and/or modify    \n" );
-	header->append(" *  it under the terms of the GNU General Public License as published by    \n" );
-	header->append(" *  the Free Software Foundation; either version 2 of the License, or       \n" );
-	header->append(" *  (at your option) any later version.                                     \n" );
-	header->append(" *                                                                          \n" );
-	header->append(" *  This program is distributed in the hope that it will be useful,         \n" );
-	header->append(" *  but WITHOUT ANY WARRANTY; without even the implied warranty of          \n" );
-	header->append(" *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           \n" );
-	header->append(" *  GNU General Public License for more details.                            \n" );
-	header->append(" *                                                                          \n" );
-	header->append(" *  You should have received a copy of the GNU General Public License       \n" );
-	header->append(" *  along with this program; if not, write to the Free Software             \n" );
-	header->append(" *  Foundation, Inc., 59 Temple Place                                       \n" ); 
-	header->append(" *  Suite 330, Boston, MA 02111-1307, USA.                                  \n" );
-	header->append(" */                                                                         \n" );
+	header->append(" *\n" );
+	header->append(" *\n" );
+	header->append(" *  This program is free software; you can redistribute it and/or modify\n" );
+	header->append(" *  it under the terms of the GNU General Public License as published by\n" );
+	header->append(" *  the Free Software Foundation; either version 2 of the License, or\n" );
+	header->append(" *  (at your option) any later version.\n" );
+	header->append(" *\n" );
+	header->append(" *  This program is distributed in the hope that it will be useful,\n" );
+	header->append(" *  but WITHOUT ANY WARRANTY; without even the implied warranty of\n" );
+	header->append(" *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n" );
+	header->append(" *  GNU General Public License for more details.\n" );
+	header->append(" *\n" );
+	header->append(" *  You should have received a copy of the GNU General Public License\n" );
+	header->append(" *  along with this program; if not, write to the Free Software\n" );
+	header->append(" *  Foundation, Inc., 59 Temple Place\n" ); 
+	header->append(" *  Suite 330, Boston, MA 02111-1307, USA.\n" );
+	header->append(" */\n" );
 	header->append("\n" );
 	header->append("    /*!\n" );
-	header->append("        \\version   gkmake 0.4-0\n" );
+	header->append("        \\version   gkmake %s\n" , GKMAKE_VERSION );
 	header->append("        \\brief     File generated by gkmake<BR>\n" );
 	header->append("                   gkmake is an opensource project release under the terms<BR>\n" );
-	header->append("                   of the GNU General Public License v3<BR><BR>\n" );
+	header->append("                   of the GNU General Public License v3<BR>\n" );
+	header->append("                   Distribuite with GIM static library<BR><BR>\n" );
 	header->append("                   http://www.gkript.org<BR>\n" );
 	header->append("    */\n" );
 	header->append("\n\n" );
@@ -109,7 +114,7 @@ void	make_header( void ) {
 	header->append( "   #define %s_GKMAKE_TOTAL_BUILD           %d\n", gkmake.prefix , gkmake.tot_build );
 	header->append( "   #define %s_GKMAKE_BUILD                 %d\n", gkmake.prefix , gkmake.ok_build );
 	header->append( "   #define %s_GKMAKE_LAST_BUILD            \"%s\"\n\n", gkmake.prefix , gkmake.last_build );
-	header->append( "#endif\n" );
+	header->append( "#endif\n\n" );
 }
 
 

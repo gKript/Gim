@@ -128,9 +128,9 @@ void	gim_log_obj::addline( const char *t , const char *func , const char *mess ,
 				sprintf( function , "%s()" , func );
 				if ( Lexical.str_equal( strdup( t ) , strdup( GIM_ERROR_FATAL ) ) == __GIM_YES )
 //					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , syscall(SYS_gettid) , (syscall(SYS_gettid) != getpid())?"TH":"  " , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
-					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , syscall(SYS_gettid) , (syscall(SYS_gettid) != getpid())?"TH":"  " , __GIM_LOG_FATAL , function , mess );
+					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , syscall(SYS_gettid) , (syscall(SYS_gettid) != getpid())?"TH":"  " , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
 				else 
-					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , syscall(SYS_gettid) , (syscall(SYS_gettid) != getpid())?"TH":"  " , t ,  function , mess );
+					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , syscall(SYS_gettid) , (syscall(SYS_gettid) != getpid())?"TH":"  " , t ,  Lexical.string_trunc( function , 48 ) , mess );
 				fflush( log_fd );
 			}
 			else {
@@ -151,9 +151,9 @@ void	gim_log_obj::addline( pid_t cur_pid , const char *t , const char *func , co
 				strftime( timestamp , 256 , "%A %x %H:%M:%S" , localtime ( &tp ) );
 				sprintf( function , "%s()" , func );
 				if ( Lexical.str_equal( strdup( t ) , strdup( GIM_ERROR_FATAL ) ) == __GIM_YES )
-					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , cur_pid , (cur_pid!=getpid())?"TH":"  " , __GIM_LOG_FATAL , function , mess );
+					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , cur_pid , (cur_pid!=getpid())?"TH":"  " , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
 				else 
-					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , cur_pid , (cur_pid!=getpid())?"TH":"  " , t , function , mess );
+					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , cur_pid , (cur_pid!=getpid())?"TH":"  " , t , Lexical.string_trunc( function , 48 ) , mess );
 				fflush( log_fd );
 			}
 			else {
@@ -195,7 +195,7 @@ void	gim_log_obj::addline_format( const char *t , const char *func , const char 
 								break;
 							}
 							case 'f' : {
-								sprintf( tmp , "%s%s" , tmp , (char *)func );
+								sprintf( tmp , "%s%s" , tmp , Lexical.string_trunc( (char *)func , 48 ) );
 								break;
 							}
 							case 'm' : {
@@ -268,7 +268,7 @@ void	gim_log_obj::addline_format( pid_t cur_pid , const char *t , const char *fu
 								break;
 							}
 							case 'f' : {
-								sprintf( tmp , "%s%s" , tmp , (char *)func );
+								sprintf( tmp , "%s%s" , tmp , Lexical.string_trunc( (char *)func , 48 ) );
 								break;
 							}
 							case 'm' : {

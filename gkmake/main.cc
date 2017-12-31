@@ -20,15 +20,15 @@
 //#include <gim/gim.h>
 #include "bmake_main.h"
 
-_gim_flag	   do_system = __GIM_YES;
-_gim_flag	   install = __GIM_NO;
-_gim_flag	   autotools = __GIM_NO;
-_gim_flag	   writec = __GIM_YES;
+_gim_flag				do_system = __GIM_YES;
+_gim_flag				install = __GIM_NO;
+_gim_flag				autotools = __GIM_NO;
+_gim_flag				writec = __GIM_YES;
 
 
-gkmake_st		gkmake;
-old_gkmake_st	gkmake_old;
-_gim_Uint32		running_time;
+gkmake_st				gkmake;
+old_gkmake_st			gkmake_old;
+_gim_Uint32				running_time;
 
 gim_ascii_file_obj *	header;
 
@@ -46,13 +46,9 @@ int main(int argc, char *argv[]) {
 	char include_gkmake_file[BUFF_DIM];
 	char thread_command[16];
 
-//	_gim_handler *	gkmake_fd;
-
-//	memset( cur_path			, 0, BUFF_DIM );
 	memset( cur_gkmake_file		, 0, BUFF_DIM );
 	memset( command				, 0, BUFF_DIM );
 	memset( command_t1			, 0, BUFF_DIM );
-//	memset( command_t2			, 0, BUFF_DIM );
 	memset( gkmake_makefile		, 0, BUFF_DIM );
 	memset( include_gkmake_file , 0, BUFF_DIM );
 
@@ -78,21 +74,31 @@ int main(int argc, char *argv[]) {
 	gim->error->set( "main" , "gkmake start here" );
 
 	gim_getopt_obj * gkopt = new gim_getopt_obj;
-	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:t:T:C:coshidanz" );
+	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:T:C:E:t:coeshidanz" );
 
 	if ( ( ! gkmake_exist( "./Makefile" ) ) && ( gkopt->search( 'a' ) == __GIM_NO ) ) {
-		if ( ( gkmake_exist( "./autogen.sh" ) ) || ( gkmake_exist( "./configure" ) ) || ( gkmake_exist( "./Makefile.in" ) ) ) {
+		if ( ( ( gkmake_exist( "./autogen.sh" ) ) || ( gkmake_exist( "./configure" ) ) ) && ( gkmake_exist( "./Makefile.in" ) ) ) {
 			puts( "  No Makefile found, but...\n" );
 			if ( gkmake_exist( "./autogen.sh" ) )
-			    puts( "  \"autogen.sh\" found" );
+				puts( "  \"autogen.sh\" found" );
+			else
+				puts( "  \"autogen.sh\" NOT found" );					
 			if ( gkmake_exist( "./configure" ) )
-			    puts( "  \"configure\" found" );
+				puts( "  \"configure\" found" );
+			else
+				puts( "  \"configure\" NOT found" );
 			if ( gkmake_exist( "./Makefile.in" ) )
-			    puts( "  \"Makefile.in\" found" );
+				puts( "  \"Makefile.in\" found" );
+			else
+				puts( "  \"Makefile.in\" NOT found" );
 			puts( "\n  Try to run gkmake with \'-a\' option\n" );
 		}
 		else
 		      puts( "  No Makefile found.\n  This one not seems a project directory\n" );
+		delete runT;
+		delete lex;
+		delete gkopt;
+		delete gim;
 		exit( -1 );
 	}
 	
@@ -109,6 +115,7 @@ int main(int argc, char *argv[]) {
 		puts("");
 		print_help();
 		delete runT;
+		delete lex;
 		delete gkopt;
 		delete gim;
 		exit( __GIM_ERROR );
@@ -119,6 +126,11 @@ int main(int argc, char *argv[]) {
 	     ( gkopt->search( 'A' ) == __GIM_YES ) || \
 	     ( gkopt->search( 'P' ) == __GIM_YES ) ) ) {
 		remove( cur_gkmake_file );
+	}
+	else {
+		if ( ! gkmake_exist( ".gkmake_conf" ) ) {
+			writec = __GIM_NO;
+		}
 	}
 	
 	_gim_prsr * gkconf = new _gim_prsr;
@@ -144,6 +156,9 @@ int main(int argc, char *argv[]) {
 				strcpy( gkmake.documentation , gkconf->GetKeySTR( gkmake.prj_name , "documentation_path" ) ); 
 			if ( lex->str_equal( "documentation_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 				strcpy( gkmake.doc_command , gkconf->GetKeySTR( gkmake.prj_name , "documentation_command" ) ); 
+			if ( lex->str_equal( "editor_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				strcpy( gkmake.editor_command , gkconf->GetKeySTR( gkmake.prj_name , "editor_command" ) ); 
+			
 			//FLAGS
 			if ( lex->str_equal( "clean" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 				gkmake.clean = gkconf->GetKeyFLAG( gkmake.prj_name , "clean" ); 
@@ -175,7 +190,11 @@ int main(int argc, char *argv[]) {
 					puts( "  Errors on option:" );
 					puts( "   If you want to set a new project you have to set at least also the Author and the Prefix\n" );
 					print_help();
+					gkconf->Down();
+					delete header;
+					delete gkconf;
 					delete runT;
+					delete lex;
 					delete gkopt;
 					delete gim;
 					exit( __GIM_ERROR );
@@ -190,7 +209,11 @@ int main(int argc, char *argv[]) {
 					puts( "  Errors on option:" );
 					puts( "   If you want to set a new project you have to set at least also the Project name and the Prefix" );
 					print_help();
+					gkconf->Down();
+					delete header;
+					delete gkconf;
 					delete runT;
+					delete lex;
 					delete gkopt;
 					delete gim;
 					exit( __GIM_ERROR );
@@ -207,7 +230,11 @@ int main(int argc, char *argv[]) {
 					puts( "  Errors on option:" );
 					puts( "   If you want to set a new project you have to set at least also the Project name and the Author" );
 					print_help();
+					gkconf->Down();
+					delete header;
+					delete gkconf;
 					delete runT;
+					delete lex;
 					delete gkopt;
 					delete gim;
 					exit( __GIM_ERROR );
@@ -236,6 +263,16 @@ int main(int argc, char *argv[]) {
 						gkconf->AddKey( gkmake.prj_name , "documentation_path" , gkmake.documentation );
 					IF_EXIST_KEY( gkconf , gkmake.prj_name , "documentation_path" )
 						gkconf->ChangeKey( gkmake.prj_name , "documentation_path" , gkmake.documentation );
+				}
+				break;
+			}
+			case 'E' : {
+				strcpy( gkmake.editor_command , gkopt->getoption()->argument );
+				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
+					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "editor_command" )
+						gkconf->AddKey( gkmake.prj_name , "editor_command" , gkmake.editor_command );
+					IF_EXIST_KEY( gkconf , gkmake.prj_name , "editor_command" )
+						gkconf->ChangeKey( gkmake.prj_name , "editor_command" , gkmake.editor_command );
 				}
 				break;
 			}
@@ -366,28 +403,39 @@ int main(int argc, char *argv[]) {
 				puts( "  SERCHING FOR AUTOTOOLS...\n");
 				if ( gkmake_exist( "./autogen.sh" ) )
 					puts( "  \"autogen.sh\" found" );
+				else
+					puts( "  \"autogen.sh\" NOT found" );					
 				if ( gkmake_exist( "./configure" ) )
 					puts( "  \"configure\" found" );
+				else
+					puts( "  \"configure\" NOT found" );
 				if ( gkmake_exist( "./Makefile.in" ) )
 					puts( "  \"Makefile.in\" found" );
+				else
+					puts( "  \"Makefile.in\" NOT found" );
 
-				if ( ( gkmake_exist( "./autogen.sh" ) ) || ( gkmake_exist( "./configure" ) ) || ( gkmake_exist( "./Makefile.in" ) ) ) {
+				if ( ( ( gkmake_exist( "./autogen.sh" ) ) || ( gkmake_exist( "./configure" ) ) ) && ( gkmake_exist( "./Makefile.in" ) ) ) {
 					puts( "  \nOK, I TRY TO CONFIGURE THIS PROJECT...\n" );
-					system( "./autogen.sh" );
+					if ( gkmake_exist( "./autogen.sh" ) )
+						system( "./autogen.sh" );
+					else if ( gkmake_exist( "./configure" ) )
+						system( "./configure" );
+					
 				}
 				else 
-					puts( "  \nINCOMPLETE AUTOTOOLS" );
+					puts( "\n  INCOMPLETE AUTOTOOLS" );
 					gkconf->Down();
 					delete header;
-					delete runT;
-					delete gkopt;
 					delete gkconf;
+					delete runT;
+					delete lex;
+					delete gkopt;
 					delete gim;
 					exit( 0 );
 			}			
 			case 'z' : {
 				writec = __GIM_NO;
-				puts( "  \nBUILD DISTRIBUITION PACKAGE..." );
+				puts( "\n  BUILD DISTRIBUITION PACKAGE..." );
 				if ( ! system( "make" ) ) {
 					system( "make dist" );
 				}
@@ -398,9 +446,50 @@ int main(int argc, char *argv[]) {
 				puts("");
 				gkconf->Down();
 				delete header;
-				delete runT;
-				delete gkopt;
 				delete gkconf;
+				delete runT;
+				delete lex;
+				delete gkopt;
+				delete gim;
+				exit( 0 );
+			}
+			case 'o' : {
+				if ( gkmake_exist( ".gkmake_conf" ) ) {
+					puts( "\n  PRINT CONFIGURATION FILE...\n" );
+					puts( gkconf->WriteOnBuffer() );
+					puts("");
+				}
+				else {
+					puts("\n  ERROR: configuration file not found. Project not yet configured");
+				}
+				gkconf->Down();
+				delete header;
+				delete gkconf;
+				delete runT;
+				delete lex;
+				delete gkopt;
+				delete gim;
+				exit( 0 );
+			}
+			case 'e' : {
+				char mess[64];
+				writec = __GIM_NO;
+				do_system = __GIM_NO;
+				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
+					IF_EXIST_KEY( gkconf , gkmake.prj_name , "editor_command" ) {
+						puts( "\n  EDIT CONFIGURATION FILE...\n" );
+						sprintf( mess, "%s .gkmake_conf" , gkmake.editor_command ); 
+						system( mess );
+					}
+					else
+						puts("\n  ERROR: No editor command configured");
+				}
+				gkconf->Down();
+				delete header;
+				delete gkconf;
+				delete runT;
+				delete lex;
+				delete gkopt;
 				delete gim;
 				exit( 0 );
 			}
@@ -425,31 +514,12 @@ int main(int argc, char *argv[]) {
 	     ( gkopt->search( 'C' ) == __GIM_YES ) || \
 		 ( gkopt->search( 'H' ) == __GIM_YES ) || \
 		 ( gkopt->search( 'F' ) == __GIM_YES ) || \
+		 ( gkopt->search( 'E' ) == __GIM_YES ) || \
 		 ( gkopt->search( 'T' ) == __GIM_YES ) || \
 	     ( gkopt->search( 'a' ) == __GIM_YES ) ) ) {
 
 		do_system = __GIM_NO;
 
-/*		if ( ( ( gkopt->search( 'N' ) == __GIM_YES ) || ( gkopt->search( 'A' ) == __GIM_YES ) || ( gkopt->search( 'P' ) == __GIM_YES ) ) && \ 
-			 ( ( !gkopt->search( 'M' ) || !gkopt->search( 'B' ) ) ) ) {
-			if ( !gkopt->search( 'M' ) ) { 
-				puts( "  You haven't specified information about the total build number. Set it to 0 per default" );
-				gkmake.tot_build = 0;
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-						IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "total_build_number" ) 
-							gkconf->AddKey( gkmake.prj_name , "total_build_number" , gkmake.tot_build );
-				}
-		    }
-			if ( !gkopt->search( 'B' ) ) { 
-				puts( "  You haven't specified information about the succesful build number. Set it to 0 per default" );
-				gkmake.ok_build = 0;
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-						IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "succesful_build_number" ) 
-							gkconf->AddKey( gkmake.prj_name , "succesful_build_number" , gkmake.ok_build );
-				}
-			}
-			puts("");
-		}*/
 	if ( writec == __GIM_YES )
 		gkconf->Write();
 		puts( "  New configuration file wrote\n" );
@@ -478,14 +548,22 @@ int main(int argc, char *argv[]) {
 	}
 
 	if ( do_system == __GIM_YES ) {
-		IF_EXIST_KEY( gkconf , gkmake.prj_name , "succesful_build_number" )
-			printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , ++gkmake.tot_build , command );
-		else
+		if ( writec == __GIM_YES ) {
+			IF_EXIST_KEY( gkconf , gkmake.prj_name , "succesful_build_number" )
+				printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , ++gkmake.tot_build , command );
+			else
+				printf( "  BUILDING THE PROJECT ( %s )...\n\n" , command ); 
+		}
+		else 
 			printf( "  BUILDING THE PROJECT ( %s )...\n\n" , command );
+		
 		if ( ! system( command ) ) {
 			IF_EXIST_KEY( gkconf , gkmake.prj_name , "succesful_build_number" ) 
 				gkconf->ChangeKey( gkmake.prj_name , "succesful_build_number" , ++gkmake.ok_build );
-			printf( "\n  BUILT SUCCESFULLY ( %d )...\n" , gkmake.ok_build );
+			if ( writec == __GIM_YES )
+				printf( "\n  BUILT SUCCESFULLY ( %d )\n" , gkmake.ok_build );
+			else
+				printf( "\n  BUILT SUCCESFULLY\n" );
 		}
 		else
 			do_system = __GIM_NO;
@@ -545,11 +623,11 @@ int main(int argc, char *argv[]) {
 	puts("");
 
 	gkconf->Down();
-
 	delete header;
-	delete runT;
-	delete gkopt;
 	delete gkconf;
+	delete runT;
+	delete lex;
+	delete gkopt;
 	delete gim;
 
 	exit( feedback );

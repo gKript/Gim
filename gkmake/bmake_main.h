@@ -59,6 +59,7 @@
 		_gim_flag   clean;
 		_gim_flag   header_file;
 		char		header_file_name[64];
+		char		editor_command[64];
 		char		premake_script[256];
 		char		postmake_script[256];
 		int			tot_build;

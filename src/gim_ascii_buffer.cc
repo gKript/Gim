@@ -56,7 +56,7 @@ _gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
 
 
 _gim_flag	gim_ascii_file_obj::append( char * to_append ) {
-	this->seek( __GIM_LAST );
+	this->seekf( __GIM_LAST );
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
 		strcat( chrbuf , to_append );
 		this->seekf( __GIM_LAST );
@@ -93,8 +93,11 @@ _gim_flag	gim_ascii_file_obj::append( const char * format , ... ) {
 
 
 _gim_int32	gim_ascii_file_obj::lenght( void ) {
+	_gim_Uint32 pos = 0;
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
-		return strlen( chrbuf );
+		while ( chrbuf[pos] != '\0' )
+			pos++;
+		return pos;
 	}
 	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::leght" , "Buffer not defined" , __GIM_ERROR );
 	return __GIM_ERROR;
@@ -136,7 +139,7 @@ _gim_flag	gim_ascii_file_obj::seekf( _gim_flag position ) {
 				return __GIM_OK;
 			}
 			default : {
-				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Position flag unknown" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seekf" , "Position flag unknown" , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
 		}

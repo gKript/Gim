@@ -40,18 +40,22 @@ int gim_sh_mainloop( ) {
     __GIM_CLEAR( in_line , 512 , char );
     while ( exit ) {
         printf( "%s" , prompt );
-        fgets( in_line , 512 , stdin );
+        fgets( in_line , 512 , stdin ); 
         if ( strlen( gim_sh_buff2str( in_line , 512 ) ) ) {
-			puts( gim_sh_buff2str( in_line , 512 ) );
-            exit = 0;
+			if ( exit )
+				puts( gim_sh_buff2str( in_line , 512 ) );
+			if ( Lexical.str_equal( gim_sh_buff2str( in_line , 512 ) , "exit" ) == __GIM_YES )
+	            exit = 0;
         }
     }
     
 }
 
 char * gim_sh_buff2str( char * in , int charlen ) {
-	char out[ charlen ];
+	static char * out;
 	_gim_flag found = 0;
+	out = (char *)gim->memory->Alloc( sizeof(char) * charlen );
+	__GIM_CLEAR( out , sizeof( out ) , char );
 	for( int a = 0 ; a <= charlen ; a++ ) {
 		if ( in[a] != '\n' )
 			out[a] = in[a];
@@ -65,3 +69,5 @@ char * gim_sh_buff2str( char * in , int charlen ) {
 		out[0] = '\0';
 	return out;
 }
+
+
