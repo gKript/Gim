@@ -26,24 +26,23 @@
 
 
 void hand_shake( void ) {
-	puts  ( "  gkmake   - gKript make\n" );
-	printf( "  Version  - %s\n" , GKMAKE_VERSION );  
-	puts  ( "  Author   - asyntote [gkript.org]" );
-	puts  ( "  Web      - www.gkript.org\n" );
+  puts  ( "  gkmake -   -   -   gKript make\n" );
+  printf( "  Version-   -   -   %s\n" , GKMAKE_VERSION );  
+  puts  ( "  Author -   -   -   asyntote [gKript.org]" );
+  puts  ( "  Web    -   -   -   www.gkript.org\n" );
 }
-
+ 
 
 void print_help( void ) {
-//	puts( "" );
 	puts( "  Project description:" );
-	puts( "   -R			-   Delete the configuration file." ); 
-	puts( "   -N (name)		-   The project name." ); 
-	puts( "   -A (name)		-   The author's name." ); 
+	puts( "   -R    -   -   -   Delete the configuration file." ); 
+	puts( "   -N (name) -   -   The project name." ); 
+	puts( "   -A (name) -   -   The author's name." ); 
 	puts( "   -P (prefix)   -   The prefix for the project." );
-	puts( "   -I (path)		-   Includes path." );
+	puts( "   -I (path) -   -   Includes path." );
 	puts( "   -H (YES/NO)   -   Project header file generation." );
-	puts( "   -F (name)     -   Header file name." );
-	puts( "   -D (path)		-   Documentation path." );
+	puts( "   -F (name) -   -   Header file name." );
+	puts( "   -D (path) -   -   Documentation path." );
 	puts( "   -X (command)  -   Documentation command." );
 	puts( "   -S (YES/NO)   -   Always use SUDO to install the project. Save this decision on the configuration file." );
 	puts( "   -C (YES/NO)   -   Always clean before make the project. Save this decision on the configuration file." );
@@ -52,20 +51,19 @@ void print_help( void ) {
 	puts( "   -B (number >= 0)  Succesful build number." );
 	puts( "" );
 	puts( "  Build configurations:" );
-	puts( "   -t ([1-n])-	-   Make the project in multi thread with the specify cores number." );
-	puts( "   -c	-   -   -   Clean before make." );
-	puts( "   -n	-   -   -   Distclean for the project." );
-	puts( "   -d	-   -   -   Build the documentation also." );
-	puts( "   -i	-   -   -   Install the project." );
-	puts( "   -s	-   -   -   Use SUDO to install." );
-	puts( "   -a	-   -   -   Launch autotools." );
-//	puts( "   -o	-   -   -   Overwrite the configuration file" );
+	puts( "   -t ([1-n])-   -   Make the project in multi thread with the specify cores number." );
+	puts( "   -c    -   -   -   Clean before make." );
+	puts( "   -n    -   -   -   Distclean for the project." );
+	puts( "   -d    -   -   -   Build the documentation also." );
+	puts( "   -i    -   -   -   Install the project." );
+	puts( "   -s    -   -   -   Use SUDO to install." );
+	puts( "   -a    -   -   -   Launch autotools." );
 	puts( "" );
 	puts( "  Build details:" );
 	puts( "   -h	-   -   -   Print this help text." );
 	puts( "" );
 	puts( "    Example :" );
-	puts( "        gkmake -A asyntote -P GIM -I ./include -P4" );
+	puts( "        gkmake -Ngkmake -Aasyntote -PGKM -I./include -P4" );
 	puts( "" );
 }
 

@@ -3,7 +3,7 @@ Maximized=1
 Geometry=1920x993+0+32
 
 [File Loader]
-Files=../../include/gim_file.h#220%%%../../include/gim_version.h#87%%%../../src/gim_environment.cc#325%%%../../src/gim_log.cc#198%%%../../src/gim_ascii_buffer.cc#70%%%../../src/gim_lexical.cc#644%%%../../src/gim_kvalue.cc#408%%%../../include/gim_kvalue.h#1%%%../../include/gim_ascii_buffer.h#72
+Files=../../gkmake/main.cc#356%%%../../gkmake/bmake_heder.cc#31
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -14,8 +14,15 @@ Run in terminal=2
 Working directories=../../../../Projects/gim3
 
 [Project Manager]
-Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat
-Expand=libgim.a%%%gimstat%%%trunk%%%trunk//include%%%trunk//include//libgim_include
+Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
+Expand=gkmake%%%trunk
+
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
+Stop at beginning=2
+
+[Commit Logs]
+Logs=Little variations
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -24,10 +31,3 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
-
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2
-
-[Commit Logs]
-Logs=Little variations

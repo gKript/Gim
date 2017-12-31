@@ -20,7 +20,11 @@
 //#include <gim/gim.h>
 #include "bmake_main.h"
 
-_gim_flag	    do_system = __GIM_YES;
+_gim_flag	   do_system = __GIM_YES;
+_gim_flag	   install = __GIM_NO;
+_gim_flag	   autotools = __GIM_NO;
+_gim_flag	   writec = __GIM_YES;
+
 
 gkmake_st		gkmake;
 old_gkmake_st	gkmake_old;
@@ -41,8 +45,6 @@ int main(int argc, char *argv[]) {
 	char command[BUFF_DIM];
 	char include_gkmake_file[BUFF_DIM];
 	char thread_command[16];
-	_gim_flag install = __GIM_NO;
-	_gim_flag autotools = __GIM_NO;
 
 //	_gim_handler *	gkmake_fd;
 
@@ -76,7 +78,7 @@ int main(int argc, char *argv[]) {
 	gim->error->set( "main" , "gkmake start here" );
 
 	gim_getopt_obj * gkopt = new gim_getopt_obj;
-	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:t:T:C:coshidan" );
+	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:t:T:C:coshidanz" );
 
 	if ( ( ! gkmake_exist( "./Makefile" ) ) && ( gkopt->search( 'a' ) == __GIM_NO ) ) {
 		if ( ( gkmake_exist( "./autogen.sh" ) ) || ( gkmake_exist( "./configure" ) ) || ( gkmake_exist( "./Makefile.in" ) ) ) {
@@ -346,6 +348,7 @@ int main(int argc, char *argv[]) {
 					system( "make distclean" );
 				puts("");
 				do_system = __GIM_NO;
+				writec = __GIM_NO;
 				break;
 			}
 			case 'd' : {
@@ -353,10 +356,13 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 			case 'h' : {
+				do_system = __GIM_NO;
+				writec = __GIM_NO;
 				print_help();
 				break;
 			}
 			case 'a' : {
+				writec = __GIM_NO;
 				puts( "  SERCHING FOR AUTOTOOLS...\n");
 				if ( gkmake_exist( "./autogen.sh" ) )
 					puts( "  \"autogen.sh\" found" );
@@ -378,6 +384,25 @@ int main(int argc, char *argv[]) {
 					delete gkconf;
 					delete gim;
 					exit( 0 );
+			}			
+			case 'z' : {
+				writec = __GIM_NO;
+				puts( "  \nBUILD DISTRIBUITION PACKAGE..." );
+				if ( ! system( "make" ) ) {
+					system( "make dist" );
+				}
+				if ( runT->get() > 2 ) {
+					printf( "\n  GKMAKE ran for %d seconds\n" , runT->get() );
+					printf(   "  GKMAKE built by %s@%s on %s\n" , gim->identity->login() , gim->identity->node() , gkmake.last_build );
+				}
+				puts("");
+				gkconf->Down();
+				delete header;
+				delete runT;
+				delete gkopt;
+				delete gkconf;
+				delete gim;
+				exit( 0 );
 			}
 			case 'i' : {
 				install = __GIM_YES;
@@ -425,6 +450,7 @@ int main(int argc, char *argv[]) {
 			}
 			puts("");
 		}*/
+	if ( writec == __GIM_YES )
 		gkconf->Write();
 		puts( "  New configuration file wrote\n" );
 	}
@@ -466,7 +492,9 @@ int main(int argc, char *argv[]) {
 	}
 	IF_EXIST_KEY( gkconf , gkmake.prj_name , "total_build_number" )
 		gkconf->ChangeKey( gkmake.prj_name , "total_build_number" , gkmake.tot_build );
-	gkconf->Write();
+	
+	if ( writec == __GIM_YES )
+		gkconf->Write();
 	
 	if ( do_system == __GIM_YES ) {
 		if ( install == __GIM_YES ) {
@@ -530,118 +558,3 @@ int main(int argc, char *argv[]) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//}
-
-	
-
-	
-/*	if ( gkmake_exist ( cur_old_bmake_file ) ) {
-		gim->error->set( BMAKE_MESSAGE , "main()" , "An old counter file exist... updating" , __GIM_OK );
-		convert_from_old( cur_old_bmake_file );
-	}
-*/	
-/*	if ( bmake_exist ( bmake_makefile ) ) {
-		bmake_fd = fopen ( cur_bmake_file, "rb" );
-		if ( ! bmake_fd ) {
-			gim->error->set( BMAKE_MESSAGE , "main()" , "A new project will be created" , __GIM_OK );
-			new_prj( cur_bmake_file );
-			time( &tp );
-			strftime( timestamp , 256 , "%A %d-%m-%Y %H:%M:%S" , localtime ( &tp ) );
-		}
-		else {
-			fread ( &bmake , sizeof ( bmake_st ), 1, bmake_fd );
-			fclose ( bmake_fd );
-		}
-		time( &tp );
-		strftime( timestamp , 256 , "%A %d-%m-%Y %H:%M:%S" , localtime ( &tp ) );
-		sprintf ( cur_bmake_file, "%s/%s", cur_path, BMAKE_INCLUDE );
-		sprintf ( include_bmake_file, "%s/%s%s", cur_path , str_down( bmake.prefix , strlen( bmake.prefix) ) , BMAKE_INCLUDE );
-		char tmp2[256];
-		sprintf( tmp2 , "%s%s" , str_down( bmake.prefix , strlen( bmake.prefix) ) , BMAKE_INCLUDE );
-		bmake_fd = fopen ( include_bmake_file, "wb" );
-		if ( bmake_fd ) {
-			make_header( bmake_fd , tmp2 );
-			fclose  ( bmake_fd );
-		}
-		else {
-			puts("bMake : I cannot write the bmake.h");
-			gim->error->set( GIM_ERROR_CRITICAL , "main" , "I cannot write the bmake.h" , __GIM_NOT_OK );
-		}
-		if ( strcmp( "none" , bmake.include_path ) ) {
-			memset ( include_bmake_file, 0, BUFF_DIM );
-			sprintf( include_bmake_file, "%s%s%s", bmake.include_path , str_down( bmake.prefix , strlen( bmake.prefix) ) , BMAKE_INCLUDE );
-			char tmp2[256];
-			sprintf( tmp2 , "%s%s" , str_down( bmake.prefix , strlen( bmake.prefix) ) , BMAKE_INCLUDE );
-			bmake_fd = fopen ( include_bmake_file , "wb" );
-			if ( bmake_fd ) {
-				make_header( bmake_fd , tmp2 );
-				fclose  ( bmake_fd );
-			}
-			else {
-				puts("bMake : I cannot write the bmake.h");
-				gim->error->set( GIM_ERROR_CRITICAL , "main" , "I cannot write the bmake.h" , __GIM_NOT_OK );
-			}
-		}
-		strcpy ( command, BMAKE_COMMAND );
-		if ( gim->identity->n_proc() > 1 ) {
-			char tmp1[256];
-			sprintf( tmp1 , " -j%d" , gim->identity->n_proc() );
-			strcat( command , tmp1 );
-			sprintf( tmp1 , "#%d -Multi process make activated" , gim->identity->n_proc() );
-			gim->error->set( BMAKE_MESSAGE , "main" , tmp1 , __GIM_OK );
-		}
-		else {
-			char tmp1[256];
-			sprintf( tmp1 , "#%d - No SMP system detected" , gim->identity->n_proc() );
-			gim->error->set( BMAKE_MESSAGE , "main" , tmp1 , __GIM_OK );
-		}
-		if ( argc > 1) {
-			for ( ; ciclo <= argc-1 ; ciclo ++ ) {
-				sprintf ( command_t1, "%s %s", command, argv[ciclo] );
-				strcpy ( command, command_t1 );
-			}
-		}
-		puts("gKmake v0.3 made by gKript.org");
-		if ( gim->identity->n_proc() > 1 ) 
-			printf("Compiling in parallel : %d processes\n\n" , gim->identity->n_proc() );
-		feedback = system ( command );
-		if ( ! feedback ) {
-			bmake.make++;
-			bmake.make_ok++;
-		}
-		else {
-			bmake.make++;
-		}
-		sprintf ( cur_bmake_file, "%s/%s", cur_path, BMAKE_FILE_COUNTER );
-		bmake_fd = fopen ( cur_bmake_file, "wb" );
-		if ( bmake_fd ) {
-			fwrite ( &bmake, sizeof ( bmake_st ), 1, bmake_fd );
-			fclose ( bmake_fd );
-		}
-		else {
-			puts("bMake : I cannot update the version bumber");
-			gim->error->set( GIM_ERROR_CRITICAL , "main" , "I cannot update the version bumber" , __GIM_NOT_OK );
-		}
-	}
-	else {
-		feedback = system ( BMAKE_COMMAND );
-		puts("bMake : I cannot update the version bumber");
-		gim->error->set( GIM_ERROR_CRITICAL , "main" , "I cannot update the version bumber" , __GIM_NOT_OK );
-	}
-*/
