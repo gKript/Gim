@@ -85,7 +85,7 @@ int main ( int argc , char *argv[] ) {
 		_gim_dir_item	* test = NULL;
 	
 		dir = new _gim_directory;
-		dir->recursion( __GIM_NO );
+		dir->recursion( __GIM_YES );
 		dir->also_hide( __GIM_YES );
 		if ( argc > 1 ) 
 			dir->make( argv[1] );
@@ -98,12 +98,12 @@ int main ( int argc , char *argv[] ) {
 				char type[16];
 				switch( test->type ) {
 					case REGFILE : {
-						strcpy( type , "         " );
+						strcpy( type , "   Reg   " );
 						sprintf( message , "%-10d%s%-40s" , test->size , type , test->name );
 						break;
 					}
 					case EMPTY : {
-						strcpy( type , "         " );
+						strcpy( type , "   Reg   " );
 						sprintf( message , "%-10d%s%-40s" , test->size , type , test->name );
 						break;
 					}
@@ -113,7 +113,7 @@ int main ( int argc , char *argv[] ) {
 						break;
 					}
 					default : {
-						strcpy( type , "         " );
+						strcpy( type , "   Unk    " );
 						sprintf( message , "          %s%-40s" , type , test->name );
 						break;
 					}

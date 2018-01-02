@@ -132,7 +132,7 @@
  	struct _gim_db_table {
 		char			name[64];
 		char			comment[512];
-		_gim_flag		type;
+		_gim_flag		type;				//  Permanent or volatile
 		_gim_Uint8		n_fields;
 		_gim_Uint8		n_records;
 		_gim_Uint32		sizeof_per_record;

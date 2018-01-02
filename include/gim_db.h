@@ -53,15 +53,15 @@
 	class gim_db_obj {
 
 		public:
-			_gim_flag	set_name			( const char * dbname );
-			char *		get_name			( void );
-			_gim_flag	set_db_properities	( _gim_flag properities , _gim_flag value );
-			_gim_flag	make_env			( void );
-			_gim_flag	check				( void );
-			_gim_flag	init				( void );
-			_gim_flag	create_table		( const char * table_name );
-			_gim_flag   add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type );
-			_gim_flag   add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
+			_gim_flag			set_name			( const char * dbname );
+			char *				get_name			( void );
+			_gim_flag			set_db_properities	( _gim_flag properities , _gim_flag value );
+			_gim_flag			make_env			( void );
+			_gim_flag			check				( void );
+			_gim_flag			init				( void );
+			_gim_flag			create_table		( const char * table_name );
+			_gim_flag			add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type );
+			_gim_flag			add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
 
 		private:
 			_gim_flag			create_db			( const char * dbname );
@@ -72,9 +72,7 @@
 			_gim_flag			insert_record		( const char * table_name , _gim_db_record * record );
 			_gim_flag			delete_record		( const char * table_name , _gim_db_record * record );
 			_gim_db_table *		get_table_handle	( const char * table_name );
-
 			_gim_flag			command_parser		( const char * commad );
-
 
 			_gim_db_main		* db;
 

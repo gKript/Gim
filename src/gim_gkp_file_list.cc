@@ -83,12 +83,15 @@ void		gim_gkdp_obj::add( const char * name , _gim_buffer data , int size ) {
 	gim_error->set( "gim_gkdp_obj::add" , message );
 }
 
+
+
 void		gim_gkdp_obj::set_manual( void ) {
 		currentlist = add();
 		strcpy( currentlist->name , "ManualGKDP" );
 		currentlist->size = 0;
 		gim_error->set( "gim_gkdp_obj::set_manual" , "File list setted to manual. Added virtual root" );
 }
+
 
 _gim_Uint32	gim_gkdp_obj::make_gkdp( const char * dir_name ) {
 	struct dirent 	** eps;

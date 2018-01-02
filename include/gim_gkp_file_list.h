@@ -65,7 +65,8 @@
 		CHR,			/*!<	This is a character */
 		FIFO,			/*!<	This is a fifo */
 		BLK,			/*!<	This is a block */
-		ROOT			/*!<	This is the root of our internal tree */
+		ROOT,			/*!<	This is the root of our internal tree */
+		MANUAL,			/*!<	This indicate a manual gkdp entry */
 	};
 	
 	enum get_mode {

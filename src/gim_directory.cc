@@ -169,12 +169,12 @@ _gim_Uint32				gim_directory_obj::p_make( const char * dir_name , _gim_Uint16 le
 		}
 	}
 	if ( n <= 0 )
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_directory_obj::make" , "ERROR : Couldn't open the directory" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_directory_obj::make" , "Couldn't open the directory" , __GIM_ERROR );
 //	if ( n == 2 )
 //		gim_error->set( "gim_directory_obj::make" , "The directory is empty" );
 	if ( ( n >  2 ) && ( level == __GIM_ROOT ) ) {
 		char message [256];
-		sprintf( message , "items %-8d : %s" , endlist->id + 1 , dir_name );
+		sprintf( message , "items are %-8d : %s" , endlist->id + 1 , dir_name );
 		gim_error->set( "gim_directory_obj::make" , message );
 	}
 	item = endlist->id;
@@ -264,7 +264,7 @@ _gim_dir_item *	gim_directory_obj::get_item( _gim_flag inc ) {
 		return NULL;
 	}
 	if ( ! currentlist ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_directory_obj::get_item" , "Endlist reached" , __GIM_ERROR );
+		gim_error->set( "gim_directory_obj::get_item" , "Endlist reached" );
 		return NULL;
 	}
 	_gim_dir_item *	res = (_gim_dir_item *)gim_memory->Alloc( sizeof (gim_dir_item) , __GIM_MEM_DIRECTORY_ITEM , __GIM_HIDE );

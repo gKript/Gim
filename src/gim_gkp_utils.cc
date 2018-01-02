@@ -51,7 +51,7 @@ char *	gim_utils_obj::str_subtraction( char * main_str , char * to_subtract ) {
 	char	message[1024];
 //	printf( "M:%s@(%d)  -  S:%s@(%d)\n" , main_str , strlen( main_str ) , to_subtract , strlen( to_subtract ) );
 	if ( strlen( main_str ) <= strlen( to_subtract ) ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_utils_obj::str_subtraction" , "Main string cannot be <= the subtracyion string" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_utils_obj::str_subtraction" , "Main string cannot be <= the subtraction string" , __GIM_ERROR );
 		return NULL;
 	}
 	for ( c = 0 ; c <= l1 ; c++ ) {

@@ -17,7 +17,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//#include <gim/gim.h>
 #include "bmake_main.h"
 
 _gim_flag				do_system = __GIM_YES;
@@ -25,16 +24,13 @@ _gim_flag				install = __GIM_NO;
 _gim_flag				autotools = __GIM_NO;
 _gim_flag				writec = __GIM_YES;
 
-
 gkmake_st				gkmake;
 old_gkmake_st			gkmake_old;
 _gim_Uint32				running_time;
 
 gim_ascii_file_obj *	header;
 
-
-int main(int argc, char *argv[]) {
-
+int main( int argc , char *argv[] ) {
 	int ciclo = 1, feedback = 0 , makedoc = __GIM_NO;
 	time_t	tp;
 	char cur_path[BUFF_DIM];
@@ -94,7 +90,7 @@ int main(int argc, char *argv[]) {
 			puts( "\n  Try to run gkmake with \'-a\' option\n" );
 		}
 		else
-		      puts( "  No Makefile found.\n  This one not seems a project directory\n" );
+		    puts( "  No Makefile found.\n  This one not seems a project directory\n" );
 		delete runT;
 		delete lex;
 		delete gkopt;
@@ -142,43 +138,44 @@ int main(int argc, char *argv[]) {
 		gkconf->SetLex( __LEX_A );
 	}
 	else {
-		strcpy( gkmake.prj_name , gkconf->GetSectionName( 0 ) );
-		_gim_Uint8 c = 0, count = gkconf->GetHowManyKey( gkmake.prj_name );
-		for ( c = 0 ; c < count ; c++ ) {
-			//STRINGS
-			if ( lex->str_equal( "prefix" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.prefix , gkconf->GetKeySTR( gkmake.prj_name , "prefix" ) ); 
-			if ( lex->str_equal( "author" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.author , gkconf->GetKeySTR( gkmake.prj_name , "author" ) ); 
-			if ( lex->str_equal( "include_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.include_path , gkconf->GetKeySTR( gkmake.prj_name , "include_path" ) ); 
-			if ( lex->str_equal( "documentation_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.documentation , gkconf->GetKeySTR( gkmake.prj_name , "documentation_path" ) ); 
-			if ( lex->str_equal( "documentation_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.doc_command , gkconf->GetKeySTR( gkmake.prj_name , "documentation_command" ) ); 
-			if ( lex->str_equal( "editor_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.editor_command , gkconf->GetKeySTR( gkmake.prj_name , "editor_command" ) ); 
-			
-			//FLAGS
-			if ( lex->str_equal( "clean" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				gkmake.clean = gkconf->GetKeyFLAG( gkmake.prj_name , "clean" ); 
-			if ( lex->str_equal( "use_sudo" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				gkmake.sudo = gkconf->GetKeyFLAG( gkmake.prj_name , "use_sudo" ); 
-			if ( lex->str_equal( "project_header_generation" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				gkmake.header_file = gkconf->GetKeyFLAG( gkmake.prj_name , "project_header_generation" ); 
-			if ( lex->str_equal( "header_file_name" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				strcpy( gkmake.header_file_name , gkconf->GetKeySTR( gkmake.prj_name , "header_file_name" ) );
-			if ( lex->str_equal( "multi_threads_enable" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) { 
-				gkmake.parallel = gkconf->GetKeyFLAG( gkmake.prj_name , "multi_threads_enable" ); 
-				if ( gkmake.parallel == __GIM_YES ) {
-					gkmake.num_core = gkconf->GetKeyINT( gkmake.prj_name , "number_of_threads" );
+		for ( _gim_Uint8 s = 0 ; s < gkconf->GetHowManySection() ; s++ ) {
+			strcpy( gkmake.prj_name , gkconf->GetSectionName( s ) );
+			_gim_Uint8 c = 0, count = gkconf->GetHowManyKey( gkmake.prj_name );
+			for ( c = 0 ; c < count ; c++ ) {
+				//STRINGS
+				if ( lex->str_equal( "prefix" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.prefix , gkconf->GetKeySTR( gkmake.prj_name , "prefix" ) ); 
+				if ( lex->str_equal( "author" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.author , gkconf->GetKeySTR( gkmake.prj_name , "author" ) ); 
+				if ( lex->str_equal( "include_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.include_path , gkconf->GetKeySTR( gkmake.prj_name , "include_path" ) ); 
+				if ( lex->str_equal( "documentation_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.documentation , gkconf->GetKeySTR( gkmake.prj_name , "documentation_path" ) ); 
+				if ( lex->str_equal( "documentation_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.doc_command , gkconf->GetKeySTR( gkmake.prj_name , "documentation_command" ) ); 
+				if ( lex->str_equal( "editor_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.editor_command , gkconf->GetKeySTR( gkmake.prj_name , "editor_command" ) );
+				//FLAGS
+				if ( lex->str_equal( "clean" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					gkmake.clean = gkconf->GetKeyFLAG( gkmake.prj_name , "clean" ); 
+				if ( lex->str_equal( "use_sudo" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					gkmake.sudo = gkconf->GetKeyFLAG( gkmake.prj_name , "use_sudo" ); 
+				if ( lex->str_equal( "project_header_generation" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					gkmake.header_file = gkconf->GetKeyFLAG( gkmake.prj_name , "project_header_generation" ); 
+				if ( lex->str_equal( "header_file_name" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					strcpy( gkmake.header_file_name , gkconf->GetKeySTR( gkmake.prj_name , "header_file_name" ) );
+				if ( lex->str_equal( "multi_threads_enable" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) { 
+					gkmake.parallel = gkconf->GetKeyFLAG( gkmake.prj_name , "multi_threads_enable" ); 
+					if ( gkmake.parallel == __GIM_YES ) {
+						gkmake.num_core = gkconf->GetKeyINT( gkmake.prj_name , "number_of_threads" );
+					}
 				}
+				//  INT VALUES
+				if ( lex->str_equal( "total_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					gkmake.tot_build = gkconf->GetKeyINT( gkmake.prj_name , "total_build_number" ); 
+				if ( lex->str_equal( "succesful_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+					gkmake.ok_build = gkconf->GetKeyINT( gkmake.prj_name , "succesful_build_number" ); 
 			}
-			//  INT VALUES
-			if ( lex->str_equal( "total_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				gkmake.tot_build = gkconf->GetKeyINT( gkmake.prj_name , "total_build_number" ); 
-			if ( lex->str_equal( "succesful_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
-				gkmake.ok_build = gkconf->GetKeyINT( gkmake.prj_name , "succesful_build_number" ); 
 		}
 	}
 	gkopt->rewind();

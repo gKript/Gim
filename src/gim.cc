@@ -76,7 +76,7 @@ void gim_obj::gim_init( void ) {
 	home			= new gim_home_obj;
 	gim_home		= home;
 	
-	internal_gim		= this;
+	internal_gim	= this;
 
 	memory->up();
 	gim_log->start();

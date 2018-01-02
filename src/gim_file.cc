@@ -411,7 +411,7 @@ gim_file_manager_list *	gim_file_manager_obj::item( const char * filename ) {
 int		gim_file_manager_obj::length ( const char * fname ) {
 	FILE * fid = fopen (fname, "r");
 	if ( ! fid ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::length" , "File not found" , __GIM_NOT_EXIST );
+//		gim_error->set( GIM_ERROR_WARNING , "gim_file_manager_obj::length" , "File not found" , __GIM_NOT_EXIST );
 		return __GIM_ERROR;
 	}
 	fseek (fid, 0L, SEEK_END);

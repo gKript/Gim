@@ -1,18 +1,89 @@
-[ gKmake configuration file ]
+  < gim_configuration >
 
-  .PROJECT
-  ::project_name = Gim
-  ::author = asyntote
-  ::prefix = GIM
-  ::include_path = ./include
-  ::documentation_path = ./documentation
+  # Put your comments beside a key and in any other location.
+  # E.g.
+  #  __LEX_A
+  #    login = asyntote   # this is a comment
+  #  __LEX_B
+  #    version::name = Gim   # this is a comment
 
-  .BUILD
-  ::documentation_command = make_doc.sh
-  ::use_sudo = YES
-  ::clean = YES
-  ::total_build_number = 524
-  ::succesful_build_number = 452
-  
+  + VERSION
+  | name = Gim
+  | major = 2
+  | minor = 6
+  | subminor = 0
+  | vbuilt = 6
+  | version = 2.6-0
+  | milestone = 3.0
+  -
 
+  / SYSTEM
+  | sig_trap = ON
+  \
+
+  / DEBUG
+  | debug_format = $t_$p_$T_$k_$f_|_$m
+  # This is the legend for the log format : 
+  #        $t  :  Precision timer
+  #        $p  :  Process ID
+  #        $k  :  Message kind
+  #        $f  :  Function caller
+  #        $m  :  Message
+  #        $v  :  Returned value
+  #        $T  :  Thread flag
+  #        $$  :  The '$' char
+  #         _  :  This char replace the space in this Format.
+
+  | debug = NO
+  | f_debug = NO
+  | f_debug_file = /home/asyntote/.gim/gim_main.log
+  \
+
+  / MEMORY
+  | hide_in_log = YES
+  | virtual_memory = OFF
+  | alloc_limit = YES
+  | limit = 75
+  | default_lock = LOCKED
+  | log_in_file = NO
+  | log_file_name = test_log_manager_file_name
+  \
+
+  / CRYPT
+  | iterations = 2
+  \
+
+  / ALIAS
+  | enable = YES
+  | lex = A
+  \ 
+
+  / COMPATIBILITY
+  | enable = NO
+  | lex = A
+  \
+
+  / KEY
+  | priv_path = /home/asyntote/.gim/PrivateKey/
+  | other_path = /home/asyntote/.gim/OtherKeys/
+  \
+
+  / PROGRAMS
+  | generic_path = /home/asyntote/.gim/Programs/
+  | program_path = /home/asyntote/.gim/
+  \
+
+  \ MERSENNE
+  | test = NO
+  | iterations = 200
+  /
+
+  \ PRIME
+  | size = 2048
+  | filename = prime
+  /
+
+  \PASSWORD
+  | min_lenght = 6
+  /
 
