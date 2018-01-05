@@ -46,6 +46,8 @@
 #ifndef _GIM_H
 #define _GIM_H
 
+	#define ARCHITETTURE		X86
+
 	#include <stdio.h>
 
 	#include "gim_doxygen.h"
