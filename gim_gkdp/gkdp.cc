@@ -54,7 +54,6 @@ int main ( int argc , char *argv[] ) {
 	gim_set_application_name( "Gkdp_creator" );
 	gim_obj			* gim  = new gim_obj;
 	gim_gkdp_obj	* gkdp = new gim_gkdp_obj;
-	_gim_mempage	* mem  = new _gim_mempage;
 
 	_gim_directory	* dir;
 
@@ -127,7 +126,9 @@ int main ( int argc , char *argv[] ) {
 		
 	delete dir;
 	
-	delete mem;
+//:qqq\q
+
+//	delete mem;
 	delete gkdp;
 	delete gim;
 	

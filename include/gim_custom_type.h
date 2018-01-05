@@ -142,6 +142,7 @@
 	typedef	struct	gim_list_item 			_gim_list_item;
 	typedef	struct	gim_option_item			_gim_option;
 	typedef	class	gim_list_obj 			_gim_list;
+	typedef	class	prsr_lexical_class		_gim_lex;
 
 
 #endif /* _GIM_CUSTOM_TYPE_H_ */

@@ -532,9 +532,12 @@ char *	prsr_lexical_class::char_subst( char * from , char to_subst , char with )
 }
 
 _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) {
-	char	* tmp = NULL;
-	_gim_Uint8	l = 0;
-	unsigned int	i = 0 , a , b = 0;
+	char				* tmp = NULL;
+	_gim_Uint8			l = 0;
+	static unsigned int	i;
+	unsigned int		a , b = 0;
+
+	i = 0;
 	__GIM_CLEAR( Tok , 1 , Tok );
 	if ( gim_memory->caller != __GIM_MEM_READ_KEY )
 		tmp = strdup( char_filter( line , ' ' ) );
@@ -565,6 +568,7 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 	}
 	return i;
 }
+
 
 char * prsr_lexical_class::str_up( const char * line , int len ) {
 	static char	* tmp = NULL;

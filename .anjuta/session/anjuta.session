@@ -1,9 +1,8 @@
 [Anjuta]
-Maximized=1
-Geometry=1920x993+0+32
+Geometry=1914x991+0+32
 
 [File Loader]
-Files=../../src/gim_db.cc#371
+Files=../../src/gim_db.cc#282%%%../../include/gim_db_structures.h#100%%%../../include/gim_db.h#120%%%../../include/gim_list.h#76%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#44%%%../../src/gim_file.cc#1%%%../../src/gim_kvalue.cc#547%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#19%%%../../include/gim_lexical.h#82
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -15,7 +14,11 @@ Working directories=../../../../Projects/gim3
 
 [Project Manager]
 Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
-Expand=trunk%%%trunk//gim_gkfp%%%trunk//gim_gkfp//gkfp%%%trunk//include%%%trunk//src%%%trunk//src//libgim.a
+Expand=trunk%%%trunk//gim_gkdp%%%trunk//gim_gkdp//gkdp%%%trunk//gim_shell%%%trunk//gim_shell//gimshell%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
+
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
+Stop at beginning=2
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -27,7 +30,3 @@ BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
 
 [Commit Logs]
 Logs=Little variations
-
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2

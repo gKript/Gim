@@ -44,6 +44,9 @@
 
  	extern char		gim_application_name[256];
 
+	#define GIM_DB_MODE				"mode"
+	#define GIM_DB_TYPE				"type"
+
 	enum	gim_db_type {
 		GIM_DB_VOLATILE = 1,		/*!<	*/
 		GIM_DB_PERMANENT,			/*!<	*/
@@ -58,9 +61,13 @@
 	enum	gim_db_field_data_type {
 		GIM_DB_TYPE_INT = 1,		/*!<	*/
 		GIM_DB_TYPE_FLOAT,			/*!<	*/
+		GIM_DB_TYPE_PERCENTAGE,		/*!<	*/
 		GIM_DB_TYPE_BOOL,			/*!<	*/
 		GIM_DB_TYPE_FLAG,			/*!<	*/
 		GIM_DB_TYPE_STRING,			/*!<	*/
+		GIM_DB_TYPE_DATE,			/*!<	*/
+		GIM_DB_TYPE_TIME,			/*!<	*/
+		GIM_DB_TYPE_TIMESTAMP,		/*!<	*/
 	};
 
 	enum	gim_db_table_properities {
@@ -93,25 +100,12 @@
  	struct _gim_db_value {
 		_gim_flag			type;
 		_gim_db_value_u		value;
-
-		struct _gim_db_value	* next;
 	};
 
 
  	struct _gim_db_field {
-		char	name[64];
+		char				name[64];
 		_gim_flag			type;
-
-		struct _gim_db_field	* next_field;
-	};
-
-
- 	struct _gim_db_record {
-		_gim_Uint32		id;
-
-		struct _gim_db_value	* next;
-		
-		struct _gim_db_record	* next_record;
 	};
 
 
@@ -122,40 +116,34 @@
 		_gim_Uint8		n_fields;
 		_gim_Uint8		n_records;
 		_gim_Uint32		sizeof_per_record;
-
-		struct _gim_db_field			* first_field;
-		struct _gim_db_record			* first_record;
-		struct _gim_db_virtual_table	* next;
 	};
 
 
  	struct _gim_db_table {
 		char			name[64];
 		char			comment[512];
-		_gim_flag		type;				//  Permanent or volatile
-		_gim_Uint8		n_fields;
-		_gim_Uint8		n_records;
+		_gim_flag		type;				//  Permanent, volatile or virtual 
+		_gim_Uint8		items;
+		_gim_Uint8		fields_number;
+		_gim_int16		key_field_number;
 		_gim_Uint32		sizeof_per_record;
 
+		_gim_list *		fields;
+		_gim_list *		records;
+		 
 		_gim_prsr		* tbl;
 
-		struct _gim_db_field	* first_field;
-		struct _gim_db_record	* first_record;
-		struct _gim_db_table	* next;
 	};
 
 
  	struct _gim_db_main {
-		char		name[64];
-		char 		comment[512];
-		_gim_flag	mode;
-		_gim_flag	type;
-		_gim_Uint8	n_tables;
+		_gim_flag		mode;
+		_gim_flag		type;
+		_gim_Uint8		tables_number;
 
 		_gim_prsr		* conf;
 		 
-		_gim_db_table	* first_table;
-		
+		_gim_list		* tables;
 	};
 
 #endif // _GIM_DB_STRUCTURES_H_

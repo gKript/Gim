@@ -1,7 +1,7 @@
 /***************************************************************************
  *            gim_gkmake.h
  *
- *  Tuesday 02-01-2018 03:25:34
+ *  Wednesday 03-01-2018 23:13:24
  *  Copyright  2006  asyntote
  *  gkmake version : 0.7-3
  *  asyntote@gkript.org
@@ -38,9 +38,9 @@
 #define	GIM_GKMAKE_VERSIONING
 
    #define GIM_AUTHOR                       asyntote
-   #define GIM_GKMAKE_TOTAL_BUILD           643
-   #define GIM_GKMAKE_BUILD                 587
-   #define GIM_GKMAKE_LAST_BUILD            "Tuesday 02-01-2018 03:25:34"
+   #define GIM_GKMAKE_TOTAL_BUILD           706
+   #define GIM_GKMAKE_BUILD                 649
+   #define GIM_GKMAKE_LAST_BUILD            "Wednesday 03-01-2018 23:13:24"
 
 #endif
 

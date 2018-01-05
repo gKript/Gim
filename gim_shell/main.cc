@@ -48,11 +48,11 @@ int main( int argc , char **argv ) {
 	gim = new gim_obj;
 //	memory = new _gim_mempage;				// test puorpose only
 	
-	gim_db_obj * ndb = new gim_db_obj( "test db" , GIM_DB_VOLATILE , GIM_DB_PERFORMANCE );		// test puorpose only
+/*	gim_db_obj * ndb = new gim_db_obj( "test db" , GIM_DB_VOLATILE , GIM_DB_PERFORMANCE );		// test puorpose only
 	ndb->create_table( "first" );
 	ndb->create_table( "second" );
 	ndb->create_table( "third" );
-
+*/
 	gim_error->Set( GIM_ERROR_FATAL , "::main" , "test di error con : %s - %s" , gim_version_small() , gim_version_micro() );
 
 	puts( "Gim shell 0.1.2" );
@@ -63,8 +63,8 @@ int main( int argc , char **argv ) {
 	gim_sh_mainloop();
 	shut_gim_sh_environ();
 
-	delete ndb;			// test puorpose only
-	delete memory;		// test puorpose only
+//	delete ndb;			// test puorpose only
+//	delete memory;		// test puorpose only
 
 	delete gim;
 	return 0;
