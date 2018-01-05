@@ -61,12 +61,15 @@
 			_gim_flag			make_env			( void );
 			_gim_flag			check				( void );
 			_gim_flag			init				( void );
+			_gim_flag			read				( const char * dbname );
 			_gim_flag			create_table		( const char * table_name );
 			_gim_flag			add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type );
 			_gim_flag			add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
-			_gim_int8			gdbs_tokenizer		( char * line , const char * separator );
-			char * 				gdbs_getline		( FILE * fp );
-			_gim_flag			gdbs_feof			( void );		
+			_gim_flag			init_from_gdbs		( const char * gdbs_name );
+			_gim_int8			gdbs_tokenizer		( char * line );
+			char * 				gdbs_getline		( void );
+			_gim_flag			gdbs_open			( void );
+			_gim_flag			gdbs_feof			( void );
 
 		private:
 			_gim_flag			create_db			( const char * dbname );
@@ -85,7 +88,10 @@
 			char				name[128];
 			char				d_name[1024];
 			char				file_name[512];
+			char				gdbs_file_name[512];
 			char				comment[1024];
+
+			_gim_handler		* gdbs_file;
 
 			volatile _gim_flag	initiated;
 			volatile _gim_flag	changed;
@@ -105,8 +111,6 @@
 					strcpy( name		, "" );
 					strcpy( comment		, "" );
 					strcpy( file_name	, "" );
-//					set_db_properities( GIM_DB_VOLATILE , __GIM_YES );
-//					set_db_properities( GIM_DB_BALANCED , __GIM_YES );
 					db->mode = GIM_DB_BALANCED;
 					db->type = GIM_DB_PERMANENT;
 					db->tables_number = 0;

@@ -2,10 +2,14 @@
 Geometry=1914x991+0+32
 
 [File Loader]
-Files=../../src/gim_db.cc#282%%%../../include/gim_db_structures.h#100%%%../../include/gim_db.h#120%%%../../include/gim_list.h#76%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#44%%%../../src/gim_file.cc#1%%%../../src/gim_kvalue.cc#547%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#19%%%../../include/gim_lexical.h#82
+Files=../../src/gim_db.cc#338%%%../../include/gim_db_structures.h#77%%%../../include/gim_db.h#91%%%../../include/gim_list.h#76%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#647%%%../../src/gim_file.cc#1%%%../../src/gim_kvalue.cc#413%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#26%%%../../include/gim_lexical.h#82%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#24%%%../../db/gdbs_command_structure#18
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
+
+[Search Box]
+Case Sensitive=1
+Highlight Match=1
 
 [Execution]
 Program uri=../../../../Projects/gim3/gim_shell/gimshell

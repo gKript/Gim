@@ -46,27 +46,24 @@
 
 
 _gim_flag	gim_db_obj::set_name( const char * dbname ) {
-	if ( dbname ) {
-		if ( ( strlen( dbname ) > 64 ) || ( strlen( dbname ) < 1 ) ) {
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::set_name" , "The db name must be lenght between 1 and 64 std characters" , __GIM_ERROR );
-			return __GIM_ERROR;
-		}
-		char	tmp_name[64];
-		char	message[256];
-		strcpy( tmp_name	, dbname );
-		strcpy( name	, lex->char_subst( tmp_name , ' ' , '_' ) );
-		sprintf( home	, "%s%s" , env_data->home , name );
-		sprintf( file_name	, "%s%s/%s.conf" , env_data->home , name , name );
-		sprintf( d_name	, "%s%s/%s.gdb" , env_data->home , name , name );
-		sprintf( message , "DB : db name setted [%s]" , name );
-		gim_error->set( "gim_db_obj::set_name" , message );
-		return __GIM_OK;
+	if ( ( strlen( dbname ) > 64 ) || ( strlen( dbname ) < 1 ) ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::set_name" , "The db name must be lenght between 1 and 64 std characters" , __GIM_ERROR );
+		return __GIM_ERROR;
 	}
-	gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::set_name" , "The db name cannot be NULL" , __GIM_ERROR );
-	return __GIM_ERROR;
+
+	char	tmp_name[64];
+	char	message[256];
+
+	strcpy( tmp_name	, dbname );
+	strcpy( name	, lex->char_subst( tmp_name , ' ' , '_' ) );
+	sprintf( home	, "%s%s" , env_data->home , name );
+	sprintf( file_name	, "%s%s/%s.conf" , env_data->home , name , name );
+	sprintf( d_name	, "%s%s/%s.gdb" , env_data->home , name , name );
+	sprintf( message , "DB : db name setted [%s]" , name );
+	gim_error->set( "gim_db_obj::set_name" , message );
+	return __GIM_OK;
 }
 
-		
 
 _gim_flag	gim_db_obj::set_properities( _gim_flag properities , _gim_flag value ) {
 	switch ( properities ) {
@@ -283,44 +280,120 @@ _gim_flag   gim_db_obj::gdbs_feof( void ) {
 }
 
 
-char * 	gim_db_obj::gdbs_getline( FILE * fp ) {
+_gim_flag   gim_db_obj::read( const char * dbname ) {
+	if ( ( strlen( dbname ) > 64 ) || ( strlen( dbname ) < 1 ) ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::read" , "The db name must be lenght between 1 and 64 std characters" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+
+	char		tmp_name[64];
+	_gim_flag   result;
+
+	strcpy( tmp_name	, dbname );
+	strcpy( name	, lex->char_subst( tmp_name , ' ' , '_' ) );
+	sprintf( home	, "%s%s" , env_data->home , name );
+	sprintf( file_name	, "%s%s/%s.conf" , env_data->home , name , name );
+	gim_error->set( "gim_db_obj::read" , "I trying to read the DB" );
+	result = db->conf->Read( file_name );
+	if ( result == __GIM_NOT_EXIST ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::read" , "I cannot found the DB file." , __GIM_ERROR );
+		return __GIM_NOT_EXIST;
+	}
+	if ( result == __GIM_NOT_OK ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::read" , "Something wrong with the DB file. Sorry." , __GIM_ERROR );
+		return __GIM_NOT_EXIST;
+	}
+	gim_error->set( "gim_db_obj::read" , "DB file succesfully red" );
+	return __GIM_OK;
+}
+
+
+char * 	gim_db_obj::gdbs_getline( void ) {
+	if ( ! gdbs_file ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_getline" , "No open file" , __GIM_ERROR  );
+		return NULL;
+	}
+
 	static char line[PRSR_MAX_LINE];
+
 	__GIM_VCLEAR( line , PRSR_MAX_LINE , char ,'\0' );
-	fgets( line , PRSR_MAX_LINE , fp );
-	if ( feof(fp) ) 
+	fgets( line , PRSR_MAX_LINE , gdbs_file->fp );
+	if ( feof( gdbs_file->fp ) ) 
 		syntax->Feof = __GIM_ON;
+	strcat( line, "\0" );
 	return line;
 }
 
 
+_gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
+	_gim_int8 c = 0;
+	_gim_int8 l = 0;
 
-_gim_int8 gim_db_obj::gdbs_tokenizer( char * line , const char * separator ) {
+	strcpy( gdbs_file_name , gdbs_name );
+	gdbs_open();
+	printf( "  L- T | Command\n\n" );
+	while (  !gdbs_feof() ) {
+		c = gdbs_tokenizer( gdbs_getline() );
+		if ( c > 0 ) {
+			printf( "(%2d-%2d)  " , l , c );
+			for ( int i = 0 ; i < c ; i++ ) 
+				printf( "%-20s  " , Tok[i] );
+			puts("");
+		}
+		else if ( c < 0 )
+			printf( "\nSyntax error in line %d\n\n" , l );
+		l++;
+	}
+}
+
+
+_gim_flag	gim_db_obj::gdbs_open( void ) {
+	if ( !strlen( gdbs_file_name ) ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_open" , "No file name set" , __GIM_ERROR  );
+		return __GIM_ERROR;
+	}
+
+	gdbs_file = gim_file_manager->open( gdbs_file_name , __GIM_FILE_POINTER , __GIM_READ );
+
+	if ( ! gdbs_file ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_open" , "File not found" , __GIM_ERROR  );
+		return __GIM_ERROR;
+	}
+	return __GIM_OK;
+}
+
+
+_gim_int8 gim_db_obj::gdbs_tokenizer( char * line ) {
+	if ( !strlen( line ) )
+		return 0;
+	
 	static unsigned int	i;
 	unsigned int		a , b = 0;
-	_gim_flag			for_exit = __GIM_NO;
-
+	volatile _gim_flag	for_exit = __GIM_NO;
+	
 	i = 0;
-	__GIM_CLEAR( Tok , 1 , Tok );
-	for( a = 0 ; ( ( a < ( strlen( line ) - 1 ) ) || ( for_exit == __GIM_NO ) ) ; a++ ) {
+	__GIM_VCLEAR( Tok , 1 , Tok , '\0' );
+	for( a = 0 ; ( ( a < ( strlen( line ) - 1 ) ) && ( for_exit == __GIM_NO ) ) ; a++ ) {
 		if ( i > 19 ) {
 			gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::db_tokenizer" , "too much token in line" , __GIM_ERROR  );
 			return __SYNTAX_ERROR;
 		}
-		if ( lex->is_in_string( line[a] , separator ) ) {
-			if ( ( line[a] == '#' ) || ( line[a] == '-' ) || ( line[a] == '\n' ) ) {
-				for_exit = __GIM_YES;
-			}
-			else {
-				Tok[i][b] = '\0' ;
-				i++;
+		if ( ( line[a] == GDBS_STOP_CHAR ) || ( line[a] == '\n' ) )
+			break;
+		else {
+			if ( lex->is_in_string( line[a] , GDBS_SEPARATOR_STR ) ) {
+				Tok[i++][b] = '\0' ;
 				b=0;
 			}
-		}
-		else {
-			Tok[i][b] = line[a];
-			b++;
+			else
+				Tok[i][b++] = line[a];
 		}
 	}
-	return i;
+	
+	if ( ( i ) && ( strlen( Tok[0] ) ) )
+		return i;
+	else if ( ( i ) && ( !strlen( Tok[0] ) ) )
+		return __SYNTAX_ERROR;
+	return 0;
 }
 		

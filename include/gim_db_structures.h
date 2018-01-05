@@ -47,6 +47,10 @@
 	#define GIM_DB_MODE				"mode"
 	#define GIM_DB_TYPE				"type"
 
+	#define	GDBS_SEPARATOR_STR		" ;"
+	#define	GDBS_STOP_CHAR			'#'
+	
+
 	enum	gim_db_type {
 		GIM_DB_VOLATILE = 1,		/*!<	*/
 		GIM_DB_PERMANENT,			/*!<	*/

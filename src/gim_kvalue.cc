@@ -410,7 +410,7 @@ _gim_flag	gim_prsr_obj::Down( void ) {
 	prsr_kvalue_section	* tmp2_section = NULL;
 	char	tmp[256];
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Down" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::Down" , "No parser object defined" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	sprintf( tmp , "%s Prsr object goes down..." , prsr_obj->title );
