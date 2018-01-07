@@ -156,7 +156,7 @@ void * gim_list_obj::get_item( void ) {
 
 
 void *  gim_list_obj::get_item( _gim_Uint32 index ) {
-	if ( index = 0 ) {
+	if ( index == 0 ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item" , "index cannot be 0" , __GIM_ERROR );
 		return NULL;
 	}

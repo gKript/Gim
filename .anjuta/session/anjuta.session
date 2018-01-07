@@ -2,7 +2,7 @@
 Geometry=1914x989+0+32
 
 [File Loader]
-Files=../../src/gim_db.cc#535%%%../../include/gim_db_structures.h#51%%%../../include/gim_db.h#162%%%../../include/gim_list.h#76%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#647%%%../../src/gim_file.cc#1%%%../../src/gim_kvalue.cc#413%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#26%%%../../include/gim_lexical.h#82%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#27%%%../../db/gdbs_command_structure#9%%%../../src/gim_list.cc#140
+Files=../../src/gim_db.cc#559%%%../../include/gim_db_structures.h#182%%%../../include/gim_db.h#91%%%../../include/gim_list.h#77%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#647%%%../../src/gim_file.cc#230%%%../../src/gim_kvalue.cc#413%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#20%%%../../include/gim_lexical.h#82%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#4%%%../../db/gdbs_command_structure#9%%%../../src/gim_list.cc#148
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -20,10 +20,6 @@ Working directories=../../../../Projects/gim3
 Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
 Expand=trunk%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
 
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2
-
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
 Selected Configuration=Optimized
@@ -31,6 +27,10 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
+
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
+Stop at beginning=2
 
 [Commit Logs]
 Logs=Little variations

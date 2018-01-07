@@ -162,7 +162,8 @@
 		_gim_list *		fields;
 		_gim_list *		records;
 		 
-		_gim_prsr		* tbl;
+		_gim_prsr		* Tstruct;
+		_gim_prsr		* Tdata; 
 
 	};
 

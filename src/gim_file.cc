@@ -227,20 +227,20 @@ void	gim_file_manager_obj::close( _gim_handler * hand ) {
 			case __GIM_FILE_DESCRIPTOR : {
 				//~ gim_error->set( "gim_file_manager_obj::close" , "File desctiptor closing" );
 				::close( item->hand->fd );
-				gim_error->set( "gim_file_manager_obj::close" , "File closed" );
+				gim_error->Set( GIM_ERROR_MESSAGE , "gim_file_manager_obj::close" , "File desctiptor [%s] closed" , hand->name );
 				break;
 			}
 			case __GIM_FILE_POINTER : {
 				//~ gim_error->set( "gim_file_manager_obj::close" , "File pointer closing" );
 				fclose( item->hand->fp );
-				gim_error->set( "gim_file_manager_obj::close" , "File closed" );
+				gim_error->Set( GIM_ERROR_MESSAGE , "gim_file_manager_obj::close" , "File pointer [%s] closed" , hand->name );
 				break;
 			}
 			case __GIM_FILE_MAPPING : {
 				//~ gim_error->set( "gim_file_manager_obj::close" , "File mapping closing" );
 				::close( item->hand->fd );
 				munmap( item->hand->fm , item->hand->size );
-				gim_error->set( "gim_file_manager_obj::close" , "File closed" );
+				gim_error->Set( GIM_ERROR_MESSAGE , "gim_file_manager_obj::close" , "File mapping [%s] closed" , hand->name );
 				break;
 			}
 			default : {

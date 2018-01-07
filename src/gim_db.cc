@@ -341,6 +341,20 @@ _gim_flag	gim_db_obj::gdbs_open( void ) {
 }
 
 
+void	gim_db_obj::gdbs_close( void ) {
+	if ( !strlen( gdbs_file_name ) ) {
+		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::gdbs_open" , "No file name set" , __GIM_ERROR  );
+	}
+	else if ( ! gdbs_file ) {
+		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::gdbs_open" , "File is not open" , __GIM_ERROR  );
+	}
+	else {
+		gim_file_manager->close( gdbs_file );
+		gim_error->set( "prsr_lexical_class::gdbs_open" , "File closed" );
+	}
+}
+
+
 _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 	static _gim_Uint8   id;
 
@@ -507,6 +521,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 	_gim_int8 t = 0;
 	_gim_int8 s = 0;
+	_gim_int8 f = 0;
 	_gim_int8 l = 1;
 
 	gim_error->Set( GIM_ERROR_OK , "gim_db_obj::init_from_gdbs" , "Start reading GDBS file [%s]" , gdbs_name );
@@ -536,8 +551,14 @@ _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 				return __GIM_ERROR;
 			}
 		}
+		else
+			gim_error->Set( "prsr_lexical_class::init_from_gdbs" , "SKIPPED" );
 		l++;
 	}
+	f = gdbs_execute();
+	gim_error->Set( "prsr_lexical_class::init_from_gdbs" , "GDBS: all done!" );
+
+	gdbs_close();
 	return __GIM_OK;
 }
 
@@ -653,5 +674,29 @@ _gim_flag   gim_db_obj::string_to_flag( _gim_Uint8 index , _gim_flag context ) {
 	gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::string_to_flag" , "PROPERTIES not found : [%s]" , Tok[ index ] );
 	return __GIM_ERROR;
 }
+
+
+
+_gim_flag	gim_db_obj::gdbs_execute( void ) {
+	if ( ! gdbs_script->items() ) {
+		gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::string_to_flag" , "Script list is empty. Nothing to do." );
+		return __GIM_ERROR;
+	}
+	gdbs_script->rewind();
+
+	_gim_gdbs_line   * line = NULL;
+
+	do {
+		line = (_gim_gdbs_line *)gdbs_script->get_item();
+		if ( line != NULL ) {
+			gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::string_to_flag" , "Got line %d" , gdbs_script->get_id() );
+			//  -----
+			gdbs_script->next_item();
+		}
+	} while ( line != NULL );
+	return __GIM_OK;
+}
+
+
 
 

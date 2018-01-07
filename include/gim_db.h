@@ -70,7 +70,9 @@
 			_gim_int8			gdbs_tokenizer			( char * line );
 			char * 				gdbs_getline			( void );
 			_gim_flag			gdbs_open				( void );
+			void				gdbs_close				( void );
 			_gim_flag			gdbs_feof				( void );
+			_gim_flag			gdbs_execute			( void );
 
 		private:
 			_gim_flag			create_db			( const char * dbname );
