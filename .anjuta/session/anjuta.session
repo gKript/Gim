@@ -1,8 +1,8 @@
 [Anjuta]
-Geometry=1914x991+0+32
+Geometry=1914x989+0+32
 
 [File Loader]
-Files=../../src/gim_db.cc#338%%%../../include/gim_db_structures.h#77%%%../../include/gim_db.h#91%%%../../include/gim_list.h#76%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#647%%%../../src/gim_file.cc#1%%%../../src/gim_kvalue.cc#413%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#26%%%../../include/gim_lexical.h#82%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#24%%%../../db/gdbs_command_structure#18
+Files=../../src/gim_db.cc#535%%%../../include/gim_db_structures.h#51%%%../../include/gim_db.h#162%%%../../include/gim_list.h#76%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_lexical.cc#647%%%../../src/gim_file.cc#1%%%../../src/gim_kvalue.cc#413%%%../../include/gim_custom_type.h#64%%%../../db/gdbs_test.cc#26%%%../../include/gim_lexical.h#82%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#27%%%../../db/gdbs_command_structure#9%%%../../src/gim_list.cc#140
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -18,7 +18,7 @@ Working directories=../../../../Projects/gim3
 
 [Project Manager]
 Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
-Expand=trunk%%%trunk//gim_gkdp%%%trunk//gim_gkdp//gkdp%%%trunk//gim_shell%%%trunk//gim_shell//gimshell%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
+Expand=trunk%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
 
 [Debugger]
 Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:

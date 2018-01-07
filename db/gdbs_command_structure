@@ -1,0 +1,17 @@
+	
+ID		Not	Comando			Primo			Cosa			Secondo			Terzo			Example ( * = mandatory parameter )
+							parametro						parametro		parametro
+
+11		4	CREATE		-   DB				DB name			DB file name					CREATE DB [ * DB valtemp] [ * valtemp_db]  
+12		3	"	"		-   TABLE			TABLE name		/				/				CREATE TABLE [ * sensori]
+
+21		5	ADD			-   FIELD			FIELD posiition	FIELD TYPE		FIELD name		ADD FIELD [ * 2] [* STRING] [ * message]
+
+31		3	SET			-   DB				Properity		/				/				SET DB [ * BALANCED]
+32		3	"	"		-   TABLE			Properity		/				/				SET TABLE [ * VIRTUAL]
+33		4   "   "		-   FIELD			FIELD number	Properity		/				SET FIELD 0 KEY
+
+41		3	PIN			-   TABLE			TABLE name		/				/				PIN TABLE [ * sensori]
+
+51		2	UNPIN		-   TABLE			/				/				/				UNPIN TABLE
+

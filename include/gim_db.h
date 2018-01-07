@@ -55,21 +55,22 @@
 	class gim_db_obj {
 
 		public:
-			_gim_flag			set_name			( const char * dbname );
-			char *				get_name			( void );
-			_gim_flag			set_properities		( _gim_flag properities , _gim_flag value );
-			_gim_flag			make_env			( void );
-			_gim_flag			check				( void );
-			_gim_flag			init				( void );
-			_gim_flag			read				( const char * dbname );
-			_gim_flag			create_table		( const char * table_name );
-			_gim_flag			add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type );
-			_gim_flag			add_field_to_table  ( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
-			_gim_flag			init_from_gdbs		( const char * gdbs_name );
-			_gim_int8			gdbs_tokenizer		( char * line );
-			char * 				gdbs_getline		( void );
-			_gim_flag			gdbs_open			( void );
-			_gim_flag			gdbs_feof			( void );
+			_gim_flag			set_name				( const char * dbname );
+			char *				get_name				( void );
+			_gim_flag			set_property			( _gim_flag property , _gim_flag value );
+			_gim_flag			make_env				( void );
+			_gim_flag			check					( void );
+			_gim_flag			init					( void );
+			_gim_flag			read					( const char * dbname );
+			_gim_flag			create_table			( const char * table_name );
+			_gim_flag			add_field_to_table		( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type );
+			_gim_flag			add_field_to_table		( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
+			_gim_flag			init_from_gdbs			( const char * gdbs_name );
+			_gim_flag			gdbs_line_syntax_check	( _gim_Uint8 NoT );
+			_gim_int8			gdbs_tokenizer			( char * line );
+			char * 				gdbs_getline			( void );
+			_gim_flag			gdbs_open				( void );
+			_gim_flag			gdbs_feof				( void );
 
 		private:
 			_gim_flag			create_db			( const char * dbname );
@@ -81,8 +82,11 @@
 //			_gim_flag			delete_record		( const char * table_name , _gim_db_record * record );
 			_gim_db_table *		get_table_handle	( const char * table_name );
 			_gim_flag			command_parser		( const char * commad );
+			_gim_flag			string_to_flag		( _gim_Uint8 index , _gim_flag context );
 
 			_gim_db_main		* db;
+
+			_gim_list			* gdbs_script;
 
 			char				home[1024];
 			char				name[128];
@@ -122,6 +126,7 @@
 					syntax->Title = __GIM_OFF;
 					syntax->Section = __GIM_OFF;
 					syntax->Feof = __GIM_OFF;
+					gdbs_script  = new _gim_list;
 					gim_error->set( "gim_db_obj::gim_db_obj" , "DB : Constructor end" );
 				}
 				else 
@@ -148,11 +153,12 @@
 					// loop di deallocazione records  e tabelle
 
 				}
+				delete gdbs_script;
+				delete syntax;
 				delete db->tables;
 				db->conf->Down();
 				delete db->conf;
 				gim_memory->Free( db );
-//				delete memory;
 				gim_error->set( "gim_db_obj::~gim_db_obj" , "DB : shutted down" );
 			};
 	};

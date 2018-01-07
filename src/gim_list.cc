@@ -107,26 +107,36 @@ _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 
 
 void		gim_list_obj::destroy_list( void ) {
-	_gim_list_item *	temp_item;
-	_gim_list_item *	temp_free;
 	if ( startlist == NULL )
 		gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "The list is already empty." );
-	temp_item = startlist;
-	while ( temp_item != NULL ) {
-		if ( temp_item->item != NULL ) {
-			if ( gim_memory->Check ( temp_item->item ) == __GIM_EXIST ) {
-				gim_memory->Unlock_and_free ( temp_item->item );
-				gim_error->set( "gim_list_obj::destroy_list" , "Item found and deallocated succesfully" );
+	else {
+
+		_gim_list_item *	temp_item = startlist;
+		_gim_list_item *	temp_free;
+		_gim_Uint16			It = 0 , Ls = 0;
+	
+
+		while ( temp_item != NULL ) {
+			if ( temp_item->item != NULL ) {
+				if ( gim_memory->Check ( temp_item->item ) == __GIM_EXIST ) {
+					if ( gim_memory->Free ( temp_item->item ) == __GIM_NOT_OK )
+						gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::destroy_list" , "Item NOT found. You have to deallocate it before to destroy the list" , __GIM_ERROR );
+					else
+						It++;
+				}
+				else
+					gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "Item not found" );
 			}
+			else 
+				gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "Item was NULL" );
+			temp_free = temp_item;
+			temp_item = temp_item->nextitem;
+			if ( gim_memory->Free ( temp_free ) == __GIM_NOT_OK )
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::destroy_list" , "Some problem to deallocate a List item." , __GIM_ERROR );
 			else
-				gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "Item not found" );
+				Ls++;
 		}
-		else 
-			gim_error->Set( GIM_ERROR_WARNING , "gim_list_obj::destroy_list" , "Item was NULL" );
-		temp_free = temp_item;
-		temp_item = temp_item->nextitem;
-		gim_memory->Free ( temp_free );
-		gim_error->set( "gim_list_obj::destroy_list" , "Item list deallocated" );
+		gim_error->Set( "gim_list_obj::destroy_list" , "Deallocated : [%3d List items] [%3d Linked items]" , Ls , It );
 	}
 }
 

@@ -21,7 +21,7 @@
             </notebook>
             <item name="search_files" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
           </paned>
-          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
         </paned>
       </paned>
     </dock>

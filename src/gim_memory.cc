@@ -77,10 +77,14 @@ gim_memory_id memory_id_gim [] = {
 	{	0xff002000	,	"__GIM_MEM_PAGE_ADD"				} ,
 	{	0xff000031	,	"__GIM_MEM_DIRECTORY_FLIST_ADD"		} ,
 	{	0xff000032	,	"__GIM_MEM_DIRECTORY_ITEM"			} ,
+	{	0xff000033	,	"__GIM_LIST_ITEM"					} ,
+	{	0xff000034	,	"__GIM_GETOPT_ITEM"					} ,
+	{	0xff000035	,	"__GIM_ASCII_BUFFER"				} ,
+	{	0xff000036	,	"__GIM_GDBS_LINE"					} ,
 	{	0xff000051	,	"__GIM_LIST_ITEM"					} ,
 	{	0xffffffff	,	""									} ,
 };
-	
+
 struct gim_memory_id memory_id_gkp [] = {
 	{	0xff001000	,	"__GIM_MEM_GKP_FLIST_ADD"	} ,
 	{	0xffffffff	,	""							} ,

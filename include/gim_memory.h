@@ -122,6 +122,7 @@
  	#define __GIM_LIST_ITEM					0xff000033		/*!<	caller is gim_directory_obj::add */
  	#define __GIM_GETOPT_ITEM				0xff000034		/*!<	caller is gim_directory_obj::add */
  	#define __GIM_ASCII_BUFFER				0xff000035		/*!<	caller is gim_directory_obj::add */
+	#define __GIM_GDBS_LINE					0xff000036		/*!<	caller is gim_directory_obj::add */
 	
 
 	#define __GIM_MEM_PAGE_ADD				0xff002000		/*!<	gim_memory_page_obj::add */
