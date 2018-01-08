@@ -132,89 +132,92 @@
 #ifndef _GIM_COMPRESSION_H_
 #define _GIM_COMPRESSION_H_
 
-	#include "gim_base_header.h"
-	#include "gim_checksum.h"
-	#include "gim_mersennetwister.h"
+		#if ( ARCHITETTURE == X86 )
+		#include "gim_base_header.h"
+		#include "gim_checksum.h"
+		#include "gim_mersennetwister.h"
 
-	#define		GIM_BZ2_COMPRESSION			__GIM_ENABLE
-	#define		GIM_GZ_COMPRESSION			__GIM_DISABLE
-	#define		GIM_LZH_COMPRESSION			__GIM_ENABLE
+		#define		GIM_BZ2_COMPRESSION			__GIM_ENABLE
+		#define		GIM_GZ_COMPRESSION			__GIM_DISABLE
+		#define		GIM_LZH_COMPRESSION			__GIM_ENABLE
 
-	#if GIM_BZ2_COMPRESSION == __GIM_ENABLE
-		#include "gim_bz2_bzlib.h"	
-	#endif
-	#if GIM_LZH_COMPRESSION == __GIM_ENABLE
-		#include "gim_lzh.h"	
-	#endif
+		#if GIM_BZ2_COMPRESSION == __GIM_ENABLE
+			#include "gim_bz2_bzlib.h"	
+		#endif
+		#if GIM_LZH_COMPRESSION == __GIM_ENABLE
+			#include "gim_lzh.h"	
+		#endif
 				
-	/*!
-		\enum	gim_compression_type
-		\brief	The list of compression type you can choice. \n
-	*/	
-	enum gim_compression_type {
-		__GIM_UNKNOWN_COMPRESSION = -1,	/*!<	This is an unknown compression type */
-		__GIM_BZ2 = 1,					/*!<	This is for a BZ2 compression */
-		__GIM_GZIP,						/*!<	This is for a BZ2 compression */
-		__GIM_LZH						/*!<	This is for a LZH compression */
-	};
+		/*!
+			\enum	gim_compression_type
+			\brief	The list of compression type you can choice. \n
+		*/	
+		enum gim_compression_type {
+			__GIM_UNKNOWN_COMPRESSION = -1,	/*!<	This is an unknown compression type */
+			__GIM_BZ2 = 1,					/*!<	This is for a BZ2 compression */
+			__GIM_GZIP,						/*!<	This is for a BZ2 compression */
+			__GIM_LZH						/*!<	This is for a LZH compression */
+		};
 	
-	/*!	\def	__GIM_BZ_BLOCKSIZE100K
-				It is a number with you can balance the compress factor... 0 bigger result but faster  -  9 smaller result but slower
-		 		Per default is \a 9
-		\def	__GIM_BZ_VERBOSITY
-				It is the \a verbosity for the BZ2 compression. Gim want a BZ2 silent compresison so per default is 0
-		\def	__GIM_BZ_WORKFACTOR
+		/*!	\def	__GIM_BZ_BLOCKSIZE100K
+					It is a number with you can balance the compress factor... 0 bigger result but faster  -  9 smaller result but slower
+			 		Per default is \a 9
+			\def	__GIM_BZ_VERBOSITY
+					It is the \a verbosity for the BZ2 compression. Gim want a BZ2 silent compresison so per default is 0
+			\def	__GIM_BZ_WORKFACTOR
 				
 
-	*/
+		*/
 
-	#define 	__GIM_BZ_BLOCKSIZE100K		9		// 0 - 9    0 bigger and faster  -  9 smaller and slower
-	#define		__GIM_BZ_VERBOSITY			4		// 0 		0 Not verbose    -   for more infos please refer to the official bzlib site
-	#define		__GIM_BZ_WORKFACTOR			30		// 0 - 255
+		#define 	__GIM_BZ_BLOCKSIZE100K		9		// 0 - 9    0 bigger and faster  -  9 smaller and slower
+		#define		__GIM_BZ_VERBOSITY			4		// 0 		0 Not verbose    -   for more infos please refer to the official bzlib site
+		#define		__GIM_BZ_WORKFACTOR			30		// 0 - 255
 	
 	
-	/*! \class 		gim_compression_obj
-		\brief		With this useful cleass you can compress with different algorithm a buffer
-		\author		Danilo Zannoni  -  asyntote@gkript.org
-		\version	2.0-0
-		\date		2003-2008
-		\warning	This class is not yet included by any Gim header. It is documented only for completeness.
-					You cannot use this class.
-		\todo		The compression is planned on the Gim 2.5 Milestone on Trac. You can visit this link if you want more datils
-					[ http://phorus.nibbles.it/trac/gkript/milestone/Gim%202.5 ]
-	*/
-	class gim_compression_obj {
-		public:
-			/*!	\fn	Compress( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 * destlen )
+		/*! \class 		gim_compression_obj
+			\brief		With this useful cleass you can compress with different algorithm a buffer
+			\author		Danilo Zannoni  -  asyntote@gkript.org
+			\version	2.0-0
+			\date		2003-2008
+			\warning	This class is not yet included by any Gim header. It is documented only for completeness.
+						You cannot use this class.
+			\todo		The compression is planned on the Gim 2.5 Milestone on Trac. You can visit this link if you want more datils
+						[ http://phorus.nibbles.it/trac/gkript/milestone/Gim%202.5 ]
+		*/
+		class gim_compression_obj {
+			public:
+				/*!	\fn	Compress( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 * destlen )
 
-				\brief	This function compress a \a buffer into an other buffer.
-				\param	comp_type	One of a compression type defined in the gim_compression_type enum.
-				\param	soub		The source buffer (uncompressed).
-				\param	soulen		The source buffer lenght.
-				\param	destlen		At the end will be the lenght of the compressed buffer.
-				\return	The compressed buffer
-			*/
-			_gim_buffer	Compress	( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 * destlen );
+					\brief	This function compress a \a buffer into an other buffer.
+					\param	comp_type	One of a compression type defined in the gim_compression_type enum.
+					\param	soub		The source buffer (uncompressed).
+					\param	soulen		The source buffer lenght.
+					\param	destlen		At the end will be the lenght of the compressed buffer.
+					\return	The compressed buffer
+				*/
+				_gim_buffer	Compress	( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 * destlen );
 			
-			/*!	\fn	Uncompress( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 destlen );
+				/*!	\fn	Uncompress( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 destlen );
 
-				\brief	This function uncompress a \a buffer into an other buffer.
-				\param	comp_type	One of a compression type defined in the gim_compression_type enum.
-				\param	soub		The source buffer (compressed).
-				\param	soulen		The source buffer lenght.
-				\param	destlen		At the end will be the lenght of the uncompressed buffer.
-				\return	The uncompressed buffer
-			*/
-			_gim_buffer	Uncompress	( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 destlen );
+					\brief	This function uncompress a \a buffer into an other buffer.
+					\param	comp_type	One of a compression type defined in the gim_compression_type enum.
+					\param	soub		The source buffer (compressed).
+					\param	soulen		The source buffer lenght.
+					\param	destlen		At the end will be the lenght of the uncompressed buffer.
+					\return	The uncompressed buffer
+				*/
+				_gim_buffer	Uncompress	( _gim_flag comp_type , _gim_buffer soub , _gim_Uint32 soulen , _gim_Uint32 destlen );
 		
-		private:
-			_gim_flag	self_test( void );
+			private:
+				_gim_flag	self_test( void );
 		
-		public:
-			gim_compression_obj();
+			public:
+				gim_compression_obj();
 
-	};
+		};
 
-	extern gim_compression_obj	* gim_compression;
+		extern gim_compression_obj	* gim_compression;
 
+	#endif
+	
 #endif // _GIM_COMPRESSION_H_

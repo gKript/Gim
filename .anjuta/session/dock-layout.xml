@@ -2,18 +2,18 @@
 <dock-layout>
   <layout name="__default__">
     <dock name="__dock_1" floating="no" width="-1" height="-1" floatx="0" floaty="0" skip-taskbar="yes">
-      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="260">
+      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="345">
         <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="407">
           <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes" page="-1">
             <item name="snippets_browser" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
             <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
           </notebook>
-          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="568">
+          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="413">
             <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
-            <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
           </paned>
         </paned>
-        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="602">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="417">
           <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="403">
             <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
               <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
@@ -21,7 +21,7 @@
             </notebook>
             <item name="search_files" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
           </paned>
-          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
         </paned>
       </paned>
     </dock>

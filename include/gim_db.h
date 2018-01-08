@@ -56,7 +56,7 @@
 
 		public:
 			_gim_flag			set_name				( const char * dbname );
-			char *				get_name				( void );
+			char *					get_name				( void );
 			_gim_flag			set_property			( _gim_flag property , _gim_flag value );
 			_gim_flag			make_env				( void );
 			_gim_flag			check					( void );

@@ -135,7 +135,7 @@ void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden 
 	if ( virt_mem == __GIM_OFF ) {
 		if ( gim_interface != NULL )
 			gim_interface->data->mem_max_allocable = max_allocation;
-		if ( size > (size_t)abs( max_allocation - allocated ) ) {
+		if ( size > (size_t)abs( (int)max_allocation - allocated ) ) {
 			if ( max_allocation > 0 ) {
 				char message[256];
 				sprintf( message , "The demand for memory exceeds the max_allocation [ %s / %d ]" , metric_converter( size ) , ( max_allocation - allocated ) );
