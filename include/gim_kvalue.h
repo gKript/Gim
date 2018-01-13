@@ -460,7 +460,7 @@
 			*/
 			inline gim_prsr_obj() {
 				prsr_obj = NULL;
-				Lex = __LEX_UNKNOW;
+				Lex = __LEX_UNKNOWN;
 			}
 
 		private:

@@ -67,7 +67,11 @@
 		__GIM_NOT_FOUND,
 		__GIM_TRUE,
 		__GIM_FALSE,
-		__LEX_UNKNOW,
+		__GIM_READY,
+		__GIM_NOT_READY,
+		__GIM_RUNNING,
+		__GIM_NOT_RUNNING,
+		__LEX_UNKNOWN,
 		__LEX_A,
 		__LEX_B,
 	};
@@ -114,6 +118,8 @@
 	typedef int								_gim_long;
 	typedef unsigned int					_gim_Ulong;
 	typedef long long						_gim_Llong;
+	typedef unsigned long long				_gim_address;
+	
 	
 	typedef	unsigned char *					_gim_Ubuffer;
 	typedef	char *							_gim_buffer;

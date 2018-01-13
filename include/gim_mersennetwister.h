@@ -101,7 +101,7 @@
 // Not thread safe (unless auto-initialization is avoided and each thread has
 // its own MTRand object)
 
-//#include <iostream>
+#include <iostream>
 #include <limits.h>
 #include <stdio.h>
 #include <time.h>
@@ -164,8 +164,8 @@
 		// Saving and loading generator state
 		void save( uint32* saveArray ) const;  // to array of size SAVE
 		void load( uint32 *const loadArray );  // from such array
-//		friend std::ostream& operator<<( std::ostream& os, const MTRand& mtrand );
-//		friend std::istream& operator>>( std::istream& is, MTRand& mtrand );
+		friend std::ostream& operator<<( std::ostream& os, const MTRand& mtrand );
+		friend std::istream& operator>>( std::istream& is, MTRand& mtrand );
 
 	protected:
 		void initialize( const uint32 oneSeed );
@@ -408,7 +408,7 @@
 	}
 
 
-	/*inline std::ostream& operator<<( std::ostream& os, const MTRand& mtrand )
+	inline std::ostream& operator<<( std::ostream& os, const MTRand& mtrand )
 	{
 		register const MTRand::uint32 *s = mtrand.state;
 		register int i = mtrand.N;
@@ -426,7 +426,7 @@
 		mtrand.pNext = &mtrand.state[mtrand.N-mtrand.left];
 		return is;
 	}
-*/
+
 #endif  // MERSENNETWISTER_H
 
 // Change log:

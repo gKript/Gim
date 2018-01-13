@@ -49,6 +49,7 @@
 
 	#define __MISSING_STOP_CHAR		-5
 	#define __TOO_MUCH_TOKEN		-6
+	#define __NO_NEW_LINE			-7
 	#define __SKIPPED				0
 
 	#define	GDBS_SEPARATOR_STR		" ;"
@@ -153,11 +154,15 @@
  	struct _gim_db_table {
 		char			name[64];
 		char			comment[512];
+		char			file_name_struct[512];
+		char			file_name_data[512];
+		char			file_name_struct_long[512];
+		char			file_name_data_long[512];
 		_gim_flag		type;				//  Permanent, volatile or virtual 
-		_gim_Uint8		items;
-		_gim_Uint8		fields_number;
-		_gim_int16		key_field_number;
-		_gim_Uint32		sizeof_per_record;
+		_gim_Uint8		items;				//  numero di records presenti
+		_gim_Uint8		fields_number;		//  numero di campi per record
+		_gim_int16		key_field_number;   //  numero del campo KEY
+		_gim_Uint32		sizeof_per_record;  //  da valutare
 
 		_gim_list *		fields;
 		_gim_list *		records;
@@ -169,13 +174,16 @@
 
 
  	struct _gim_db_main {
-		_gim_flag		mode;
-		_gim_flag		type;
-		_gim_Uint8		tables_number;
+		_gim_flag			mode;
+		_gim_flag			type;
+		_gim_Uint8			tables_number;
 
-		_gim_prsr		* conf;
-		 
-		_gim_list		* tables;
+		_gim_prsr			* conf;
+
+		 char				pin_table[64];
+		 _gim_flag			pin;
+		 _gim_db_table *	Ttab; 
+		_gim_list			* tables;
 	};
 
 	

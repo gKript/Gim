@@ -75,19 +75,20 @@
 	#define GIM_LICENSE				"Released under the terms of the GNU General Public License v3"
 	#define GIM_SINCE				"07/12/2003"
 	
-	#define GIM_VERSION_STATE	   "dev"  // "rel" for release or "dev" for devel
+	#define GIM_VERSION_STATE	   "rel"  // "rel" for release or "dev" for devel
 
-	#define GIM_VERSION				"2.7-0"	/*!<	The string version of Gim	*/
+	#define GIM_VERSION				"2.8-5"	/*!<	The string version of Gim	*/
 	#define	GIM_MILESTONE			"3.0"
 
 	#define	GIM_MAJOR				2			/*!<	The major version of Gim	*/
-	#define	GIM_MINOR				7			/*!<	The minor version of Gim	*/
+	#define	GIM_MINOR				8			/*!<	The minor version of Gim	*/
 
+#	
 	#ifdef		GKMAKE_VERSIONING		/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
 		#define GIM_SUBMINOR		GIM_GKMAKE_BUILD
 		#define	GIM_BUILD_LAST		GIM_GKMAKE_LAST_BUILD
 	#else
-		#define GIM_SUBMINOR		0	
+		#define GIM_SUBMINOR		5	
 	#endif
 	
 

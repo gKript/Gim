@@ -567,7 +567,7 @@ _gim_flag gim_prsr_obj::Read( const char * filename ) {
 				return __GIM_NOT_OK;
 			}
 		}
-		case __LEX_UNKNOW : {
+		case __LEX_UNKNOWN : {
 			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Read" , "I cannot read this file" , __GIM_ERROR );
 			return __GIM_NOT_OK;
 		}

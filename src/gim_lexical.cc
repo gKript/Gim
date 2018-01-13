@@ -234,10 +234,10 @@ void	prsr_lexical_class::scan_lex_type( const char * filename ) {
 	char * line;
 	FILE *  tmpfp;
 	_gim_flag title = __GIM_NO;
-	lex_type = __LEX_UNKNOW;
+	lex_type = __LEX_UNKNOWN;
 	tmpfp = fopen( filename , "rb" );
 	if ( tmpfp ) {
-		while ( ( ! feof ( tmpfp ) ) && ( lex_type == __LEX_UNKNOW )  ) {
+		while ( ( ! feof ( tmpfp ) ) && ( lex_type == __LEX_UNKNOWN )  ) {
 			line = strdup( get_line ( tmpfp ) );
 			if ( is_in_string ( line , "<" ) )
 				title = __GIM_YES;
@@ -252,7 +252,7 @@ void	prsr_lexical_class::scan_lex_type( const char * filename ) {
 				}
 			}
 		}
-		if ( lex_type == __LEX_UNKNOW )
+		if ( lex_type == __LEX_UNKNOWN )
 			gim_error->set( "prsr_lexical_class::scan_lex_type" , "Lex is UNK__GIM_NOWN" );
 		fclose(tmpfp);
 	}
@@ -262,10 +262,10 @@ _gim_flag	prsr_lexical_class::scan_syntax( const char * filename , gim_prsr_obj 
 	_gim_flag	error = 0;
 	if ( gim_file_manager->exist( filename ) == __GIM_NOT_EXIST )
 		return __GIM_NOT_EXIST;
-	lex_type = __LEX_UNKNOW; 
+	lex_type = __LEX_UNKNOWN; 
 	scan_lex_type( filename );
-	if ( lex_type == __LEX_UNKNOW )
-		return __LEX_UNKNOW;
+	if ( lex_type == __LEX_UNKNOWN )
+		return __LEX_UNKNOWN;
 	switch ( lex_type ) {
 		case __LEX_A : {
 			prsr->Lex = __LEX_A ;

@@ -80,6 +80,7 @@
 			
 		private:
 	friend	class	gim_getopt_obj;
+	friend	class	gim_db_obj;
 			
 			_gim_int32			item_size;
 			_gim_Uint32			item_counter;

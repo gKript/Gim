@@ -96,6 +96,7 @@ _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 			beforelist->nextitem = afterlist;
 			afterlist->previtem = beforelist;
 			gim_memory->Unlock_and_free ( tmplist );
+			item_counter--;
 			gim_error->set( "gim_list_obj::add_item" , "Item found and deleted" );
 			return __GIM_OK;
 		}

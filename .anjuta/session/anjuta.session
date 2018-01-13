@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1440x844+0+28
+Geometry=1920x991+0+32
 
 [File Loader]
-Files=../../include/gim_db.h#68%%%../../include/gim_db_structures.h#178%%%../../src/gim_db.cc#1%%%../../db/valtemp_db.gkdbs#17
+Files=../../src/gim_db.cc#785%%%../../include/gim_db_structures.h#94%%%../../include/gim_db.h#174%%%../../include/gim_list.h#83%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_file.cc#230%%%../../src/gim_kvalue.cc#45%%%../../include/gim_custom_type.h#121%%%../../db/gdbs_test.cc#13%%%../../include/gim_lexical.h#116%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#24%%%../../db/gdbs_command_structure#9%%%../../include/gim_version.h#78%%%../../src/gim_version.cc#47%%%../../db/valtemp_db_Lex_A.conf#1%%%../../src/gim_list.cc#186%%%../../src/gim_memory.cc#317
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -31,6 +31,9 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
+
+[Commit Logs]
+Logs=Little variations
 
 [Debugger]
 Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:

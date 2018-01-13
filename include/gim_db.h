@@ -56,13 +56,15 @@
 
 		public:
 			_gim_flag			set_name				( const char * dbname );
-			char *					get_name				( void );
+			char *				get_name				( void );
 			_gim_flag			set_property			( _gim_flag property , _gim_flag value );
 			_gim_flag			make_env				( void );
 			_gim_flag			check					( void );
 			_gim_flag			init					( void );
 			_gim_flag			read					( const char * dbname );
 			_gim_flag			create_table			( const char * table_name );
+			_gim_flag			table_exist				( char * table_name );
+			_gim_db_table *		seek_table				( char * table_name );
 			_gim_flag			add_field_to_table		( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type );
 			_gim_flag			add_field_to_table		( const char * table_name , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
 			_gim_flag			init_from_gdbs			( const char * gdbs_name );
@@ -90,14 +92,18 @@
 
 			_gim_list			* gdbs_script;
 
+			_gim_flag			GDBS_run;
+
 			char				home[1024];
 			char				name[128];
 			char				d_name[1024];
 			char				file_name[512];
+			char				file_name_long[1024];
 			char				gdbs_file_name[512];
 			char				comment[1024];
 
 			_gim_handler		* gdbs_file;
+			volatile _gim_flag	gdbs_run;
 
 			volatile _gim_flag	initiated;
 			volatile _gim_flag	changed;
@@ -114,12 +120,15 @@
 				if ( strlen( gim_application_name ) != 0 ) {
 					gim_error->set( "gim_db_obj::gim_db_obj" , "DB : Constructor start" );
 					db = (_gim_db_main *)gim_memory->Alloc( sizeof( _gim_db_main ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
-					strcpy( name		, "" );
-					strcpy( comment		, "" );
-					strcpy( file_name	, "" );
-					db->mode = GIM_DB_BALANCED;
-					db->type = GIM_DB_PERMANENT;
+					strcpy( name			, "" );
+					strcpy( comment			, "" );
+					strcpy( file_name		, "" );
+					strcpy( file_name_long	, "" );
+					db->mode = GIM_DB_PERFORMANCE;
+					db->type = GIM_DB_VOLATILE;
 					db->tables_number = 0;
+					strcpy( db->pin_table , "" );
+					db->pin = __GIM_NO;
 					db->conf = new _gim_prsr;
 					db->tables = new _gim_list;
 					initiated	= __GIM_NO;
@@ -129,6 +138,7 @@
 					syntax->Section = __GIM_OFF;
 					syntax->Feof = __GIM_OFF;
 					gdbs_script  = new _gim_list;
+					gdbs_run = __GIM_NOT_RUNNING;
 					gim_error->set( "gim_db_obj::gim_db_obj" , "DB : Constructor end" );
 				}
 				else 
@@ -151,12 +161,19 @@
 				}
 				if ( db->tables->items() ) {
 					gim_error->set( "gim_db_obj::~gim_db_obj" , "DB : Some allocated Table found. Deallocating" );
-
-					// loop di deallocazione records  e tabelle
-
+					db->tables->rewind();
+					for ( _gim_int32 c = 0 ; c < db->tables_number ; c++ ) {
+						_gim_db_table * Ttmp = (_gim_db_table *)db->tables->get_item();
+						Ttmp->Tstruct->Down();
+						Ttmp->Tdata->Down();
+						delete Ttmp->fields;
+						delete Ttmp->records;
+						gim_memory->Free( Ttmp );
+						db->tables->next_item();
+					}
 				}
 				delete gdbs_script;
-				delete syntax;
+				gim_memory->Free ( syntax );
 				delete db->tables;
 				db->conf->Down();
 				delete db->conf;

@@ -51,7 +51,7 @@
 		\brief		This struct is the main node (title) of a configuration file in memory
 	*/
 	struct prsr {
-		char		filename[64];	/*!<	The name on disk of the configuration file	*/
+		char		filename[512];	/*!<	The name on disk of the configuration file	*/
 		char		title[64];		/*!<	The title of the configuration file	*/
 		char		comment[10240];	/*!<	The comment */
 		FILE		* fp;			/*!<	When opened this is the file pointer	*/

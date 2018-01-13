@@ -10,14 +10,11 @@ int main( int argc, char *argv[] ) {
 	gim_obj		* gim = new gim_obj;
 	gim_db_obj  * db = new gim_db_obj;
 	
-/*	if ( db->read( "valtemp" ) != __GIM_OK ) { 
-		db->set_name( "valtemp" );
-		db->init();
-		db->set_properities( GIM_DB_PERMANENT , __GIM_YES );
-		db->set_properities( GIM_DB_BALANCED  , __GIM_YES );
+	if ( db->read( "valori_temperatura" ) == __GIM_OK ) { 
+		puts( "OK letto" );
 	}
 	else 
-*/		db->init_from_gdbs( argv[1] );
+		db->init_from_gdbs( argv[1] );
 	
 	delete db;
 	delete gim;

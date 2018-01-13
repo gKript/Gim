@@ -46,7 +46,7 @@
 #ifndef _GIM_H
 #define _GIM_H
 
-	#define ARCHITETTURE		ARM
+	#define ARCHITETTURE		X86
 
 	#include <stdio.h>
 

@@ -1,27 +1,26 @@
-# GIM DBS 2.8-3 - asyntote@viprox - GimDBmanager;
----
-CREATE DB valori_temperatura valtemp;
-	SET DB PERMANENT;
-	SET DB BALANCED; 
----
-CREATE TABLE sensori sensori;
-	PIN TABLE sensori; 
-		SET TABLE PERMANENT;
-		ADD FIELD 0 STRING serial_number;
-		ADD FIELD 1 FLAG installation;
-		ADD FIELD 2 INT temp_min;
-		ADD FIELD 3 INT temp_max;
-		ADD FIELD 4 PERCENTAGE battery;
-		SET FIELD 0 KEY;
-	UNPIN TABLE;
----
-CREATE TABLE misure misure;
-	PIN TABLE misure;
-		SET TABLE PERMANENT;
-		ADD FIELD 0 INT index;
-		ADD FIELD 1 TIMESTAMP acq_time;
-		ADD FIELD 2 INT acq_value;
-		SET FIELD 0 AUTOINCREMENTAL;
-		SET FIELD 1 KEY;
-	UNPIN TABLE;
----
+# GIM GDBS 2.8-3 - asyntote@viprox - GimDBmanager
+
+CREATE DB valori_temperatura;
+SET DB PERMANENT;
+SET DB PERFORMANCE; 
+
+CREATE TABLE sensori;
+PIN TABLE sensori; 
+	SET TABLE PERMANENT;
+	ADD FIELD 0 STRING serial_number;
+	ADD FIELD 1 FLAG installation;
+	ADD FIELD 2 INT temp_min;
+	ADD FIELD 3 INT temp_max;
+	ADD FIELD 4 PERCENTAGE battery;
+	SET FIELD 0 KEY;
+UNPIN TABLE;
+
+CREATE TABLE misure;
+PIN TABLE misure;
+	SET TABLE PERMANENT;
+	ADD FIELD 0 INT index;
+	ADD FIELD 1 TIMESTAMP acq_time;
+	ADD FIELD 2 INT acq_value;
+	SET FIELD 0 AUTOINCREMENTAL;
+	SET FIELD 1 KEY;
+UNPIN TABLE;
