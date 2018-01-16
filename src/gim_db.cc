@@ -202,7 +202,7 @@ _gim_flag	gim_db_obj::init( void ) {
 		case __GIM_NOT_EXIST : {
 			make_env();
 			db->conf->Up( file_name_long , name );
-			db->conf->SetLex( __LEX_A );
+			db->conf->SetLex( __LEX_B );
 			db->conf->AddSection( "VERSION" );
 			db->conf->AddKey( "VERSION" , "major"				, GIM_MAJOR );
 			db->conf->AddKey( "VERSION"	, "minor"				, GIM_MINOR );
@@ -226,7 +226,7 @@ _gim_flag	gim_db_obj::init( void ) {
 		case __LEX_UNKNOWN : {
 			gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::init" , "DB : Conf file Lex unknown. Rewriting" , __GIM_ERROR );
 			db->conf->Up( file_name , name );
-			db->conf->SetLex( __LEX_A );
+			db->conf->SetLex( __LEX_B );
 			db->conf->AddSection( "VERSION" );
 			db->conf->AddKey( "VERSION" , "major"				, GIM_MAJOR );
 			db->conf->AddKey( "VERSION"	, "minor"				, GIM_MINOR );
@@ -245,7 +245,6 @@ _gim_flag	gim_db_obj::init( void ) {
 		case __SYNTAX_ERROR : {
 			db->conf->Up( file_name , name );
 			db->conf->SetLex( __LEX_B );
-			db->conf->SetLex( __LEX_A );
 			db->conf->AddSection( "VERSION" );
 			db->conf->AddKey( "VERSION" , "major"				, GIM_MAJOR );
 			db->conf->AddKey( "VERSION"	, "minor"				, GIM_MINOR );
@@ -325,7 +324,9 @@ _gim_flag   gim_db_obj::read( const char * dbname ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::read" , "Something wrong with the DB file. Sorry." , __GIM_ERROR );
 		return __GIM_NOT_EXIST;
 	}
-	gim_error->set( "gim_db_obj::read" , "DB file succesfully red" );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::read" , "DB file succesfully red [%s]" , db->conf->GetKeySTR( "DB" , "name" ) );
+	set_name( db->conf->GetKeySTR( "DB" , "name" ) );
+	init();
 	
 	return __GIM_OK;
 }
@@ -451,13 +452,14 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				return __GIM_ERROR;
 			}
 			line->command = __GDBS_ADD_FIELD;
-			line->fvalue , atoi( Tok[2] );
+			line->fvalue = atoi( Tok[2] );
 			line->svalue = string_to_flag( 3 , __GIM_FIELD );
 			if ( line->svalue == __GIM_ERROR ) {
 				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "UNKNOWN PROPERTIES [%s]." , Tok[3] );
 				return __SYNTAX_ERROR;
 			}
 			strcpy( line->tparameter , Tok[4] );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_line_syntax_check" , "[id field %d] [type %d] [name %s]" , line->fvalue , line->svalue , line->tparameter );
 			gdbs_script->add_item( line );
 			gim_error->set( "gim_db_obj::gdbs_line_syntax_check" , "Syntax ok! ADD FIELD command added to list." );
 			return __GDBS_ADD_FIELD;
@@ -742,11 +744,12 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 				}
 				case __GDBS_ADD_FIELD : {
 					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing ADD FIELD..."  );
+					make_add_field( line->fvalue , line->svalue , line->tparameter );
 					break;
 				}
 				case __GDBS_CREATE_TABLE : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing CREATE TABLE..."  );
-					char	DB_Tname[32];
+					make_create_table( line->fparameter );
+/*					char	DB_Tname[32];
 					_gim_db_table * Ttmp = (_gim_db_table *)gim_memory->Alloc( sizeof( _gim_db_table ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
 					strcpy( Ttmp->name		, line->fparameter );
 					strcpy( Ttmp->comment   , "" );
@@ -775,7 +778,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 					Ttmp->Tstruct->AddKey		( "STRUCT"  , "fields_number"			, Ttmp->fields_number );
 					Ttmp->Tstruct->AddKeyFlag   ( "STRUCT"  , "there_is_key"			, __GIM_NO );
 					Ttmp->Tstruct->AddKey		( "STRUCT"  , "key_field_number"		, Ttmp->key_field_number );
-					Ttmp->Tstruct->AddKeyFlag   ( "STRUCT"  , "duplicate_key_allowed", __GIM_NO );
+					Ttmp->Tstruct->AddKeyFlag   ( "STRUCT"  , "duplicate_key_allowed"   , __GIM_NO );
 					Ttmp->Tstruct->AddSection   ( "FIELDS" );
 					
 					Ttmp->Tdata   = new _gim_prsr;
@@ -789,7 +792,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 					db->conf->AddKey	( "DB"		, DB_Tname				, Ttmp->name );
 					if ( db->type == GIM_DB_PERMANENT ) 
 						db->conf->Write();
-					break;
+*/					break;
 				}
 				case __GDBS_PIN_TABLE : {
 					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing PIN TABLE..."  );
@@ -808,7 +811,8 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 					break;
 				}
 				case __GDBS_SET_DB : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET DB..."  );
+					make_set_db( line->fvalue );
+/*					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET DB..."  );
 					switch ( line->fvalue ) {
 						case GIM_DB_PERMANENT : {
 							db->type = GIM_DB_PERMANENT;
@@ -850,14 +854,16 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 							break;
 					    }
 					}
-					break;
+*/					break;
 				}
 				case __GDBS_SET_FIELD : {
 					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET FIELD..."  );
+					make_set_field( line->fvalue , line->svalue );
 					break;
 				}
 				case __GDBS_SET_TABLE : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET TABLE..."  );
+					make_set_table( line->fvalue );
+/*					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET TABLE..."  );
 					if ( db->type == GIM_DB_PERMANENT ) {
 						switch ( line->fvalue ) {
 							case GIM_DB_TB_PERMANENT : {
@@ -896,7 +902,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 							}
 						}
 					}
-					break;
+*/					break;
 				}
 				case __GDBS_UNPIN_TABLE : {
 					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing UNPIN TABLE..."  );
@@ -948,4 +954,193 @@ _gim_db_table *  gim_db_obj::seek_table( char * table_name ) {
 	}
 	return NULL;
 }
+
+_gim_flag gim_db_obj::make_create_table( char * table_name ) {
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_create_table" , "Executing CREATE TABLE [%s]..." , table_name );
+	char	DB_Tname[32];
+	_gim_db_table * Ttmp = (_gim_db_table *)gim_memory->Alloc( sizeof( _gim_db_table ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+	strcpy( Ttmp->name		, table_name );
+	strcpy( Ttmp->comment   , "" );
+	strcpy( Ttmp->name	, lex->char_subst( table_name , ' ' , '_' ) );
+	sprintf( Ttmp->name_data				,   "%s_data" , Ttmp->name );
+	sprintf( Ttmp->file_name_struct			,   "%s.conf" , Ttmp->name );
+	sprintf( Ttmp->file_name_data			,	"%s.conf" , Ttmp->name_data );
+	sprintf( Ttmp->file_name_struct_long	,   "%s/%s" , home , Ttmp->file_name_struct );
+	sprintf( Ttmp->file_name_data_long		,	"%s/%s" , home , Ttmp->file_name_data );
+	Ttmp->type  = GIM_DB_TB_VOLATILE;
+	Ttmp->items = 0;
+	Ttmp->fields_number = 0;
+	Ttmp->autoincrementl_field_number = -1;
+	Ttmp->unique_field_number = -1;
+	Ttmp->key_field_number = -1;
+	Ttmp->sizeof_per_record = 0;
+	Ttmp->fields  = new _gim_list;
+	Ttmp->records = new _gim_list;
+
+	Ttmp->Tstruct = new _gim_prsr;
+	Ttmp->Tstruct->Up( Ttmp->file_name_struct_long , Ttmp->name );
+	Ttmp->Tstruct->SetLex( __LEX_B );
+	Ttmp->Tstruct->AddSection   ( "TABLE" );
+	Ttmp->Tstruct->AddKey		( "TABLE"   , "name"							, Ttmp->name );
+	Ttmp->Tstruct->AddKey		( "TABLE"   , "file"							, Ttmp->file_name_struct );
+	Ttmp->Tstruct->AddKey		( "TABLE"   , "items"							, Ttmp->items );
+	Ttmp->Tstruct->AddKey		( "TABLE"   , "type"							, Ttmp->type );
+	Ttmp->Tstruct->AddSection   ( "STRUCT" );
+	Ttmp->Tstruct->AddKey		( "STRUCT"  , "fields_number"					, Ttmp->fields_number );
+	Ttmp->Tstruct->AddKey		( "STRUCT"  , "key_field_number"				, Ttmp->key_field_number );
+	Ttmp->Tstruct->AddKey		( "STRUCT"  , "autoincremental_field_number"	, Ttmp->autoincrementl_field_number );
+	Ttmp->Tstruct->AddKey		( "STRUCT"  , "unique_field_number"				, Ttmp->unique_field_number );
+//	Ttmp->Tstruct->AddSection   ( "FIELDS" );
+	
+	Ttmp->Tdata   = new _gim_prsr;
+	Ttmp->Tdata->Up( Ttmp->file_name_data_long , Ttmp->name_data );
+	Ttmp->Tdata->SetLex( __LEX_A );
+	
+	db->tables->add_item( Ttmp );
+	db->tables_number++;
+	sprintf( DB_Tname , "tab%d_name" , db->tables_number );
+	db->conf->ChangeKey ( "DB"		, "tables"				, db->tables_number ); 
+	db->conf->AddKey	( "DB"		, DB_Tname				, Ttmp->name );
+	if ( db->type == GIM_DB_PERMANENT ) 
+		db->conf->Write();
+	return __GIM_OK;
+}
+
+
+_gim_flag gim_db_obj::make_set_db( _gim_flag value ) {
+	gim_error->set(  "gim_db_obj::make_set_db" , "Executing SET DB..."  );
+	switch ( value ) {
+		case GIM_DB_PERMANENT : {
+			db->type = GIM_DB_PERMANENT;
+			db->conf->ChangeKey( "DB" , "type" , db->type );
+			make_env();
+			db->conf->Write();
+			gim_error->set(  "gim_db_obj::make_set_db" , "SET type to PERMANENT"  );
+			break;
+	    }
+		case GIM_DB_VOLATILE : {
+			db->type = GIM_DB_VOLATILE;
+			db->conf->ChangeKey( "DB" , "type" , db->type );
+			make_env();
+			gim_error->set(  "gim_db_obj::make_set_db" , "SET type to VOLATILE"  );
+			break;
+	    }
+		case GIM_DB_SAVE_MEMORY : {
+			db->mode = GIM_DB_SAVE_MEMORY;
+			db->conf->ChangeKey( "DB" , "mode" , db->mode );
+			if ( db->type == GIM_DB_PERMANENT ) 
+				db->conf->Write();
+			gim_error->set(  "gim_db_obj::make_set_db" , "SET mode to SAVE MEMORY"  );
+			break;
+	    }
+		case GIM_DB_BALANCED : {
+			db->mode = GIM_DB_BALANCED;
+			db->conf->ChangeKey( "DB" , "mode" , db->mode );
+			if ( db->type == GIM_DB_PERMANENT ) 
+				db->conf->Write();
+			gim_error->set(  "gim_db_obj::make_set_db" , "SET mode to BALANCED"  );
+			break;
+	    }
+		case GIM_DB_PERFORMANCE : {
+			db->mode = GIM_DB_PERFORMANCE;
+			db->conf->ChangeKey( "DB" , "mode" , db->mode );
+			if ( db->type == GIM_DB_PERMANENT ) 
+				db->conf->Write();
+			gim_error->set(  "gim_db_obj::make_set_db" , "SET mode to PERFORMANCE"  );
+			break;
+	    }
+	}
+}
+
+
+_gim_flag gim_db_obj::make_set_table( _gim_flag value ) {
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::create_set_table" , "Executing SET TABLE [%d]..." , value );
+	if ( db->type == GIM_DB_PERMANENT ) {
+		switch ( value ) {
+			case GIM_DB_TB_PERMANENT : {
+				db->Ttab->type = GIM_DB_TB_PERMANENT;
+				db->Ttab->Tstruct->ChangeKey( "TABLE" , "type" , db->Ttab->type );
+				db->Ttab->Tstruct->Write();
+				db->Ttab->Tdata->Write();
+				gim_error->set(  "gim_db_obj::create_set_table" , "SET TABLE to PERMANENT" );
+				break;
+			}
+			case GIM_DB_TB_VIRTUAL : {
+				db->Ttab->type = GIM_DB_TB_VIRTUAL;
+				db->Ttab->Tstruct->ChangeKey( "TABLE" , "type" , db->Ttab->type );
+				db->Ttab->Tstruct->Write();
+				gim_error->set(  "gim_db_obj::create_set_table" , "SET TABLE to VIRTUAL" );
+				break;
+			}
+			case GIM_DB_TB_VOLATILE : {
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::create_set_table" , "Impossible to SET this TABLE to VOLATILE. The DB is PERMANENT" , __GIM_ERROR );
+				break;
+			}
+		}
+	}
+	if ( db->type == GIM_DB_VOLATILE ) {
+		switch ( value ) {
+			case GIM_DB_TB_PERMANENT : {
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::create_set_table" , "Impossible to SET this TABLE to PERMANENT. The DB is PERMANENT" , __GIM_ERROR );
+				break;
+			}
+			case GIM_DB_TB_VIRTUAL : {
+				db->Ttab->type = GIM_DB_TB_VIRTUAL;
+				db->Ttab->Tstruct->ChangeKey( "TABLE" , "type" , db->Ttab->type );
+				gim_error->set(  "gim_db_obj::create_set_table" , "SET TABLE to VIRTUAL" );
+				break;
+			}
+			case GIM_DB_TB_VOLATILE : {
+				db->Ttab->type = GIM_DB_TB_VOLATILE;
+				db->Ttab->Tstruct->ChangeKey( "TABLE" , "type" , db->Ttab->type );
+				gim_error->set(  "gim_db_obj::create_set_table" , "SET TABLE to VOLATILE" );
+				break;
+			}
+		}
+	}
+}
+
+
+_gim_flag gim_db_obj::make_add_field( _gim_Uint8 value , _gim_flag type , char * name ) {
+	char Fname[128];
+	char Ftype[128];
+
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_add_field" , "[id field %d] [type %d] [name %s]" , value , type , name );
+	sprintf( Fname , "field_%d_name" , value );
+	sprintf( Ftype , "field_%d_type" , value );
+	if ( db->Ttab->Tstruct->ExistSection( "field" ) != __GIM_EXIST ) 
+		db->Ttab->Tstruct->AddSection( "field" );
+	db->Ttab->Tstruct->AddKey( "field" , Fname , name );
+	db->Ttab->Tstruct->AddKey( "field" , Ftype , type );
+	db->Ttab->fields_number++;
+	db->Ttab->Tstruct->ChangeKey( "struct" , "fields_number" , db->Ttab->fields_number );
+	if ( db->type == GIM_DB_PERMANENT ) 
+		db->Ttab->Tstruct->Write();
+	return __GIM_OK;
+}
+
+
+_gim_flag gim_db_obj::make_set_field( _gim_Uint8 value , _gim_flag type ) {
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_set_field" , "[id field %d] [type %d]" , value , type );
+	switch( type ) {
+/*		case GIM_DB_IS_INDEX : {
+			break;
+		}
+*/		case GIM_DB_IS_KEY : {
+			db->Ttab->Tstruct->ChangeKey    ( "struct" , "key_field_number" , value );
+			break;
+		}
+		case GIM_DB_AUTOINCREMENTAL : {
+			db->Ttab->Tstruct->ChangeKey    ( "struct" , "autoincremental_field_number" , value );
+			break;
+		}
+		case GIM_DB_IS_UNIQUE : {
+			db->Ttab->Tstruct->ChangeKey    ( "struct" , "unique_field_number" , value );
+			break;
+		}
+	}
+	if ( db->type == GIM_DB_PERMANENT ) 
+		db->Ttab->Tstruct->Write();
+	return __GIM_OK;
+}	
 

@@ -154,6 +154,7 @@
  	struct _gim_db_table {
 		char			name[64];
 		char			comment[512];
+		char			name_data[64];
 		char			file_name_struct[512];
 		char			file_name_data[512];
 		char			file_name_struct_long[512];
@@ -162,6 +163,8 @@
 		_gim_Uint8		items;				//  numero di records presenti
 		_gim_Uint8		fields_number;		//  numero di campi per record
 		_gim_int16		key_field_number;   //  numero del campo KEY
+		_gim_int16		autoincrementl_field_number;   //  numero del campo KEY
+		_gim_int16		unique_field_number;   //  numero del campo KEY
 		_gim_Uint32		sizeof_per_record;  //  da valutare
 
 		_gim_list *		fields;

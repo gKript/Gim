@@ -10,10 +10,10 @@
           </notebook>
           <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="647">
             <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
-            <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+            <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
           </paned>
         </paned>
-        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="417">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="602">
           <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="403">
             <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
               <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>

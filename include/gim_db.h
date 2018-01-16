@@ -77,17 +77,22 @@
 			_gim_flag			gdbs_execute			( void );
 
 		private:
-			_gim_flag			create_db			( const char * dbname );
-			_gim_flag			add_table			( const char * table_name );
-			_gim_flag			del_table			( const char * table_name );
-			_gim_flag			add_field			( _gim_db_table * tbl , const char * field_name , _gim_flag is_key , _gim_flag field_type );
-			_gim_flag			add_field			( _gim_db_table * tbl , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
-//			_gim_flag			insert_record		( const char * table_name , _gim_db_record * record );
-//			_gim_flag			delete_record		( const char * table_name , _gim_db_record * record );
-			_gim_db_table *		get_table_handle	( const char * table_name );
-			_gim_flag			command_parser		( const char * commad );
-			_gim_flag			string_to_flag		( _gim_Uint8 index , _gim_flag context );
-
+			_gim_flag			create_db				( const char * dbname );
+			_gim_flag			add_table				( const char * table_name );
+			_gim_flag			del_table				( const char * table_name );
+			_gim_flag			add_field				( _gim_db_table * tbl , const char * field_name , _gim_flag is_key , _gim_flag field_type );
+			_gim_flag			add_field				( _gim_db_table * tbl , const char * field_name , _gim_flag is_key , _gim_flag field_type , _gim_db_value * value );
+//			_gim_flag			insert_record			( const char * table_name , _gim_db_record * record );
+//			_gim_flag			delete_record			( const char * table_name , _gim_db_record * record );
+			_gim_db_table *		get_table_handle		( const char * table_name );
+			_gim_flag			command_parser			( const char * commad );
+			_gim_flag			string_to_flag			( _gim_Uint8 index , _gim_flag context );
+			_gim_flag			make_create_table		( char * table_name );
+			_gim_flag			make_set_db				( _gim_flag value );
+			_gim_flag			make_set_table			( _gim_flag value );
+			_gim_flag			make_add_field			( _gim_Uint8 value , _gim_flag type , char * name );
+			_gim_flag			make_set_field			( _gim_Uint8 value , _gim_flag type );
+						
 			_gim_db_main		* db;
 
 			_gim_list			* gdbs_script;

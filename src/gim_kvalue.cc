@@ -64,7 +64,7 @@ _gim_flag gim_prsr_obj::AddSection( const char * section_name ) {
 	if ( ( ! strlen( section_name ) ) || ( strlen( section_name ) >= 64 ) ) return -1;
 	tmp_name = strdup( Lexical.str_up( section_name , strlen( section_name ) ) );
 	if ( ExistSection( tmp_name ) == __GIM_YES ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddSection" , "Section already exist" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddSection" , "Section already exist" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {

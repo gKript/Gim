@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1920x991+0+32
+Geometry=1920x988+0+32
 
 [File Loader]
-Files=../../src/gim_db.cc#785%%%../../include/gim_db_structures.h#94%%%../../include/gim_db.h#174%%%../../include/gim_list.h#83%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_file.cc#230%%%../../src/gim_kvalue.cc#45%%%../../include/gim_custom_type.h#121%%%../../db/gdbs_test.cc#13%%%../../include/gim_lexical.h#116%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#24%%%../../db/gdbs_command_structure#9%%%../../include/gim_version.h#78%%%../../src/gim_version.cc#47%%%../../db/valtemp_db_Lex_A.conf#1%%%../../src/gim_list.cc#186%%%../../src/gim_memory.cc#317
+Files=../../src/gim_db.cc#987%%%../../include/gim_db_structures.h#94%%%../../include/gim_db.h#94%%%../../include/gim_list.h#83%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_file.cc#230%%%../../src/gim_kvalue.cc#67%%%../../include/gim_custom_type.h#121%%%../../db/gdbs_test.cc#13%%%../../include/gim_lexical.h#116%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#12%%%../../db/gdbs_command_structure#9%%%../../include/gim_version.h#86%%%../../src/gim_version.cc#47%%%../../db/valtemp_db_Lex_A.conf#11%%%../../src/gim_list.cc#186%%%../../src/gim_memory.cc#317%%%../../include/gim.h#1%%%../../db/sensori_tab_Lex_A.conf#13%%%../../include/gim_kvalue.h#111
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -18,11 +18,12 @@ Run in terminal=2
 Working directories=../../../../Projects/gim3
 
 [Project Manager]
-Shortcut=trunk//src//libgim.a%%%trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
-Expand=trunk%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
+Shortcut=trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
+Expand=trunk%%%trunk//include%%%trunk//include//libgim_include
 
-[Commit Logs]
-Logs=Little variations
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
+Stop at beginning=2
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -34,7 +35,3 @@ BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
 
 [Commit Logs]
 Logs=Little variations
-
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2

@@ -16,3 +16,4 @@ EXTRA_DIST = $(gimdoc_DATA) \
 # Remove doc directory on uninstall
 uninstall-local:
 	-rm -r $(gimdocdir)
+
