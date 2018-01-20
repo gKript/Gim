@@ -9,13 +9,14 @@ int main( int argc, char *argv[] ) {
 	gim_set_application_name( "GDBStest" );
 	gim_obj		* gim = new gim_obj;
 	gim_db_obj  * db = new gim_db_obj;
-	
-	if ( db->read( "valori_temperatura" ) == __GIM_OK ) { 
+
+	if ( db->read( "valori_temperatura" ) == __GIM_OK ) {
 		puts( "OK letto" );
 	}
-	else 
+	else {
+		puts("Creo");
 		db->init_from_gdbs( argv[1] );
-	
+	}
 	delete db;
 	delete gim;
 	exit(0);

@@ -450,6 +450,15 @@
 			*/
 			_gim_flag	ExistKey( const char * section_name , const char * key );
 
+			/*!	\fn		_gim_flag	Exist( const char * filename )S
+				\brief	This function is used in order to read an existing configuration file
+				\param	filename	The name of the file you want to read\n
+									\a filename != NULL
+				\return \a __NOT_OK if the file exist but some error occurred\n
+						\a __NOT_EXIST if file not found
+			*/
+			_gim_flag	Exist( const char * filename );
+			
 
 			_gim_flag   ParserIsUp( void );
 

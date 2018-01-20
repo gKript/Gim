@@ -62,6 +62,7 @@
 			_gim_flag			check					( void );
 			_gim_flag			init					( void );
 			_gim_flag			read					( const char * dbname );
+			_gim_flag			exist_environment		( const char * dbname );
 			_gim_flag			create_table			( const char * table_name );
 			_gim_flag			table_exist				( char * table_name );
 			_gim_db_table *		seek_table				( char * table_name );
@@ -77,6 +78,7 @@
 			_gim_flag			gdbs_execute			( void );
 
 		private:
+			_gim_flag			read_tables				( void );
 			_gim_flag			create_db				( const char * dbname );
 			_gim_flag			add_table				( const char * table_name );
 			_gim_flag			del_table				( const char * table_name );
@@ -87,12 +89,14 @@
 			_gim_db_table *		get_table_handle		( const char * table_name );
 			_gim_flag			command_parser			( const char * commad );
 			_gim_flag			string_to_flag			( _gim_Uint8 index , _gim_flag context );
+			_gim_flag			gim_db_version			( int maj , int min );
 			_gim_flag			make_create_table		( char * table_name );
 			_gim_flag			make_set_db				( _gim_flag value );
 			_gim_flag			make_set_table			( _gim_flag value );
 			_gim_flag			make_add_field			( _gim_Uint8 value , _gim_flag type , char * name );
 			_gim_flag			make_set_field			( _gim_Uint8 value , _gim_flag type );
-						
+			char *				db_checksum				( char * data );
+
 			_gim_db_main		* db;
 
 			_gim_list			* gdbs_script;

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <anjuta>
-    <plugin name="Subversion" mandatory="no">
+    <plugin name="Quick Open" mandatory="no">
         <require group="Anjuta Plugin"
                  attribute="Location"
-                 value="anjuta-subversion:Subversion"/>
+                 value="anjuta-quick-open:QuickOpenPlugin"/>
     </plugin>
     <plugin name="Tools" mandatory="no">
         <require group="Anjuta Plugin"
@@ -20,9 +20,9 @@
                  attribute="Location"
                  value="anjuta-snippets-manager:SnippetsManagerPlugin"/>
     </plugin>
-    <plugin name="Quick Open" mandatory="no">
+    <plugin name="Subversion" mandatory="no">
         <require group="Anjuta Plugin"
                  attribute="Location"
-                 value="anjuta-quick-open:QuickOpenPlugin"/>
+                 value="anjuta-subversion:Subversion"/>
     </plugin>
 </anjuta>

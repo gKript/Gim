@@ -192,21 +192,23 @@ _gim_flag	gim_db_obj::make_env( void ) {
 
 _gim_flag	gim_db_obj::init( void ) {
 	_gim_flag	res;
+	initiated = __GIM_NO;
 	switch( db->conf->Read( file_name_long ) ) {
 		case __GIM_OK : {
 			gim_error->set( "gim_db_obj::init" , "DB : Properities read succesfully" );
-			db->tables_number = db->conf->GetKeyINT( "Properities" , "tables" );
+			db->tables_number = db->conf->GetKeyINT( "DB" , "tables" );
+			db->type = db->conf->GetKeyINT( "DB" , "type" );
+			db->mode = db->conf->GetKeyINT( "DB" , "mode" );
+			db->tables_number = db->conf->GetKeyINT( "DB" , "tables" );
 			res = GIM_DB_READ;
 			break;
 		}
 		case __GIM_NOT_EXIST : {
-			make_env();
 			db->conf->Up( file_name_long , name );
 			db->conf->SetLex( __LEX_B );
 			db->conf->AddSection( "VERSION" );
 			db->conf->AddKey( "VERSION" , "major"				, GIM_MAJOR );
 			db->conf->AddKey( "VERSION"	, "minor"				, GIM_MINOR );
-			db->conf->AddKey( "VERSION"	, "subminor"			, GIM_SUBMINOR );
 			db->conf->AddSection( "DB" );
 			db->conf->AddKey( "DB"		, "application_name"	, gim_application_name );
 			db->conf->AddKey( "DB"		, "name"				, name );
@@ -214,6 +216,7 @@ _gim_flag	gim_db_obj::init( void ) {
 			db->conf->AddKey( "DB"		, "mode"				, db->mode );
 			db->conf->AddKey( "DB"		, "tables"				, db->tables_number );
 			if ( db->type == GIM_DB_PERMANENT ) {
+				make_env();
 				db->conf->Write();
 				gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::init" , "DB : Conf file wrote" , __GIM_ERROR );
 			}
@@ -230,7 +233,6 @@ _gim_flag	gim_db_obj::init( void ) {
 			db->conf->AddSection( "VERSION" );
 			db->conf->AddKey( "VERSION" , "major"				, GIM_MAJOR );
 			db->conf->AddKey( "VERSION"	, "minor"				, GIM_MINOR );
-			db->conf->AddKey( "VERSION"	, "subminor"			, GIM_SUBMINOR );
 			db->conf->AddSection( "DB" );
 			db->conf->AddKey( "DB"		, "application_name"	, gim_application_name );
 			db->conf->AddKey( "DB"		, "name"				, name );
@@ -248,7 +250,6 @@ _gim_flag	gim_db_obj::init( void ) {
 			db->conf->AddSection( "VERSION" );
 			db->conf->AddKey( "VERSION" , "major"				, GIM_MAJOR );
 			db->conf->AddKey( "VERSION"	, "minor"				, GIM_MINOR );
-			db->conf->AddKey( "VERSION"	, "subminor"			, GIM_SUBMINOR );
 			db->conf->AddSection( "DB" );
 			db->conf->AddKey( "DB"		, "application_name"	, gim_application_name );
 			db->conf->AddKey( "DB"		, "name"				, name );
@@ -263,36 +264,85 @@ _gim_flag	gim_db_obj::init( void ) {
 		}
 	}
 	if ( res == GIM_DB_READ ) {
-		if ( ( db->conf->GetKeyINT( "Properities" , "Gim_maj" ) >= 2 ) && ( db->conf->GetKeyINT( "Properities" , "Gim_min" ) >= 3 ) )
+		initiated	= __GIM_YES;
+
+		if ( Lexical.str_equal( db->conf->GetKeySTR( "DB" , "application_name" ) , gim_application_name  ) != __GIM_YES ) {
+			gim_error->Set( GIM_ERROR_FATAL , "gim_db_obj::init" , "DB : WRONG APPLICATION NAME [DB %s - APP %s]" , db->conf->GetKeySTR( "DB" , "application_name" ) , gim_application_name );
+			initiated	= __GIM_NO;
+			return __GIM_ERROR; 
+		}
+		if ( gim_db_version( db->conf->GetKeyINT( "VERSION" , "major" ) , db->conf->GetKeyINT( "VERSION" , "minor" ) ) == __GIM_OK ) 
 			gim_error->set( "gim_db_obj::init" , "DB : This version of Gim is compatible" );
 		else {
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::init" , "DB : This version of Gim is not compatible with this DB" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_FATAL , "gim_db_obj::init" , "DB : This version of Gim is not compatible with this DB" , __GIM_ERROR );
 			initiated	= __GIM_NO;
 			gdbs_run = __GIM_NOT_READY;
 			return __GIM_ERROR;
 		}
-		if ( Lexical.str_equal( db->conf->GetKeySTR( "Properities" , "name" ) , name  ) != __GIM_YES ) {
-			gim_error->set( "gim_db_obj::init" , "DB : inconsistency between the given name and the configuration . Rewriting" );
-			db->conf->ChangeKey( "property" , "name" , name );
-			db->conf->Write();
+		if ( db->tables_number ) {
+			read_tables();
 		}
-/*		if ( ( db->conf->GetKeyINT( "Properities" , "type" ) != db->type ) || ( db->conf->GetKeyINT( "Properities" , "mode" ) != db->mode ) ) {
-			initiated	= __GIM_YES;
-			set_property( db->mode	, __GIM_YES );
-			set_property( db->type	, __GIM_YES );
-			db->conf->Write();
-			gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::init" , "DB : inconsistency between the required values and the configuration . Rewrote" , __GIM_ERROR );
-		}
-		else {
-			set_property( db->conf->GetKeyINT( "Properities" , "mode" )	, __GIM_YES );
-			set_property( db->conf->GetKeyINT( "Properities" , "type" )	, __GIM_YES );
-		}
-*/	}
-	initiated	= __GIM_YES;
+	}
 	return res;
 }
 
+_gim_flag   gim_db_obj::read_tables( void ) {
+	char	DB_Tname[32];
 
+	for ( _gim_Uint8 c = 1 ; c <= db->tables_number ; c++ ) {
+		sprintf( DB_Tname , "tab%d_name" , c );
+		_gim_db_table * Ttmp = (_gim_db_table *)gim_memory->Alloc( sizeof( _gim_db_table ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+		Ttmp->Tstruct = new _gim_prsr;
+		Ttmp->Tdata = new _gim_prsr;
+		strcpy( Ttmp->name		, db->conf->GetKeySTR( "DB" , DB_Tname ) );
+		strcpy( Ttmp->comment   , "" );
+		sprintf( Ttmp->file_name_struct			,   "%s.conf" , Ttmp->name );
+		sprintf( Ttmp->file_name_data			,	"%s_data.conf" , Ttmp->name );
+		sprintf( Ttmp->file_name_struct_long	,   "%s/%s" , home , Ttmp->file_name_struct );
+		sprintf( Ttmp->file_name_data_long		,	"%s/%s" , home , Ttmp->file_name_data );
+		Ttmp->Tstruct->Read( Ttmp->file_name_struct_long );
+
+		Ttmp->type  = Ttmp->Tstruct->GetKeyINT( "TABLE"   , "type" );
+		Ttmp->items = Ttmp->Tstruct->GetKeyINT( "TABLE"   , "items" );
+		Ttmp->fields_number = Ttmp->Tstruct->GetKeyINT( "STRUCT"  , "fields_number" );
+		Ttmp->key_field_number = Ttmp->Tstruct->GetKeyINT( "STRUCT"  , "key_field_number" );
+		Ttmp->sizeof_per_record = 0;
+		Ttmp->fields  = new _gim_list;
+		Ttmp->records = new _gim_list;
+
+		if ( Ttmp->fields_number ) {
+			for ( _gim_Uint8 f = 0 ; f < Ttmp->fields_number ; f++ ) {
+				char Fname[128];
+				char Ftype[128];
+				sprintf( Fname , "field_%d_name" , f );
+				sprintf( Ftype , "field_%d_type" , f );
+				_gim_db_field * Tfield = (_gim_db_field *)gim_memory->Alloc( sizeof( _gim_db_field ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+				strcpy( Tfield->name , Ttmp->Tstruct->GetKeySTR( "field"   , Fname ) ); 
+				Tfield->type = Ttmp->Tstruct->GetKeyINT( "field"   , Ftype );
+				Ttmp->fields->add_item( Tfield );
+				gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_add_field" , "[id field %d] [type %d] [name %s]" , f , Tfield->type , Tfield->name );
+			}
+		}
+		
+		db->tables->add_item( Ttmp );
+	}
+}
+
+
+/*	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_add_field" , "[id field %d] [type %d] [name %s]" , value , type , name );
+	sprintf( Fname , "field_%d_name" , value );
+	sprintf( Ftype , "field_%d_type" , value );
+
+	_gim_db_field * Tfield = (_gim_db_field *)gim_memory->Alloc( sizeof( _gim_db_field ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+	strcpy( Tfield->name , name ); 
+	Tfield->type = type;
+	db->Ttab->fields->add_item( Tfield );
+
+	if ( db->Ttab->Tstruct->ExistSection( "field" ) != __GIM_EXIST ) 
+		db->Ttab->Tstruct->AddSection( "field" );
+	db->Ttab->Tstruct->AddKey( "field" , Fname , name );
+	db->Ttab->Tstruct->AddKey( "field" , Ftype , type );
+*/
 
 _gim_flag   gim_db_obj::gdbs_feof( void ) {
 	if ( syntax->Feof == __GIM_OFF )
@@ -309,26 +359,43 @@ _gim_flag   gim_db_obj::read( const char * dbname ) {
 
 	char		tmp_name[64];
 	_gim_flag   result;
+
 	strcpy( tmp_name	, dbname );
 	strcpy( name	, lex->char_subst( tmp_name , ' ' , '_' ) );
 	sprintf( home	, "%s%s" , env_data->home , name );
 	sprintf( file_name	, "%s.conf" , name );
 	sprintf( file_name_long	, "%s/%s" , home , file_name );
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::read" , " Reading DB : %s" , lex->string_trunc( file_name_long , 60 ) );
-	result = db->conf->Read( file_name_long );
+	result = db->conf->Exist( file_name_long );
 	if ( result == __GIM_NOT_EXIST ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::read" , "I cannot found the DB file." , __GIM_ERROR );
 		return __GIM_NOT_EXIST;
 	}
-	if ( result == __GIM_NOT_OK ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::read" , "Something wrong with the DB file. Sorry." , __GIM_ERROR );
+	init();
+	return __GIM_OK;
+}
+
+
+_gim_flag	gim_db_obj::exist_environment( const char * dbname ) {
+	if ( ( strlen( dbname ) > 64 ) || ( strlen( dbname ) < 1 ) ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::exist_environment" , "The db name must be lenght between 1 and 64 std characters" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+
+	char		tmp_name[64];
+	_gim_flag   result;
+	strcpy( tmp_name	, dbname );
+	strcpy( name	, lex->char_subst( tmp_name , ' ' , '_' ) );
+	sprintf( home	, "%s%s" , env_data->home , name );
+	sprintf( file_name	, "%s.conf" , name );
+	sprintf( file_name_long	, "%s/%s" , home , file_name );
+	result = db->conf->Exist( file_name_long );
+	if ( result != __GIM_EXIST ) {
+		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::exist_environment" , "I cannot found the DB environment." , __GIM_ERROR );
 		return __GIM_NOT_EXIST;
 	}
-	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::read" , "DB file succesfully red [%s]" , db->conf->GetKeySTR( "DB" , "name" ) );
-	set_name( db->conf->GetKeySTR( "DB" , "name" ) );
-	init();
-	
-	return __GIM_OK;
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::exist_environment" , "DB environment succesfully found." );
+	return __GIM_EXIST;
 }
 
 
@@ -749,50 +816,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 				}
 				case __GDBS_CREATE_TABLE : {
 					make_create_table( line->fparameter );
-/*					char	DB_Tname[32];
-					_gim_db_table * Ttmp = (_gim_db_table *)gim_memory->Alloc( sizeof( _gim_db_table ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
-					strcpy( Ttmp->name		, line->fparameter );
-					strcpy( Ttmp->comment   , "" );
-					strcpy( Ttmp->name	, lex->char_subst( line->fparameter , ' ' , '_' ) );
-					sprintf( Ttmp->file_name_struct			,   "%s.conf" , Ttmp->name );
-					sprintf( Ttmp->file_name_data			,	"%s_data.conf" , Ttmp->name );
-					sprintf( Ttmp->file_name_struct_long	,   "%s/%s" , home , Ttmp->file_name_struct );
-					sprintf( Ttmp->file_name_data_long		,	"%s/%s" , home , Ttmp->file_name_data );
-					Ttmp->type  = GIM_DB_TB_VOLATILE;
-					Ttmp->items = 0;
-					Ttmp->fields_number = 0;
-					Ttmp->key_field_number = -1;
-					Ttmp->sizeof_per_record = 0;
-					Ttmp->fields  = new _gim_list;
-					Ttmp->records = new _gim_list;
-
-					Ttmp->Tstruct = new _gim_prsr;
-					Ttmp->Tstruct->Up( Ttmp->file_name_struct_long , Ttmp->name );
-					Ttmp->Tstruct->SetLex( __LEX_A );
-					Ttmp->Tstruct->AddSection   ( "TABLE" );
-					Ttmp->Tstruct->AddKey		( "TABLE"   , "name"					, Ttmp->name );
-					Ttmp->Tstruct->AddKey		( "TABLE"   , "file"					, Ttmp->file_name_struct );
-					Ttmp->Tstruct->AddKey		( "TABLE"   , "items"					, Ttmp->items );
-					Ttmp->Tstruct->AddKey		( "TABLE"   , "type"					, Ttmp->type );
-					Ttmp->Tstruct->AddSection   ( "STRUCT" );
-					Ttmp->Tstruct->AddKey		( "STRUCT"  , "fields_number"			, Ttmp->fields_number );
-					Ttmp->Tstruct->AddKeyFlag   ( "STRUCT"  , "there_is_key"			, __GIM_NO );
-					Ttmp->Tstruct->AddKey		( "STRUCT"  , "key_field_number"		, Ttmp->key_field_number );
-					Ttmp->Tstruct->AddKeyFlag   ( "STRUCT"  , "duplicate_key_allowed"   , __GIM_NO );
-					Ttmp->Tstruct->AddSection   ( "FIELDS" );
-					
-					Ttmp->Tdata   = new _gim_prsr;
-					Ttmp->Tdata->Up( Ttmp->file_name_data_long , Ttmp->name );
-					Ttmp->Tdata->SetLex( __LEX_A );
-					
-					db->tables->add_item( Ttmp );
-					db->tables_number++;
-					sprintf( DB_Tname , "tab%d_name" , db->tables_number );
-					db->conf->ChangeKey ( "DB"		, "tables"				, db->tables_number ); 
-					db->conf->AddKey	( "DB"		, DB_Tname				, Ttmp->name );
-					if ( db->type == GIM_DB_PERMANENT ) 
-						db->conf->Write();
-*/					break;
+					break;
 				}
 				case __GDBS_PIN_TABLE : {
 					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing PIN TABLE..."  );
@@ -1108,6 +1132,12 @@ _gim_flag gim_db_obj::make_add_field( _gim_Uint8 value , _gim_flag type , char *
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_add_field" , "[id field %d] [type %d] [name %s]" , value , type , name );
 	sprintf( Fname , "field_%d_name" , value );
 	sprintf( Ftype , "field_%d_type" , value );
+
+	_gim_db_field * Tfield = (_gim_db_field *)gim_memory->Alloc( sizeof( _gim_db_field ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+	strcpy( Tfield->name , name ); 
+	Tfield->type = type;
+	db->Ttab->fields->add_item( Tfield );
+
 	if ( db->Ttab->Tstruct->ExistSection( "field" ) != __GIM_EXIST ) 
 		db->Ttab->Tstruct->AddSection( "field" );
 	db->Ttab->Tstruct->AddKey( "field" , Fname , name );
@@ -1143,4 +1173,43 @@ _gim_flag gim_db_obj::make_set_field( _gim_Uint8 value , _gim_flag type ) {
 		db->Ttab->Tstruct->Write();
 	return __GIM_OK;
 }	
+
+
+_gim_flag	gim_db_obj::gim_db_version	( int maj , int min ) {
+	char	db_ver[8];
+
+	sprintf( db_ver , "%d%d" , maj , min );
+	if ( atoi(db_ver) >= 23 )
+		return __GIM_OK;
+	else 
+		return __GIM_NOT_OK;
+}
+
+
+char * gim_db_obj::db_checksum( char * data ) {
+    _gim_Uint32 c0, c1;
+    _gim_Uint32 i , len;
+	static char sum[16];
+
+	strcpy( sum , "" );
+	len = strlen(data);
+    for (c0 = c1 = 0; len >= 5802; len -= 5802) {
+            for (i = 0; i < 5802; ++i) {
+                    c0 = c0 + *data++;
+                    c1 = c1 + c0;
+            }
+            c0 = c0 % 255;
+            c1 = c1 % 255;
+    }
+    for (i = 0; i < len; ++i) {
+            c0 = c0 + *data++;
+            c1 = c1 + c0;
+    }
+    c0 = c0 % 255;
+    c1 = c1 % 255;
+	sprintf( sum , "%8X" , (c1 << 8 | c0) );
+    return sum;
+}
+
+
 

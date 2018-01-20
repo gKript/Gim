@@ -1105,3 +1105,14 @@ _gim_flag	gim_prsr_obj::ChangeKeyFlag( const char * section_name , const char * 
 }
 
 
+
+_gim_flag gim_prsr_obj::Exist( const char * filename ) {
+	FILE *fp = fopen( filename , "rb" );
+	if ( fp == NULL ) {
+		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::Exist" , "The conf file NOT exist" , __GIM_NOT_EXIST );
+		return __GIM_NOT_EXIST;
+	}
+	gim_error->set( "gim_prsr_obj::Exist" , "The conf file exist" );
+	fclose( fp );
+	return __GIM_EXIST;
+}
