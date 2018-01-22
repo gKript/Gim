@@ -1,0 +1,8 @@
+# GIM GDBS 2.8-3 - asyntote@viprox - GimDBmanager
+
+INSERT sensori serial_number=1 installation=1 temp_min=-20 temp_max=60 battery=22; 
+INSERT sensori serial_number=2 installation=3 temp_min=-20 temp_max=60 battery=75; 
+INSERT sensori serial_number=3 installation=5 temp_min=-20 temp_max=60 battery=97; 
+INSERT sensori serial_number=4 installation=2 temp_min=-20 temp_max=60 battery=100; 
+INSERT sensori serial_number=5 installation=4 temp_min=-20 temp_max=60 battery=12; 
+INSERT sensori serial_number=6 installation=6 temp_min=-20 temp_max=60 battery=55;

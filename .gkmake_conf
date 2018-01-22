@@ -8,8 +8,8 @@
     documentation_command = ./make_doc.sh
     multi_threads_enable = YES
     number_of_threads = 4
-    total_build_number = 1002
-    succesful_build_number = 896
+    total_build_number = 1036
+    succesful_build_number = 923
     clean = NO
     use_sudo = YES
     project_header_generation = YES

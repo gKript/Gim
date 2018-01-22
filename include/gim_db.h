@@ -120,6 +120,8 @@
 			SyntaxCoerence_obj  * syntax;
 			_gim_lex			* lex;
 
+			_gim_Uint32			gdbs_line_num;
+
 		public:
 
 

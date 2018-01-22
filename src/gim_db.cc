@@ -329,21 +329,6 @@ _gim_flag   gim_db_obj::read_tables( void ) {
 }
 
 
-/*	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_add_field" , "[id field %d] [type %d] [name %s]" , value , type , name );
-	sprintf( Fname , "field_%d_name" , value );
-	sprintf( Ftype , "field_%d_type" , value );
-
-	_gim_db_field * Tfield = (_gim_db_field *)gim_memory->Alloc( sizeof( _gim_db_field ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
-	strcpy( Tfield->name , name ); 
-	Tfield->type = type;
-	db->Ttab->fields->add_item( Tfield );
-
-	if ( db->Ttab->Tstruct->ExistSection( "field" ) != __GIM_EXIST ) 
-		db->Ttab->Tstruct->AddSection( "field" );
-	db->Ttab->Tstruct->AddKey( "field" , Fname , name );
-	db->Ttab->Tstruct->AddKey( "field" , Ftype , type );
-*/
-
 _gim_flag   gim_db_obj::gdbs_feof( void ) {
 	if ( syntax->Feof == __GIM_OFF )
 		return __GIM_NO;
@@ -452,7 +437,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 	id = 0;
 	if      ( ( lex->str_equal( Tok[0] , "CREATE" ) == __GIM_YES ) && ( NoT == 3 ) )
 		id += 10;
-	else if ( ( lex->str_equal( Tok[0] , "ADD" ) == __GIM_YES ) && ( NoT == 5 ) )
+	else if ( ( lex->str_equal( Tok[0] , "ADD" ) == __GIM_YES ) && ( ( NoT == 5 ) || ( NoT == 6 ) ) )
 		id += 20;
 	else if ( ( lex->str_equal( Tok[0] , "SET" ) == __GIM_YES ) && ( ( NoT == 4 ) || ( NoT == 3 ) ) )
 		id += 30;
@@ -460,6 +445,8 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 		id += 40;
 	else if ( ( lex->str_equal( Tok[0] , "UNPIN" ) == __GIM_YES ) && ( NoT == 2 ) )
 		id += 50;
+	else if ( ( lex->str_equal( Tok[0] , "INSERT" ) == __GIM_YES ) && ( NoT >= 4 ) )
+		id += 60;
 	else
 		id = 0;
 
@@ -479,6 +466,8 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 		id += 1;
 	else if ( ( lex->str_equal( Tok[1] , "TABLE" ) == __GIM_YES ) && ( id == 50 ) )
 		id += 1;
+	else if ( id == 60 )
+		id += 1;
 	else
 		id = 0;
 
@@ -494,6 +483,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_CREATE_DB;
 			strcpy( line->fparameter , Tok[2] );
 			gdbs_script->add_item( (void *)line );
@@ -506,6 +496,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_CREATE_TABLE;
 			strcpy( line->fparameter , Tok[2] );
 			gdbs_script->add_item( line );
@@ -518,6 +509,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_ADD_FIELD;
 			line->fvalue = atoi( Tok[2] );
 			line->svalue = string_to_flag( 3 , __GIM_FIELD );
@@ -526,6 +518,8 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				return __SYNTAX_ERROR;
 			}
 			strcpy( line->tparameter , Tok[4] );
+			if ( NoT == 6 ) 
+				line->tvalue = atoi( Tok[5] );
 			gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_line_syntax_check" , "[id field %d] [type %d] [name %s]" , line->fvalue , line->svalue , line->tparameter );
 			gdbs_script->add_item( line );
 			gim_error->set( "gim_db_obj::gdbs_line_syntax_check" , "Syntax ok! ADD FIELD command added to list." );
@@ -537,6 +531,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_SET_DB;
 			line->fvalue = string_to_flag( 2 , __GIM_DB );
 			if ( line->fvalue == __GIM_ERROR ) {
@@ -553,6 +548,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_SET_TABLE;
 			line->fvalue = string_to_flag( 2 , __GIM_TABLE );
 			if ( line->fvalue == __GIM_ERROR ) {
@@ -569,13 +565,15 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_SET_FIELD;
-			line->fvalue , atoi( Tok[2] );
+			line->fvalue = atoi( Tok[2] );
 			line->svalue = string_to_flag( 3 , __GIM_FIELD );
 			if ( line->svalue == __GIM_ERROR ) {
 				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "UNKNOWN PROPERTIES [%s]." , Tok[3] );
 				return __SYNTAX_ERROR;
 			}
+			printf( "%s = %d  -  %s = %d\n" ,  Tok[2] , line->fvalue , Tok[3] , line->svalue );
 			gdbs_script->add_item( line );
 			gim_error->set( "gim_db_obj::gdbs_line_syntax_check" , "Syntax ok! SET TABLE command added to list." );
 			return __GDBS_SET_FIELD;
@@ -586,6 +584,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_PIN_TABLE;
 			strcpy( line->fparameter , Tok[2] );
 			gdbs_script->add_item( line );
@@ -598,13 +597,39 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
+			line->lline = gdbs_line_num;
 			line->command = __GDBS_UNPIN_TABLE;
 			gdbs_script->add_item( line );
 			gim_error->set( "gim_db_obj::gdbs_line_syntax_check" , "Syntax ok! SET TABLE command added to list." );
 			return __GDBS_UNPIN_TABLE;
 		}
+		case 61 : {
+//			_gim_Uint8 iter = 0;
+			_gim_gdbs_line * line = (_gim_gdbs_line *)gim_memory->Alloc( sizeof( _gim_gdbs_line ) , __GIM_GDBS_LINE , __GIM_HIDE );
+			if ( line == NULL ) {
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
+				return __GIM_ERROR;
+			}
+			line->lline = gdbs_line_num;
+			line->command = __GDBS_INSERT;
+			strcpy( line->fparameter , Tok[1] );
+			line->ins = new _gim_list;
+//			iter = ( ( NoT - 2 ) / 2 ) ;
+			for( int t = 2 ; t < ( NoT - 2 ) ; t++ ) {
+				_gim_gdbs_line_insert * Tlins = (_gim_gdbs_line_insert *)gim_memory->Alloc( sizeof( _gim_gdbs_line_insert ) , __GIM_GDBS_LINE , __GIM_HIDE );
+				if ( Tlins == NULL ) {
+					gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
+					return __GIM_ERROR;
+				}
+				strcpy( Tlins->label , Tok[t] );
+				strcpy( Tlins->value.value.Char , Tok[++t] );
+				line->ins->add_item( Tlins );
+			}
+			gdbs_script->add_item( line );
+			gim_error->set( "gim_db_obj::gdbs_line_syntax_check" , "Syntax ok! SET TABLE command added to list." );
+			return __GDBS_INSERT;
+		}
 	}
-
 	return 0;
 }
 
@@ -614,6 +639,8 @@ _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 	_gim_int8 s = 0;
 	_gim_int8 f = 0;
 	_gim_int8 l = 1;
+
+	gdbs_line_num = 1;
 
 	if ( gdbs_run != __GIM_NOT_RUNNING ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::init_from_gdbs" , "GDBS engin is not in the correct state" , __GIM_ERROR );
@@ -660,6 +687,7 @@ _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 		else
 			gim_error->Set( "prsr_lexical_class::init_from_gdbs" , "SKIPPED" );
 		l++;
+		gdbs_line_num++;
 	}
 	gdbs_close();
 	f = gdbs_execute();
@@ -678,6 +706,7 @@ _gim_int8 gim_db_obj::gdbs_tokenizer( char * line ) {
 
 	i = 0;
 	__GIM_VCLEAR( Tok , 1 , Tok , '\0' );
+	strcat( line , " " );
 	if ( lex->is_in_string( GDBS_TERMINATOR_CHAR , line ) == __GIM_YES )
 		termination = __GIM_YES;
 	for( a = 0 ; ( ( a < ( strlen( line ) - 1 ) ) && ( for_exit == __GIM_NO ) ) ; a++ ) {
@@ -699,13 +728,12 @@ _gim_int8 gim_db_obj::gdbs_tokenizer( char * line ) {
 		}
 	}
 
-
-	gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::gdbs_tokenizer" , "Summary: [Len: %3d] [Tok: %2d] [termination: %d] [comment: %d]" , strlen( line ) , i , termination , comment );	
+	gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::gdbs_tokenizer" , "Summary: [line: %3d] [Len: %3d] [Tok: %2d] [termination: %d] [comment: %d]" , gdbs_line_num , strlen( line ) , i , termination , comment );	
 	if ( i > 19 ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_tokenizer" , "too much token in line" , __GIM_ERROR  );
 		return __TOO_MUCH_TOKEN;
 	}
-	else if ( ( ( i <= 1 ) && ( comment == __GIM_NO ) && ( strlen( line ) > 1 ) ) ) {
+	else if ( ( ( i <= 1 ) && ( comment == __GIM_NO ) && ( strlen( line ) > 2 ) ) ) {
 		return __SYNTAX_ERROR;
 	}
 	else if ( ( i ) && ( strlen( Tok[0] ) ) && ( termination == __GIM_YES ) ) {
@@ -798,19 +826,19 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 
 	_gim_gdbs_line   * line = NULL;
 
-	gim_error->Set( "gim_db_obj::gdbs_execute" , "EXECUTING..." , gdbs_script->get_id() );
+	gim_error->Set( "gim_db_obj::gdbs_execute" , "EXECUTING GDBS ITEMS [%3d]..." , gdbs_script->items() );
 	do {
 		line = (_gim_gdbs_line *)gdbs_script->get_item();
 		if ( line != NULL ) {
 			switch ( line->command ) {
 				case __GDBS_CREATE_DB : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing CREATE DB..."  );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : CREATE DB..." , line->lline  );
 					set_name( line->fparameter );
 					init();
 					break;
 				}
 				case __GDBS_ADD_FIELD : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing ADD FIELD..."  );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : ADD FIELD..." , line->lline  );
 					make_add_field( line->fvalue , line->svalue , line->tparameter );
 					break;
 				}
@@ -819,7 +847,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 					break;
 				}
 				case __GDBS_PIN_TABLE : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing PIN TABLE..."  );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : PIN TABLE..." , line->lline  );
 					if ( db->pin == __GIM_YES ) {
 						gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "A table is already pinned [%s]" , db->pin_table );
 						break;
@@ -835,101 +863,22 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 					break;
 				}
 				case __GDBS_SET_DB : {
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : SET DB..." , line->lline  );
 					make_set_db( line->fvalue );
-/*					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET DB..."  );
-					switch ( line->fvalue ) {
-						case GIM_DB_PERMANENT : {
-							db->type = GIM_DB_PERMANENT;
-							db->conf->ChangeKey( "DB" , "type" , db->type );
-							make_env();
-							db->conf->Write();
-							gim_error->set(  "gim_db_obj::gdbs_execute" , "SET type to PERMANENT"  );
-							break;
-					    }
-						case GIM_DB_VOLATILE : {
-							db->type = GIM_DB_VOLATILE;
-							db->conf->ChangeKey( "DB" , "type" , db->type );
-							make_env();
-							gim_error->set(  "gim_db_obj::gdbs_execute" , "SET type to VOLATILE"  );
-							break;
-					    }
-						case GIM_DB_SAVE_MEMORY : {
-							db->mode = GIM_DB_SAVE_MEMORY;
-							db->conf->ChangeKey( "DB" , "mode" , db->mode );
-							if ( db->type == GIM_DB_PERMANENT ) 
-								db->conf->Write();
-							gim_error->set(  "gim_db_obj::gdbs_execute" , "SET mode to SAVE MEMORY"  );
-							break;
-					    }
-						case GIM_DB_BALANCED : {
-							db->mode = GIM_DB_BALANCED;
-							db->conf->ChangeKey( "DB" , "mode" , db->mode );
-							if ( db->type == GIM_DB_PERMANENT ) 
-								db->conf->Write();
-							gim_error->set(  "gim_db_obj::gdbs_execute" , "SET mode to BALANCED"  );
-							break;
-					    }
-						case GIM_DB_PERFORMANCE : {
-							db->mode = GIM_DB_PERFORMANCE;
-							db->conf->ChangeKey( "DB" , "mode" , db->mode );
-							if ( db->type == GIM_DB_PERMANENT ) 
-								db->conf->Write();
-							gim_error->set(  "gim_db_obj::gdbs_execute" , "SET mode to PERFORMANCE"  );
-							break;
-					    }
-					}
-*/					break;
+					break;
 				}
 				case __GDBS_SET_FIELD : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET FIELD..."  );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : SET FIELD..." , line->lline  );
 					make_set_field( line->fvalue , line->svalue );
 					break;
 				}
 				case __GDBS_SET_TABLE : {
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : SET TABLE..." , line->lline  );
 					make_set_table( line->fvalue );
-/*					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing SET TABLE..."  );
-					if ( db->type == GIM_DB_PERMANENT ) {
-						switch ( line->fvalue ) {
-							case GIM_DB_TB_PERMANENT : {
-								db->Ttab->type = GIM_DB_TB_PERMANENT;
-								db->Ttab->Tstruct->Write();
-								db->Ttab->Tdata->Write();
-								gim_error->set(  "gim_db_obj::gdbs_execute" , "SET TABLE to PERMANENT" );
-								break;
-							}
-							case GIM_DB_TB_VIRTUAL : {
-								db->Ttab->type = GIM_DB_TB_VIRTUAL;
-								gim_error->set(  "gim_db_obj::gdbs_execute" , "SET TABLE to VIRTUAL" );
-								break;
-							}
-							case GIM_DB_TB_VOLATILE : {
-								gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_execute" , "Impossible to SET this TABLE to VOLATILE. The DB is PERMANENT" , __GIM_ERROR );
-								break;
-							}
-						}
-					}
-					if ( db->type == GIM_DB_VOLATILE ) {
-						switch ( line->fvalue ) {
-							case GIM_DB_TB_PERMANENT : {
-								gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_execute" , "Impossible to SET this TABLE to PERMANENT. The DB is PERMANENT" , __GIM_ERROR );
-								break;
-							}
-							case GIM_DB_TB_VIRTUAL : {
-								db->Ttab->type = GIM_DB_TB_VIRTUAL;
-								gim_error->set(  "gim_db_obj::gdbs_execute" , "SET TABLE to VIRTUAL" );
-								break;
-							}
-							case GIM_DB_TB_VOLATILE : {
-								db->Ttab->type = GIM_DB_TB_VOLATILE;
-								gim_error->set(  "gim_db_obj::gdbs_execute" , "SET TABLE to VOLATILE" );
-								break;
-							}
-						}
-					}
-*/					break;
+					break;
 				}
 				case __GDBS_UNPIN_TABLE : {
-					gim_error->set(  "gim_db_obj::gdbs_execute" , "Executing UNPIN TABLE..."  );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : UNPIN TABLE..." , line->lline  );
 					if ( db->pin == __GIM_NO ) {
 						gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::gdbs_execute" , "No table is pinned" , __GIM_ERROR );
 						break;
@@ -944,6 +893,38 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 					gim_error->set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "table succesfully unpinned" , __GIM_OK );
 					break;
 				}	
+				case __GDBS_INSERT : {
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : INSERT..." , line->lline  );
+					if ( db->pin == __GIM_YES ) {
+						gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::gdbs_execute" , "A table is already pinned [%s]" , db->pin_table );
+						break;
+					}
+					if ( table_exist( line->fparameter ) == __GIM_YES ) {
+						strcpy( db->pin_table , line->fparameter );
+						db->pin = __GIM_YES;
+						db->Ttab = seek_table( db->pin_table ); 
+						gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "table succesfully pinned [%s]" , db->pin_table );
+
+						db->Ttab->fields->rewind();
+						line->lline->Rewind();
+						_gim_Uint8 iter = db->Ttab->fields->items();
+						if ( iter ) {
+							for( _gim_Uint8 i = 0 ; i < iter ; i++ ) {
+								
+							}
+						}
+						else {
+							
+						}
+						strcpy( db->pin_table , "" );
+						db->pin = __GIM_NO;
+						db->Ttab = NULL;
+						gim_error->set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "table succesfully unpinned" , __GIM_OK );
+					}
+					else
+						gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::gdbs_execute" , "table not found [%s]" , line->fparameter );
+					break;
+				}
 			}
 			gdbs_script->next_item();
 		}

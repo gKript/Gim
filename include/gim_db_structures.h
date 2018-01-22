@@ -52,7 +52,7 @@
 	#define __NO_NEW_LINE			-7
 	#define __SKIPPED				0
 
-	#define	GDBS_SEPARATOR_STR		" ;"
+	#define	GDBS_SEPARATOR_STR		" =;"
 	#define	GDBS_TERMINATOR_CHAR	';'
 	#define GDBS_SKIP_STR			"\t"
 	#define	GDBS_STOP_CHAR			'#'
@@ -67,6 +67,7 @@
 		__GDBS_SET_FIELD,
 		__GDBS_PIN_TABLE,
 		__GDBS_UNPIN_TABLE,
+		__GDBS_INSERT,
 	};
 	
 
@@ -121,11 +122,11 @@
 	};
 
  	typedef union	gim_db_value_u	{
-		int			db_int;
-		float		db_float;
-		_gim_flag	db_bool;
-		_gim_flag	db_flag;
-		char		db_char[512];
+		int			Int;
+		float		Float;
+		_gim_flag	Bool;
+		_gim_flag	Flag;
+		char		Char[512];
 	} _gim_db_value_u;
 
 
@@ -144,7 +145,7 @@
  	struct _gim_db_virtual_table {
 		char			name[64];
 		char			comment[512];
-//		_gim_flag		type;		//	Virtual table is always GIM_DB_TB_VOLATILE
+//		_gim_flag		type;							//	Virtual table is always GIM_DB_TB_VOLATILE
 		_gim_Uint8		n_fields;
 		_gim_Uint8		n_records;
 		_gim_Uint32		sizeof_per_record;
@@ -159,13 +160,13 @@
 		char			file_name_data[512];
 		char			file_name_struct_long[512];
 		char			file_name_data_long[512];
-		_gim_flag		type;				//  Permanent, volatile or virtual 
-		_gim_Uint8		items;				//  numero di records presenti
-		_gim_Uint8		fields_number;		//  numero di campi per record
-		_gim_int16		key_field_number;   //  numero del campo KEY
-		_gim_int16		autoincrementl_field_number;   //  numero del campo KEY
-		_gim_int16		unique_field_number;   //  numero del campo KEY
-		_gim_Uint32		sizeof_per_record;  //  da valutare
+		_gim_flag		type;							//  Permanent, volatile or virtual 
+		_gim_Uint8		items;							//  numero di records presenti
+		_gim_Uint8		fields_number;					//  numero di campi per record
+		_gim_int16		key_field_number;				//  numero del campo KEY
+		_gim_int16		autoincrementl_field_number;	//  numero del campo KEY
+		_gim_int16		unique_field_number;			//  numero del campo KEY
+		_gim_Uint32		sizeof_per_record;				//  da valutare
 
 		_gim_list *		fields;
 		_gim_list *		records;
@@ -189,16 +190,24 @@
 		_gim_list			* tables;
 	};
 
-	
- 	struct _gim_gdbs_line {
-		_gim_flag		command;
-		char			fparameter[256];
-		char			sparameter[256];
-		char			tparameter[256];
-		_gim_flag		fvalue;
-		_gim_flag		svalue;
-		_gim_flag		tvalue;
+
+	struct _gim_gdbs_line_insert {
+		char			label[64];
+		_gim_db_value   value;
 	};
 
+	
+ 	struct _gim_gdbs_line {
+		 _gim_Uint32			lline;
+		_gim_flag				command;
+		char					fparameter[256];
+		char					sparameter[256];
+		char					tparameter[256];
+		_gim_flag				fvalue; 
+		_gim_flag				svalue;
+		_gim_flag				tvalue;
+		_gim_list *				ins;
+	};
+	
 
 #endif // _GIM_DB_STRUCTURES_H_
