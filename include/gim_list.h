@@ -102,7 +102,7 @@
 				savelist = NULL;
 //				item_size = 0;
 				item_counter = 0;
-				gim_error->set( "gim_list_obj::gim_list_obj()" , "A new list allocated and inizialized" );
+				gim_error->set( "gim_list_obj::gim_list_obj" , "A new list allocated and inizialized" );
 		    };
 
 			/*!gim_list_obj constructor
@@ -113,7 +113,7 @@
 				currentlist = NULL;
 				item_size = mem_size;
 				item_counter = 0;
-				gim_error->set( "gim_list_obj::gim_list_obj()" , "A new list allocated and inizialized" );
+				gim_error->set( "gim_list_obj::gim_list_obj" , "A new list allocated and inizialized" );
 		    };
 
 		    /*!gim_list_obj distructor

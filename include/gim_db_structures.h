@@ -141,6 +141,12 @@
 		_gim_flag			type;
 	};
 
+	struct _gim_db_record {
+		char				hash[64];
+		_gim_Uint32			index;
+		_gim_list			* values;
+	};
+
 
  	struct _gim_db_virtual_table {
 		char			name[64];
@@ -161,7 +167,7 @@
 		char			file_name_struct_long[512];
 		char			file_name_data_long[512];
 		_gim_flag		type;							//  Permanent, volatile or virtual 
-		_gim_Uint8		items;							//  numero di records presenti
+		_gim_int32		items;							//  numero di records presenti
 		_gim_Uint8		fields_number;					//  numero di campi per record
 		_gim_int16		key_field_number;				//  numero del campo KEY
 		_gim_int16		autoincrementl_field_number;	//  numero del campo KEY
@@ -198,7 +204,7 @@
 
 	
  	struct _gim_gdbs_line {
-		 _gim_Uint32			lline;
+		_gim_Uint32				lline;
 		_gim_flag				command;
 		char					fparameter[256];
 		char					sparameter[256];

@@ -68,7 +68,7 @@ _gim_flag	gim_list_obj::add_item( void *member ) {
 //		puts("ulteriore item");
 	}
 	endlist = temp_item;
-	gim_error->set( "gim_list_obj::add_item" , "New item allocated" );
+	//gim_error->set( "gim_list_obj::add_item" , "New item allocated" );
 	return __GIM_OK;
 }
 
@@ -137,7 +137,7 @@ void		gim_list_obj::destroy_list( void ) {
 			else
 				Ls++;
 		}
-		gim_error->Set( "gim_list_obj::destroy_list" , "Deallocated : [%3d List items] [%3d Linked items]" , Ls , It );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gim_list_obj::destroy_list" , "Deallocated : [%3d List items] [%3d Linked items]" , Ls , It );
 	}
 }
 
@@ -151,7 +151,7 @@ void * gim_list_obj::get_item( void ) {
 //	void *	tmp = currentlist->item;
 
 //	currentlist = currentlist->nextitem;
-	gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
+	//gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
 	return currentlist->item;
 }
 
@@ -166,7 +166,7 @@ void *  gim_list_obj::get_item( _gim_Uint32 index ) {
 
 	while ( tmplist != NULL ) {
 		if ( tmplist->index == index ) {
-			gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
+			//gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
 			return tmplist->item;
 		}
 		tmplist = tmplist->nextitem;
@@ -182,7 +182,7 @@ _gim_flag   gim_list_obj::next_item( void ) {
 		return __GIM_NOT_OK;
 	}
 	currentlist = currentlist->nextitem;
-	gim_error->set( "gim_list_obj::next_item" , "Next item set" );
+	//gim_error->set( "gim_list_obj::next_item" , "Next item set" );
 	return __GIM_OK;
 }
 
@@ -193,7 +193,7 @@ _gim_flag	gim_list_obj::rewind( void ) {
 		return __GIM_NOT_OK;
 	}
 	currentlist = startlist;
-	gim_error->set( "gim_list_obj::rewind" , "Startlit set" );
+	//gim_error->set( "gim_list_obj::rewind" , "Startlit set" );
 	return __GIM_OK;
 }	
 

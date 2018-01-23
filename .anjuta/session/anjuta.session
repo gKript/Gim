@@ -2,8 +2,13 @@
 Maximized=1
 Geometry=1920x1020+0+0
 
+[Execution]
+Program uri=../../../../Projects/gim3/gim_shell/gimshell
+Run in terminal=2
+Working directories=../../../../Projects/gim3
+
 [File Loader]
-Files=../../src/gim_db.cc#913%%%../../include/gim_db_structures.h#171%%%../../include/gim_db.h#123%%%../../include/gim_list.h#83%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_file.cc#230%%%../../src/gim_kvalue.cc#1119%%%../../include/gim_custom_type.h#121%%%../../db/gdbs_test.cc#19%%%../../include/gim_lexical.h#116%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#7%%%../../db/gdbs_command_structure#9%%%../../include/gim_version.h#83%%%../../src/gim_version.cc#84%%%../../db/valtemp_db_Lex_A.conf#11%%%../../src/gim_list.cc#186%%%../../src/gim_memory.cc#317%%%../../include/gim.h#1%%%../../db/sensori_tab_Lex_A.conf#38%%%../../include/gim_kvalue.h#482%%%../../include/gim_identity.h#210%%%../../src/gim_identity.cc#152%%%../../include/gim_checksum.h#1
+Files=../../src/gim_db.cc#618%%%../../include/gim_db_structures.h#94%%%../../include/gim_db.h#123%%%../../include/gim_list.h#116%%%../../gim_gkdp/gkdp.cc#131%%%../../gim_shell/main.cc#48%%%../../src/gim_file.cc#230%%%../../src/gim_kvalue.cc#664%%%../../include/gim_custom_type.h#73%%%../../db/gdbs_test.cc#19%%%../../include/gim_lexical.h#116%%%../../src/gim_html.cc#151%%%../../db/valtemp_db.gkdbs#45%%%../../db/gdbs_command_structure#9%%%../../include/gim_version.h#83%%%../../src/gim_version.cc#84%%%../../db/valtemp_db_Lex_A.conf#11%%%../../src/gim_list.cc#71%%%../../src/gim_memory.cc#317%%%../../include/gim.h#1%%%../../db/sensori_tab_Lex_A.conf#38%%%../../include/gim_kvalue.h#482%%%../../include/gim_identity.h#210%%%../../src/gim_identity.cc#152%%%../../include/gim_checksum.h#1%%%../../src/gim_lexical.cc#585%%%../../include/gim_memory.h#1
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -12,14 +17,12 @@ bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
 Case Sensitive=1
 Highlight Match=1
 
-[Execution]
-Program uri=../../../../Projects/gim3/gim_shell/gimshell
-Run in terminal=2
-Working directories=../../../../Projects/gim3
-
 [Project Manager]
 Shortcut=trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
 Expand=trunk%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
+
+[Commit Logs]
+Logs=Little variations
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -28,9 +31,6 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
-
-[Commit Logs]
-Logs=Little variations
 
 [Debugger]
 Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:

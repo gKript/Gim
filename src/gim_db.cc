@@ -615,7 +615,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 			strcpy( line->fparameter , Tok[1] );
 			line->ins = new _gim_list;
 //			iter = ( ( NoT - 2 ) / 2 ) ;
-			for( int t = 2 ; t < ( NoT - 2 ) ; t++ ) {
+			for( int t = 2 ; t < ( NoT ) ; t++ ) {
 				_gim_gdbs_line_insert * Tlins = (_gim_gdbs_line_insert *)gim_memory->Alloc( sizeof( _gim_gdbs_line_insert ) , __GIM_GDBS_LINE , __GIM_HIDE );
 				if ( Tlins == NULL ) {
 					gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "GDBS line allocation failed." , __GIM_ERROR );
@@ -623,6 +623,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				}
 				strcpy( Tlins->label , Tok[t] );
 				strcpy( Tlins->value.value.Char , Tok[++t] );
+				gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_line_syntax_check" , "GDBS Insert: Label [%16s] - Value [%12s]" , Tlins->label , Tlins->value.value.Char );
 				line->ins->add_item( Tlins );
 			}
 			gdbs_script->add_item( line );
@@ -900,18 +901,92 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 						break;
 					}
 					if ( table_exist( line->fparameter ) == __GIM_YES ) {
+						char H[128];
 						strcpy( db->pin_table , line->fparameter );
 						db->pin = __GIM_YES;
 						db->Ttab = seek_table( db->pin_table ); 
 						gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "table succesfully pinned [%s]" , db->pin_table );
-
+						db->Ttab->items++;
+						_gim_db_record * Trec = (_gim_db_record *)gim_memory->Alloc( sizeof( _gim_db_record ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+						strcpy( Trec->hash , "" );
+						Trec->index = db->Ttab->items;
+						Trec->values = new _gim_list;
+						sprintf( H , "Record %d - Address id %p" , db->Ttab->items , Trec );
+						strcpy( Trec->hash , db_checksum( H ) );
+						gim_error->set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , H , __GIM_OK );
+						gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "Generated Hash [%s]" , Trec->hash );
+						db->Ttab->Tdata->AddSection( Trec->hash );
 						db->Ttab->fields->rewind();
-						line->lline->Rewind();
+						line->ins->rewind();
 						_gim_Uint8 iter = db->Ttab->fields->items();
 						if ( iter ) {
-							for( _gim_Uint8 i = 0 ; i < iter ; i++ ) {
-								
+							for( _gim_Uint8 i = 1 ; i <= iter ; i++ ) {						
+								_gim_db_field * Tfield = (_gim_db_field *)db->Ttab->fields->get_item( i );
+								_gim_gdbs_line_insert * Tlins = (_gim_gdbs_line_insert *)line->ins->get_item( i );
+								_gim_db_value * Tv = (_gim_db_value *)gim_memory->Alloc( sizeof( _gim_db_value ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+								gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "Record [%d] - Label [%16s] - Value[%12s] - Type [%2d]" , db->Ttab->items , Tlins->label , Tlins->value.value.Char , Tfield->type );
+								Tv->type = Tfield->type;
+								switch ( Tv->type ) {
+									case GIM_DB_TYPE_INT : {
+										Tv->value.Int = atoi( Tlins->value.value.Char );
+										db->Ttab->Tdata->AddKey( Trec->hash , Tfield->name , Tv->value.Int );
+										break;
+									}
+									case GIM_DB_TYPE_FLOAT : {
+
+										break;
+									}
+									case GIM_DB_TYPE_PERCENTAGE : {
+										Tv->value.Int = atoi( Tlins->value.value.Char );
+										db->Ttab->Tdata->AddKey( Trec->hash , Tfield->name , Tv->value.Int );
+										break;
+									}
+									case GIM_DB_TYPE_BOOL : {
+										if      ( lex->str_equal( lex->str_down( Tlins->value.value.Char , strlen( Tlins->value.value.Char ) ) , "true" ) == __GIM_YES )
+											Tv->value.Bool = __GIM_TRUE;
+										else if ( lex->str_equal( lex->str_down( Tlins->value.value.Char , strlen( Tlins->value.value.Char ) ) , "false" ) == __GIM_YES )
+											Tv->value.Bool = __GIM_FALSE;
+										db->Ttab->Tdata->AddKeyFlag( Trec->hash , Tfield->name , Tv->value.Bool );
+										break;
+									}
+									case GIM_DB_TYPE_FLAG : {
+										if      ( lex->str_equal( lex->str_down( Tlins->value.value.Char , strlen( Tlins->value.value.Char ) ) , "on" ) == __GIM_YES )
+											Tv->value.Flag = __GIM_ON;
+										else if ( lex->str_equal( lex->str_down( Tlins->value.value.Char , strlen( Tlins->value.value.Char ) ) , "off" ) == __GIM_YES )
+											Tv->value.Flag = __GIM_OFF;
+										else if ( lex->str_equal( lex->str_down( Tlins->value.value.Char , strlen( Tlins->value.value.Char ) ) , "yes" ) == __GIM_YES )
+											Tv->value.Flag = __GIM_YES;
+										else if ( lex->str_equal( lex->str_down( Tlins->value.value.Char , strlen( Tlins->value.value.Char ) ) , "no" ) == __GIM_YES )
+											Tv->value.Flag = __GIM_NO;
+										db->Ttab->Tdata->AddKeyFlag( Trec->hash , Tfield->name , Tv->value.Flag );
+										break;
+									}
+									case GIM_DB_TYPE_STRING : {
+										strcpy( Tv->value.Char , Tlins->value.value.Char );
+										db->Ttab->Tdata->AddKey( Trec->hash , Tfield->name , Tv->value.Char );
+										break;
+									}
+									case GIM_DB_TYPE_DATE : {
+										strcpy( Tv->value.Char , Tlins->value.value.Char );
+										db->Ttab->Tdata->AddKey( Trec->hash , Tfield->name , Tv->value.Char );
+										break;
+									}
+									case GIM_DB_TYPE_TIME : {
+										strcpy( Tv->value.Char , Tlins->value.value.Char );
+										db->Ttab->Tdata->AddKey( Trec->hash , Tfield->name , Tv->value.Char );
+										break;
+									}
+									case GIM_DB_TYPE_TIMESTAMP : {
+										Tv->value.Int = atoi( Tlins->value.value.Char );
+										db->Ttab->Tdata->AddKey( Trec->hash , Tfield->name , Tv->value.Int );
+										break;
+									}
+								}
+								Trec->values->add_item( Tv );
 							}
+							if ( db->type == GIM_DB_PERMANENT ) 
+								db->Ttab->Tdata->Write();
+//							line->ins->destroy_list();					
 						}
 						else {
 							
@@ -1167,28 +1242,25 @@ _gim_flag	gim_db_obj::gim_db_version	( int maj , int min ) {
 }
 
 
-char * gim_db_obj::db_checksum( char * data ) {
-    _gim_Uint32 c0, c1;
-    _gim_Uint32 i , len;
-	static char sum[16];
 
-	strcpy( sum , "" );
-	len = strlen(data);
-    for (c0 = c1 = 0; len >= 5802; len -= 5802) {
-            for (i = 0; i < 5802; ++i) {
-                    c0 = c0 + *data++;
-                    c1 = c1 + c0;
-            }
-            c0 = c0 % 255;
-            c1 = c1 % 255;
-    }
-    for (i = 0; i < len; ++i) {
-            c0 = c0 + *data++;
-            c1 = c1 + c0;
-    }
-    c0 = c0 % 255;
-    c1 = c1 % 255;
-	sprintf( sum , "%8X" , (c1 << 8 | c0) );
+
+
+char * gim_db_obj::db_checksum( char * data ) {
+	static char sum[16];
+	static _gim_Uint32  gKsum = 0;
+	_gim_Uint32 tmp = 0;
+	_gim_Uchar len = 0 , c;
+
+	gKsum = 0;
+	while ( data[len] != '\0' ) {
+		gKsum += data[len] + ( 0b10100100010000100000100000010000 >> len ) ^ ( 0b11101110111011101110111011101111 << len );
+		len++;
+	}
+	for ( c = 1 ; c <= 32 ; c++ ) {
+		tmp += ( gKsum << 1 ) ^ c;
+		gKsum ^= tmp;
+	}
+	sprintf( sum , "%08X" , gKsum );
     return sum;
 }
 
