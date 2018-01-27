@@ -42,6 +42,8 @@
 #ifndef _GIM_DB_STRUCTURES_H_
 #define _GIM_DB_STRUCTURES_H_
 
+	#include "gim_checksum.h"
+
  	extern char		gim_application_name[256];
 
 	#define GIM_DB_MODE				"mode"
@@ -142,7 +144,7 @@
 	};
 
 	struct _gim_db_record {
-		char				hash[64];
+		char				hash[GIM_MD5_SIZE];
 		_gim_Uint32			index;
 		_gim_list			* values;
 	};

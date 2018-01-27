@@ -51,6 +51,8 @@
 	#include "gim_db_structures.h"
 	#include "gim_list.h"
 	#include "gim_lexical.h"
+	#include "gim_checksum.h"
+
 
 	class gim_db_obj {
 
@@ -119,6 +121,7 @@
 
 			SyntaxCoerence_obj  * syntax;
 			_gim_lex			* lex;
+			gim_checksum_obj	* cs;
 
 			_gim_Uint32			gdbs_line_num;
 
@@ -142,6 +145,8 @@
 					db->pin = __GIM_NO;
 					db->conf = new _gim_prsr;
 					db->tables = new _gim_list;
+					cs = new gim_checksum_obj;
+					lex = new _gim_lex;
 					initiated	= __GIM_NO;
 					changed		= __GIM_NO;
 					syntax = (SyntaxCoerence_obj *)gim_memory->Alloc( sizeof( SyntaxCoerence_obj ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
@@ -159,10 +164,10 @@
 			/*! gim_db_obj destructor
 			*/
 			inline ~gim_db_obj() {
-				char message[256];
+				delete lex;
+				delete cs;
 				if ( strlen( name  ) ) {
-					sprintf( message , "DB [%s] : start to shutting down..." , name );
-					gim_error->set( "gim_db_obj::~gim_db_obj" , message );
+					gim_error->Set( GIM_ERROR_MESSAGE ,  "gim_db_obj::~gim_db_obj" , "DB [%s] : start to shutting down..." , name );
 				}
 				else 
 					gim_error->set( "gim_db_obj::~gim_db_obj" , "DB : start to shutting down..." );
@@ -177,7 +182,18 @@
 						_gim_db_table * Ttmp = (_gim_db_table *)db->tables->get_item();
 						Ttmp->Tstruct->Down();
 						Ttmp->Tdata->Down();
-						delete Ttmp->fields;
+/*						if ( Ttmp->fields->items() )
+							Ttmp->fields->destroy_list();
+*/						delete Ttmp->fields;
+						if ( Ttmp->records->items() ) {
+							gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::~gim_db_obj" , "DB : Found some records [%d]. Deallocating..." , Ttmp->records->items() );
+							for( _gim_int32 r = 1 ; r <= Ttmp->records->items() ; r++ ) {
+								_gim_db_record * tr = (_gim_db_record *)Ttmp->records->get_item();
+								tr->values->destroy_list();
+								Ttmp->records->next_item();
+							}
+							Ttmp->records->destroy_list();
+						}
 						delete Ttmp->records;
 						gim_memory->Free( Ttmp );
 						db->tables->next_item();

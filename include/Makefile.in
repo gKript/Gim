@@ -267,12 +267,9 @@ EXTRA_DIST = \
 libgim_include_HEADERS = \
 	gim.h           \
 	gim_base_header.h           \
-	gim_bz2_bzlib.h           \
-	gim_bz2_bzlib_private.h           \
 	gim_checksum.h           \
 	gim_cnc.h           \
 	gim_cnc_coding.h           \
-	gim_compression.h           \
 	gim_custom_type.h           \
 	gim_db.h           \
 	gim_db_structures.h           \
@@ -298,7 +295,6 @@ libgim_include_HEADERS = \
 	gim_kvalue.h           \
 	gim_lexical.h           \
 	gim_log.h           \
-	gim_lzh.h           \
 	gim_md5.h           \
 	gim_md5global.h           \
 	gim_memory.h           \

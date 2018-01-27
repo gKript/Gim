@@ -21,7 +21,7 @@ PIN TABLE sensori;
 UNPIN TABLE;
 
 PIN TABLE misure;
-	SET TABLE VIRTUAL;
+	SET TABLE PERMANENT;
 	ADD FIELD 0 INT index=1;
 	ADD FIELD 1 STRING sn;
 	ADD FIELD 2 TIMESTAMP acq_time;
@@ -39,7 +39,13 @@ INSERT sensori serial_number=4 installation=2 temp_min=-20 temp_max=60 battery=1
 INSERT sensori serial_number=5 installation=4 temp_min=-20 temp_max=60 battery=12; 
 INSERT sensori serial_number=6 installation=6 temp_min=-20 temp_max=60 battery=55;
 
-INSERT misure index=AUTO sn=AF124g acq_time=20180121102115 acq_value=3,2661;
-INSERT misure index=AUTO sn=AH025c acq_time=20180121112115 acq_value=4,0527;
-INSERT misure index=AUTO sn=AN332k acq_time=20180121122115 acq_value=3,5218;
-INSERT misure index=AUTO sn=AF124g acq_time=20180121132115 acq_value=3,9524;
+INSERT misure index=AUTO sn=DF2C0 acq_time=21772 acq_value=163;
+INSERT misure index=AUTO sn=885C2 acq_time=13438 acq_value=165;
+INSERT misure index=AUTO sn=84FE3 acq_time=55970 acq_value=171;
+INSERT misure index=AUTO sn=FFBE0 acq_time=08166 acq_value=031;
+INSERT misure index=AUTO sn=A0790 acq_time=57530 acq_value=070;
+INSERT misure index=AUTO sn=69CEB acq_time=57970 acq_value=051;
+INSERT misure index=AUTO sn=447B7 acq_time=14598 acq_value=102;
+INSERT misure index=AUTO sn=4FDCC acq_time=61488 acq_value=016;
+INSERT misure index=AUTO sn=42EB8 acq_time=75748 acq_value=115;
+INSERT misure index=AUTO sn=20DF3 acq_time=04016 acq_value=160;

@@ -134,19 +134,10 @@ am__v_AR_1 =
 libgim_a_AR = $(AR) $(ARFLAGS)
 libgim_a_LIBADD =
 am_libgim_a_OBJECTS = libgim_a-gim.$(OBJEXT) \
-	libgim_a-gim_bz2_blocksort.$(OBJEXT) \
-	libgim_a-gim_bz2_bzlib.$(OBJEXT) \
-	libgim_a-gim_bz2_compress.$(OBJEXT) \
-	libgim_a-gim_bz2_compress_bzlib.$(OBJEXT) \
-	libgim_a-gim_bz2_crctable.$(OBJEXT) \
-	libgim_a-gim_bz2_decompress.$(OBJEXT) \
-	libgim_a-gim_bz2_huffman.$(OBJEXT) \
-	libgim_a-gim_bz2_randtable.$(OBJEXT) \
 	libgim_a-gim_checksum.$(OBJEXT) libgim_a-gim_cnc.$(OBJEXT) \
 	libgim_a-gim_cnc_alfabeto.$(OBJEXT) \
 	libgim_a-gim_cnc_coding.$(OBJEXT) \
-	libgim_a-gim_cnc_generic.$(OBJEXT) \
-	libgim_a-gim_compression.$(OBJEXT) libgim_a-gim_db.$(OBJEXT) \
+	libgim_a-gim_cnc_generic.$(OBJEXT) libgim_a-gim_db.$(OBJEXT) \
 	libgim_a-gim_directory.$(OBJEXT) \
 	libgim_a-gim_enhanced.$(OBJEXT) \
 	libgim_a-gim_environment.$(OBJEXT) \
@@ -165,8 +156,7 @@ am_libgim_a_OBJECTS = libgim_a-gim.$(OBJEXT) \
 	libgim_a-gim_identity.$(OBJEXT) \
 	libgim_a-gim_interface.$(OBJEXT) libgim_a-gim_kvalue.$(OBJEXT) \
 	libgim_a-gim_lexical.$(OBJEXT) libgim_a-gim_log.$(OBJEXT) \
-	libgim_a-gim_lzh_compress.$(OBJEXT) libgim_a-gim_md5.$(OBJEXT) \
-	libgim_a-gim_memory.$(OBJEXT) \
+	libgim_a-gim_md5.$(OBJEXT) libgim_a-gim_memory.$(OBJEXT) \
 	libgim_a-gim_private_key.$(OBJEXT) libgim_a-gim_sha1.$(OBJEXT) \
 	libgim_a-gim_sha256.$(OBJEXT) libgim_a-gim_sha512.$(OBJEXT) \
 	libgim_a-gim_signal.$(OBJEXT) libgim_a-gim_string.$(OBJEXT) \
@@ -344,20 +334,11 @@ lib_LIBRARIES = \
 
 libgim_a_SOURCES = \
 	gim.cc    \
-	gim_bz2_blocksort.cc    \
-	gim_bz2_bzlib.cc    \
-	gim_bz2_compress.cc    \
-	gim_bz2_compress_bzlib.cc    \
-	gim_bz2_crctable.cc    \
-	gim_bz2_decompress.cc    \
-	gim_bz2_huffman.cc    \
-	gim_bz2_randtable.cc    \
 	gim_checksum.cc    \
 	gim_cnc.cc    \
 	gim_cnc_alfabeto.cc    \
 	gim_cnc_coding.cc    \
 	gim_cnc_generic.cc    \
-	gim_compression.cc    \
 	gim_db.cc    \
 	gim_directory.cc    \
 	gim_enhanced.cc    \
@@ -383,7 +364,6 @@ libgim_a_SOURCES = \
 	gim_kvalue.cc    \
 	gim_lexical.cc    \
 	gim_log.cc    \
-	gim_lzh_compress.cc    \
 	gim_md5.cc    \
 	gim_memory.cc    \
 	gim_private_key.cc    \
@@ -481,20 +461,11 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_ascii_buffer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_blocksort.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_bzlib.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_compress.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_crctable.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_decompress.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_huffman.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_bz2_randtable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_checksum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_cnc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_cnc_alfabeto.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_cnc_coding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_cnc_generic.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_compression.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_directory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_enhanced.Po@am__quote@
@@ -522,7 +493,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_lexical.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_log.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_lzh_compress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_md5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_memory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgim_a-gim_picgim.Po@am__quote@
@@ -562,118 +532,6 @@ libgim_a-gim.obj: gim.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim.cc' object='libgim_a-gim.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim.obj `if test -f 'gim.cc'; then $(CYGPATH_W) 'gim.cc'; else $(CYGPATH_W) '$(srcdir)/gim.cc'; fi`
-
-libgim_a-gim_bz2_blocksort.o: gim_bz2_blocksort.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_blocksort.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_blocksort.Tpo -c -o libgim_a-gim_bz2_blocksort.o `test -f 'gim_bz2_blocksort.cc' || echo '$(srcdir)/'`gim_bz2_blocksort.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_blocksort.Tpo $(DEPDIR)/libgim_a-gim_bz2_blocksort.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_blocksort.cc' object='libgim_a-gim_bz2_blocksort.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_blocksort.o `test -f 'gim_bz2_blocksort.cc' || echo '$(srcdir)/'`gim_bz2_blocksort.cc
-
-libgim_a-gim_bz2_blocksort.obj: gim_bz2_blocksort.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_blocksort.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_blocksort.Tpo -c -o libgim_a-gim_bz2_blocksort.obj `if test -f 'gim_bz2_blocksort.cc'; then $(CYGPATH_W) 'gim_bz2_blocksort.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_blocksort.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_blocksort.Tpo $(DEPDIR)/libgim_a-gim_bz2_blocksort.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_blocksort.cc' object='libgim_a-gim_bz2_blocksort.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_blocksort.obj `if test -f 'gim_bz2_blocksort.cc'; then $(CYGPATH_W) 'gim_bz2_blocksort.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_blocksort.cc'; fi`
-
-libgim_a-gim_bz2_bzlib.o: gim_bz2_bzlib.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_bzlib.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_bzlib.Tpo -c -o libgim_a-gim_bz2_bzlib.o `test -f 'gim_bz2_bzlib.cc' || echo '$(srcdir)/'`gim_bz2_bzlib.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_bzlib.Tpo $(DEPDIR)/libgim_a-gim_bz2_bzlib.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_bzlib.cc' object='libgim_a-gim_bz2_bzlib.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_bzlib.o `test -f 'gim_bz2_bzlib.cc' || echo '$(srcdir)/'`gim_bz2_bzlib.cc
-
-libgim_a-gim_bz2_bzlib.obj: gim_bz2_bzlib.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_bzlib.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_bzlib.Tpo -c -o libgim_a-gim_bz2_bzlib.obj `if test -f 'gim_bz2_bzlib.cc'; then $(CYGPATH_W) 'gim_bz2_bzlib.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_bzlib.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_bzlib.Tpo $(DEPDIR)/libgim_a-gim_bz2_bzlib.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_bzlib.cc' object='libgim_a-gim_bz2_bzlib.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_bzlib.obj `if test -f 'gim_bz2_bzlib.cc'; then $(CYGPATH_W) 'gim_bz2_bzlib.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_bzlib.cc'; fi`
-
-libgim_a-gim_bz2_compress.o: gim_bz2_compress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_compress.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_compress.Tpo -c -o libgim_a-gim_bz2_compress.o `test -f 'gim_bz2_compress.cc' || echo '$(srcdir)/'`gim_bz2_compress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_compress.Tpo $(DEPDIR)/libgim_a-gim_bz2_compress.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_compress.cc' object='libgim_a-gim_bz2_compress.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_compress.o `test -f 'gim_bz2_compress.cc' || echo '$(srcdir)/'`gim_bz2_compress.cc
-
-libgim_a-gim_bz2_compress.obj: gim_bz2_compress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_compress.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_compress.Tpo -c -o libgim_a-gim_bz2_compress.obj `if test -f 'gim_bz2_compress.cc'; then $(CYGPATH_W) 'gim_bz2_compress.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_compress.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_compress.Tpo $(DEPDIR)/libgim_a-gim_bz2_compress.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_compress.cc' object='libgim_a-gim_bz2_compress.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_compress.obj `if test -f 'gim_bz2_compress.cc'; then $(CYGPATH_W) 'gim_bz2_compress.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_compress.cc'; fi`
-
-libgim_a-gim_bz2_compress_bzlib.o: gim_bz2_compress_bzlib.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_compress_bzlib.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Tpo -c -o libgim_a-gim_bz2_compress_bzlib.o `test -f 'gim_bz2_compress_bzlib.cc' || echo '$(srcdir)/'`gim_bz2_compress_bzlib.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Tpo $(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_compress_bzlib.cc' object='libgim_a-gim_bz2_compress_bzlib.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_compress_bzlib.o `test -f 'gim_bz2_compress_bzlib.cc' || echo '$(srcdir)/'`gim_bz2_compress_bzlib.cc
-
-libgim_a-gim_bz2_compress_bzlib.obj: gim_bz2_compress_bzlib.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_compress_bzlib.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Tpo -c -o libgim_a-gim_bz2_compress_bzlib.obj `if test -f 'gim_bz2_compress_bzlib.cc'; then $(CYGPATH_W) 'gim_bz2_compress_bzlib.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_compress_bzlib.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Tpo $(DEPDIR)/libgim_a-gim_bz2_compress_bzlib.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_compress_bzlib.cc' object='libgim_a-gim_bz2_compress_bzlib.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_compress_bzlib.obj `if test -f 'gim_bz2_compress_bzlib.cc'; then $(CYGPATH_W) 'gim_bz2_compress_bzlib.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_compress_bzlib.cc'; fi`
-
-libgim_a-gim_bz2_crctable.o: gim_bz2_crctable.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_crctable.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_crctable.Tpo -c -o libgim_a-gim_bz2_crctable.o `test -f 'gim_bz2_crctable.cc' || echo '$(srcdir)/'`gim_bz2_crctable.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_crctable.Tpo $(DEPDIR)/libgim_a-gim_bz2_crctable.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_crctable.cc' object='libgim_a-gim_bz2_crctable.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_crctable.o `test -f 'gim_bz2_crctable.cc' || echo '$(srcdir)/'`gim_bz2_crctable.cc
-
-libgim_a-gim_bz2_crctable.obj: gim_bz2_crctable.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_crctable.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_crctable.Tpo -c -o libgim_a-gim_bz2_crctable.obj `if test -f 'gim_bz2_crctable.cc'; then $(CYGPATH_W) 'gim_bz2_crctable.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_crctable.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_crctable.Tpo $(DEPDIR)/libgim_a-gim_bz2_crctable.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_crctable.cc' object='libgim_a-gim_bz2_crctable.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_crctable.obj `if test -f 'gim_bz2_crctable.cc'; then $(CYGPATH_W) 'gim_bz2_crctable.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_crctable.cc'; fi`
-
-libgim_a-gim_bz2_decompress.o: gim_bz2_decompress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_decompress.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_decompress.Tpo -c -o libgim_a-gim_bz2_decompress.o `test -f 'gim_bz2_decompress.cc' || echo '$(srcdir)/'`gim_bz2_decompress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_decompress.Tpo $(DEPDIR)/libgim_a-gim_bz2_decompress.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_decompress.cc' object='libgim_a-gim_bz2_decompress.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_decompress.o `test -f 'gim_bz2_decompress.cc' || echo '$(srcdir)/'`gim_bz2_decompress.cc
-
-libgim_a-gim_bz2_decompress.obj: gim_bz2_decompress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_decompress.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_decompress.Tpo -c -o libgim_a-gim_bz2_decompress.obj `if test -f 'gim_bz2_decompress.cc'; then $(CYGPATH_W) 'gim_bz2_decompress.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_decompress.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_decompress.Tpo $(DEPDIR)/libgim_a-gim_bz2_decompress.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_decompress.cc' object='libgim_a-gim_bz2_decompress.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_decompress.obj `if test -f 'gim_bz2_decompress.cc'; then $(CYGPATH_W) 'gim_bz2_decompress.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_decompress.cc'; fi`
-
-libgim_a-gim_bz2_huffman.o: gim_bz2_huffman.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_huffman.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_huffman.Tpo -c -o libgim_a-gim_bz2_huffman.o `test -f 'gim_bz2_huffman.cc' || echo '$(srcdir)/'`gim_bz2_huffman.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_huffman.Tpo $(DEPDIR)/libgim_a-gim_bz2_huffman.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_huffman.cc' object='libgim_a-gim_bz2_huffman.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_huffman.o `test -f 'gim_bz2_huffman.cc' || echo '$(srcdir)/'`gim_bz2_huffman.cc
-
-libgim_a-gim_bz2_huffman.obj: gim_bz2_huffman.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_huffman.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_huffman.Tpo -c -o libgim_a-gim_bz2_huffman.obj `if test -f 'gim_bz2_huffman.cc'; then $(CYGPATH_W) 'gim_bz2_huffman.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_huffman.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_huffman.Tpo $(DEPDIR)/libgim_a-gim_bz2_huffman.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_huffman.cc' object='libgim_a-gim_bz2_huffman.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_huffman.obj `if test -f 'gim_bz2_huffman.cc'; then $(CYGPATH_W) 'gim_bz2_huffman.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_huffman.cc'; fi`
-
-libgim_a-gim_bz2_randtable.o: gim_bz2_randtable.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_randtable.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_randtable.Tpo -c -o libgim_a-gim_bz2_randtable.o `test -f 'gim_bz2_randtable.cc' || echo '$(srcdir)/'`gim_bz2_randtable.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_randtable.Tpo $(DEPDIR)/libgim_a-gim_bz2_randtable.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_randtable.cc' object='libgim_a-gim_bz2_randtable.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_randtable.o `test -f 'gim_bz2_randtable.cc' || echo '$(srcdir)/'`gim_bz2_randtable.cc
-
-libgim_a-gim_bz2_randtable.obj: gim_bz2_randtable.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_bz2_randtable.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_bz2_randtable.Tpo -c -o libgim_a-gim_bz2_randtable.obj `if test -f 'gim_bz2_randtable.cc'; then $(CYGPATH_W) 'gim_bz2_randtable.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_randtable.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_bz2_randtable.Tpo $(DEPDIR)/libgim_a-gim_bz2_randtable.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_bz2_randtable.cc' object='libgim_a-gim_bz2_randtable.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_bz2_randtable.obj `if test -f 'gim_bz2_randtable.cc'; then $(CYGPATH_W) 'gim_bz2_randtable.cc'; else $(CYGPATH_W) '$(srcdir)/gim_bz2_randtable.cc'; fi`
 
 libgim_a-gim_checksum.o: gim_checksum.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_checksum.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_checksum.Tpo -c -o libgim_a-gim_checksum.o `test -f 'gim_checksum.cc' || echo '$(srcdir)/'`gim_checksum.cc
@@ -744,20 +602,6 @@ libgim_a-gim_cnc_generic.obj: gim_cnc_generic.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_cnc_generic.cc' object='libgim_a-gim_cnc_generic.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_cnc_generic.obj `if test -f 'gim_cnc_generic.cc'; then $(CYGPATH_W) 'gim_cnc_generic.cc'; else $(CYGPATH_W) '$(srcdir)/gim_cnc_generic.cc'; fi`
-
-libgim_a-gim_compression.o: gim_compression.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_compression.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_compression.Tpo -c -o libgim_a-gim_compression.o `test -f 'gim_compression.cc' || echo '$(srcdir)/'`gim_compression.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_compression.Tpo $(DEPDIR)/libgim_a-gim_compression.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_compression.cc' object='libgim_a-gim_compression.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_compression.o `test -f 'gim_compression.cc' || echo '$(srcdir)/'`gim_compression.cc
-
-libgim_a-gim_compression.obj: gim_compression.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_compression.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_compression.Tpo -c -o libgim_a-gim_compression.obj `if test -f 'gim_compression.cc'; then $(CYGPATH_W) 'gim_compression.cc'; else $(CYGPATH_W) '$(srcdir)/gim_compression.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_compression.Tpo $(DEPDIR)/libgim_a-gim_compression.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_compression.cc' object='libgim_a-gim_compression.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_compression.obj `if test -f 'gim_compression.cc'; then $(CYGPATH_W) 'gim_compression.cc'; else $(CYGPATH_W) '$(srcdir)/gim_compression.cc'; fi`
 
 libgim_a-gim_db.o: gim_db.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_db.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_db.Tpo -c -o libgim_a-gim_db.o `test -f 'gim_db.cc' || echo '$(srcdir)/'`gim_db.cc
@@ -1108,20 +952,6 @@ libgim_a-gim_log.obj: gim_log.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_log.cc' object='libgim_a-gim_log.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_log.obj `if test -f 'gim_log.cc'; then $(CYGPATH_W) 'gim_log.cc'; else $(CYGPATH_W) '$(srcdir)/gim_log.cc'; fi`
-
-libgim_a-gim_lzh_compress.o: gim_lzh_compress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_lzh_compress.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_lzh_compress.Tpo -c -o libgim_a-gim_lzh_compress.o `test -f 'gim_lzh_compress.cc' || echo '$(srcdir)/'`gim_lzh_compress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_lzh_compress.Tpo $(DEPDIR)/libgim_a-gim_lzh_compress.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_lzh_compress.cc' object='libgim_a-gim_lzh_compress.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_lzh_compress.o `test -f 'gim_lzh_compress.cc' || echo '$(srcdir)/'`gim_lzh_compress.cc
-
-libgim_a-gim_lzh_compress.obj: gim_lzh_compress.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_lzh_compress.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_lzh_compress.Tpo -c -o libgim_a-gim_lzh_compress.obj `if test -f 'gim_lzh_compress.cc'; then $(CYGPATH_W) 'gim_lzh_compress.cc'; else $(CYGPATH_W) '$(srcdir)/gim_lzh_compress.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_lzh_compress.Tpo $(DEPDIR)/libgim_a-gim_lzh_compress.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gim_lzh_compress.cc' object='libgim_a-gim_lzh_compress.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_lzh_compress.obj `if test -f 'gim_lzh_compress.cc'; then $(CYGPATH_W) 'gim_lzh_compress.cc'; else $(CYGPATH_W) '$(srcdir)/gim_lzh_compress.cc'; fi`
 
 libgim_a-gim_md5.o: gim_md5.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_md5.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_md5.Tpo -c -o libgim_a-gim_md5.o `test -f 'gim_md5.cc' || echo '$(srcdir)/'`gim_md5.cc

@@ -42,6 +42,7 @@
 #include "../include/gim_base_header.h"
 #include "../include/gim_db.h"
 #include "../include/gim_environment.h"
+#include "../include/gim_checksum.h"
 #include "../include/gim_file.h"
 
 
@@ -573,7 +574,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "UNKNOWN PROPERTIES [%s]." , Tok[3] );
 				return __SYNTAX_ERROR;
 			}
-			printf( "%s = %d  -  %s = %d\n" ,  Tok[2] , line->fvalue , Tok[3] , line->svalue );
+//			printf( "%s = %d  -  %s = %d\n" ,  Tok[2] , line->fvalue , Tok[3] , line->svalue );
 			gdbs_script->add_item( line );
 			gim_error->set( "gim_db_obj::gdbs_line_syntax_check" , "Syntax ok! SET TABLE command added to list." );
 			return __GDBS_SET_FIELD;
@@ -623,7 +624,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 				}
 				strcpy( Tlins->label , Tok[t] );
 				strcpy( Tlins->value.value.Char , Tok[++t] );
-				gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_line_syntax_check" , "GDBS Insert: Label [%16s] - Value [%12s]" , Tlins->label , Tlins->value.value.Char );
+				gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_line_syntax_check" , "GDBS Insert: Data [%16s = %-16s]" , Tlins->label , Tlins->value.value.Char );
 				line->ins->add_item( Tlins );
 			}
 			gdbs_script->add_item( line );
@@ -729,7 +730,7 @@ _gim_int8 gim_db_obj::gdbs_tokenizer( char * line ) {
 		}
 	}
 
-	gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::gdbs_tokenizer" , "Summary: [line: %3d] [Len: %3d] [Tok: %2d] [termination: %d] [comment: %d]" , gdbs_line_num , strlen( line ) , i , termination , comment );	
+	gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::gdbs_tokenizer" , "Summary: [line: %3d] [Len: %3d] [NoT: %2d] [termination: %d] [comment: %d]" , gdbs_line_num , strlen( line ) , i , termination , comment );	
 	if ( i > 19 ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_tokenizer" , "too much token in line" , __GIM_ERROR  );
 		return __TOO_MUCH_TOKEN;
@@ -912,7 +913,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 						Trec->index = db->Ttab->items;
 						Trec->values = new _gim_list;
 						sprintf( H , "Record %d - Address id %p" , db->Ttab->items , Trec );
-						strcpy( Trec->hash , db_checksum( H ) );
+						strcpy( Trec->hash , cs->md5( H , strlen( H ) ) );
 						gim_error->set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , H , __GIM_OK );
 						gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "Generated Hash [%s]" , Trec->hash );
 						db->Ttab->Tdata->AddSection( Trec->hash );
@@ -986,7 +987,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 							}
 							if ( db->type == GIM_DB_PERMANENT ) 
 								db->Ttab->Tdata->Write();
-//							line->ins->destroy_list();					
+							line->ins->destroy_list();					
 						}
 						else {
 							

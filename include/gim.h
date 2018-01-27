@@ -46,7 +46,7 @@
 #ifndef _GIM_H
 #define _GIM_H
 
-	#define ARCHITETTURE		X86
+	#define ARCHITECTURE		X86
 
 	#include <stdio.h>
 
@@ -84,8 +84,6 @@
 	#include "gim_gkp_cryptography.h"
 	#include "gim_html.h"
 	#include "gim_gkl.h"
-	#include "gim_lzh.h"
-	#include "gim_compression.h"
 	#include "gim_cnc.h"
  	#include "gim_db.h"
 	#include "gim_directory.h"
@@ -210,8 +208,8 @@
 				\brief	With this class you can compress any kind of data.\n\n
 						See the methods of gim_compression_obj.
 			*/
-			gim_compression_obj		* compression;
-
+/*			gim_compression_obj		* compression;
+*/
 		private:
 	friend	class	gim_home_obj;
 	friend	class	gim_error_obj;

@@ -147,11 +147,6 @@ void * gim_list_obj::get_item( void ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item" , "Endlist reached" , __GIM_ERROR );
 		return NULL;
 	}
-
-//	void *	tmp = currentlist->item;
-
-//	currentlist = currentlist->nextitem;
-	//gim_error->set( "gim_list_obj::get_item" , "Item successfully obtained." );
 	return currentlist->item;
 }
 

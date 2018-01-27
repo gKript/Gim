@@ -16,20 +16,11 @@ lib_LIBRARIES = \
 
 libgim_a_SOURCES = \
 	gim.cc    \
-	gim_bz2_blocksort.cc    \
-	gim_bz2_bzlib.cc    \
-	gim_bz2_compress.cc    \
-	gim_bz2_compress_bzlib.cc    \
-	gim_bz2_crctable.cc    \
-	gim_bz2_decompress.cc    \
-	gim_bz2_huffman.cc    \
-	gim_bz2_randtable.cc    \
 	gim_checksum.cc    \
 	gim_cnc.cc    \
 	gim_cnc_alfabeto.cc    \
 	gim_cnc_coding.cc    \
 	gim_cnc_generic.cc    \
-	gim_compression.cc    \
 	gim_db.cc    \
 	gim_directory.cc    \
 	gim_enhanced.cc    \
@@ -55,7 +46,6 @@ libgim_a_SOURCES = \
 	gim_kvalue.cc    \
 	gim_lexical.cc    \
 	gim_log.cc    \
-	gim_lzh_compress.cc    \
 	gim_md5.cc    \
 	gim_memory.cc    \
 	gim_private_key.cc    \

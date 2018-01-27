@@ -99,9 +99,9 @@ void gim_obj::gim_init( void ) {
 	crypt				= new gim_cryptography_obj;
 	gim_crypt			= crypt;
 	
-	compression			= new gim_compression_obj;
+/*	compression			= new gim_compression_obj;
 	gim_compression		= compression;
-	
+*/	
 	error->set( "gim_base_obj::init" , 0 );
 	set_state( __GIM_TH_IDLE );
 }
@@ -114,9 +114,9 @@ void gim_obj::gim_release( void ) {
 	delete crypt;
 	crypt= NULL;
 
-	delete compression;
+/*	delete compression;
 	compression = NULL;
-
+*/
 	delete  checksum;
 	checksum = NULL;
 
@@ -151,7 +151,7 @@ void gim_obj::gim_release( void ) {
 	delete	home;
 	home			= NULL;
 	
-	gim_compression		= NULL;
+/*	gim_compression		= NULL;*/
 	gim_file_manager	= NULL;
 	gim_key				= NULL;
 	gim_checksum		= NULL;
