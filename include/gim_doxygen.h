@@ -93,7 +93,8 @@ int main( int argc , char **argv ) {
 		printf( "Gim is not updated at the required version.\n" );
 		printf( "For %s is necessary Gim >= 2.1-0\n" , argv[0] );
 		exit( -1 );
-	}	
+	}
+	gim_set_application_name( "test" );
 	gim_obj * gim = new gim_obj;
 	printf( "I am %s on %s\n" , gim->identity->login() , gim->identity->node() );
 	delete gim;
