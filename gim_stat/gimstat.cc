@@ -159,10 +159,10 @@ int main ( int argc , char *argv[] ) {
 					qgmedie[3] += gstat[c+192];
 				}
 
-				qgvarianza[0] = abs((qgvarianza[0]/64) - ((source->size/4) / gused));
-				qgvarianza[1] = abs((qgvarianza[1]/64) - ((source->size/4) / gused));
-				qgvarianza[2] = abs((qgvarianza[2]/64) - ((source->size/4) / gused));
-				qgvarianza[3] = abs((qgvarianza[3]/64) - ((source->size/4) / gused));
+				qgvarianza[0] = abs((int)(qgvarianza[0]/64) - ((int)(source->size/4) / (int)gused));
+				qgvarianza[1] = abs((int)(qgvarianza[1]/64) - ((int)(source->size/4) / (int)gused));
+				qgvarianza[2] = abs((int)(qgvarianza[2]/64) - ((int)(source->size/4) / (int)gused));
+				qgvarianza[3] = abs((int)(qgvarianza[3]/64) - ((int)(source->size/4) / (int)gused));
 
 				qgmedie[0] /= 64;
 				qgmedie[1] /= 64;
@@ -174,10 +174,10 @@ int main ( int argc , char *argv[] ) {
 				gcaos[2] = abs((qgmedie[2]*100)/abs((source->size) / gused));
 				gcaos[3] = abs((qgmedie[3]*100)/abs((source->size) / gused));
 */		 
-				gcaos[0] = abs( 100 - abs((qgmedie[0]*100)/abs((source->size) / gused)));
-				gcaos[1] = abs( 100 - abs((qgmedie[1]*100)/abs((source->size) / gused)));
-				gcaos[2] = abs( 100 - abs((qgmedie[2]*100)/abs((source->size) / gused)));
-				gcaos[3] = abs( 100 - abs((qgmedie[3]*100)/abs((source->size) / gused)));
+				gcaos[0] = abs( (int)100 - abs((int)(qgmedie[0]*100)/abs((int)(source->size) / (int)gused)));
+				gcaos[1] = abs( (int)100 - abs((int)(qgmedie[1]*100)/abs((int)(source->size) / (int)gused)));
+				gcaos[2] = abs( (int)100 - abs((int)(qgmedie[2]*100)/abs((int)(source->size) / (int)gused)));
+				gcaos[3] = abs( (int)100 - abs((int)(qgmedie[3]*100)/abs((int)(source->size) / (int)gused)));
 
 				gqcaos_extension = (float)((float)gused*100.00)/256.00;
 				gqcaos_distribuition = (float)(100.00 - (float)((float)( (float)gdelta / (float)gmax ) * 100.0));
@@ -303,37 +303,37 @@ int main ( int argc , char *argv[] ) {
 			qgmedie[3] += gstat[c+192];
 		}
 
-		qgvarianza[0] = abs((qgvarianza[0]/64) - ((source->size/4) / gused));
-		qgvarianza[1] = abs((qgvarianza[1]/64) - ((source->size/4) / gused));
-		qgvarianza[2] = abs((qgvarianza[2]/64) - ((source->size/4) / gused));
-		qgvarianza[3] = abs((qgvarianza[3]/64) - ((source->size/4) / gused));
+		qgvarianza[0] = abs((int)(qgvarianza[0]/64) - ((int)(source->size/4) / (int)gused));
+		qgvarianza[1] = abs((int)(qgvarianza[1]/64) - ((int)(source->size/4) / (int)gused));
+		qgvarianza[2] = abs((int)(qgvarianza[2]/64) - ((int)(source->size/4) / (int)gused));
+		qgvarianza[3] = abs((int)(qgvarianza[3]/64) - ((int)(source->size/4) / (int)gused));
 
 		qgmedie[0] /= 64;
 		qgmedie[1] /= 64;
 		qgmedie[2] /= 64;
 		qgmedie[3] /= 64;
 	
-		gcaos[0] = abs((qgmedie[0]*100)/abs((source->size) / gused));
-		gcaos[1] = abs((qgmedie[1]*100)/abs((source->size) / gused));
-		gcaos[2] = abs((qgmedie[2]*100)/abs((source->size) / gused));
-		gcaos[3] = abs((qgmedie[3]*100)/abs((source->size) / gused));
+		gcaos[0] = abs((int)(qgmedie[0]*100)/abs((int)(source->size) / (int)gused));
+		gcaos[1] = abs((int)(qgmedie[1]*100)/abs((int)(source->size) / (int)gused));
+		gcaos[2] = abs((int)(qgmedie[2]*100)/abs((int)(source->size) / (int)gused));
+		gcaos[3] = abs((int)(qgmedie[3]*100)/abs((int)(source->size) / (int)gused));
 
 	//	CH used : 256 - CH min : 125286 - CH max : 126860 - CH delta : 1574
 	//	Blk 1   : 099%- Blk 2  99%   - Blk 3 100%   - Blk 4  99%
 	//  Blk 4    :
 	//	Mean value :
 		puts("Leveling statistics");
-		printf("Average value : %u\n" , abs((source->size) / gused));
+		printf("Average value : %u\n" , abs((int)(source->size) / (int)gused));
 		printf("Blk 1         : %3.2f%%\n", (float)((float)qgmedie[0]*100.00)/(float)abs((source->size) / (float)gused) );
 		printf("Blk 2         : %3.2f%%\n", (float)((float)qgmedie[1]*100.00)/(float)abs((source->size) / (float)gused) );
 		printf("Blk 3         : %3.2f%%\n", (float)((float)qgmedie[2]*100.00)/(float)abs((source->size) / (float)gused) );
 		printf("Blk 4         : %3.2f%%\n\n", (float)((float)qgmedie[3]*100.00)/(float)abs((source->size) / (float)gused) );
 		fflush (stdout);
 	 
-		gcaos[0] = abs( 100 - abs((qgmedie[0]*100)/abs((source->size) / gused)));
-		gcaos[1] = abs( 100 - abs((qgmedie[1]*100)/abs((source->size) / gused)));
-		gcaos[2] = abs( 100 - abs((qgmedie[2]*100)/abs((source->size) / gused)));
-		gcaos[3] = abs( 100 - abs((qgmedie[3]*100)/abs((source->size) / gused)));
+		gcaos[0] = abs( (int)100 - abs((int)(qgmedie[0]*100)/abs((int)(source->size) / (int)gused)));
+		gcaos[1] = abs( (int)100 - abs((int)(qgmedie[1]*100)/abs((int)(source->size) / (int)gused)));
+		gcaos[2] = abs( (int)100 - abs((int)(qgmedie[2]*100)/abs((int)(source->size) / (int)gused)));
+		gcaos[3] = abs( (int)100 - abs((int)(qgmedie[3]*100)/abs((int)(source->size) / (int)gused)));
 
 		gqcaos_extension = (float)((float)gused*100.00)/256.00;
 		gqcaos_distribuition = (float)(100.00 - (float)((float)( (float)gdelta / (float)gmax ) * 100.0));
@@ -356,3 +356,4 @@ int main ( int argc , char *argv[] ) {
 	
 	exit( (int)gqcaos);
 }
+

@@ -1,9 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1920x1020+0+0
+Geometry=1920x1002+0+0
 
 [File Loader]
-Files=../../include/gim.h#102%%%../../include/gim_compression.h#212%%%../../include/gim_bz2_bzlib.h#1%%%../../include/gim_bz2_bzlib_private.h#1%%%../../src/gim_bz2_bzlib.cc#1%%%../../src/gim_lzh_compress.cc#1%%%../../src/gim_compression.cc#32
+Files=../../include/gim.h#84
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -17,9 +17,8 @@ Program uri=../../../../Projects/gim3/gim_shell/gimshell
 Run in terminal=2
 Working directories=../../../../Projects/gim3
 
-[Project Manager]
-Shortcut=trunk//gim_gkdp//gkdp%%%trunk//gim_gkfp//gkfp%%%trunk//gim_shell//gimshell%%%trunk//gim_stat//gimstat%%%trunk//gkmake//gkmake
-Expand=trunk%%%trunk//include%%%trunk//include//libgim_include%%%trunk//src%%%trunk//src//libgim.a
+[Commit Logs]
+Logs=Little variations
 
 [Debugger]
 Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
@@ -32,6 +31,3 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
-
-[Commit Logs]
-Logs=Little variations
