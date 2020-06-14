@@ -91,3 +91,16 @@ int		gim_check_version	( int maj , int min , int sub ) {
 	else 
 		return __GIM_NOT_OK;
 }
+
+
+int		gim_check_version	( int maj , int min ) {
+	char	gim_ver[16];
+	char	req_ver[16];
+	sprintf( gim_ver , "%d%d" , GIM_MAJOR , GIM_MINOR );
+	sprintf( req_ver , "%d%d" , maj , min );
+	if ( atoi(gim_ver) >= atoi(req_ver) )
+		return __GIM_OK;
+	else 
+		return __GIM_NOT_OK;
+}
+

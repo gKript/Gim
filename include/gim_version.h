@@ -117,4 +117,13 @@
 	*/
 	int			gim_check_version	( int maj , int min , int sub );
 
+ 	/*!	\fn		int gim_check_version( int maj , int min , int sub )
+		\brief	Use this function to check if Gim is at the required version
+		\param	maj	The major version number of th required gim
+		\param	min	The minor version number of th required gim
+		\return \a __GIM_OK if Gim is at the required version, 
+				\a __GIM_NOT_OK if not.
+	*/
+	int			gim_check_version	( int maj , int min );
+
 #endif /* _GIM_VERSION_H */

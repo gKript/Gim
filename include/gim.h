@@ -51,7 +51,7 @@
 	#include <stdio.h>
 
 	#include "gim_doxygen.h"
-	#include "gim_version.h"
+//	#include "gim_version.h"
 	#include "gim_define.h"
 	#include "gim_custom_type.h"
 	#include "gim_log.h"
