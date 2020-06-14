@@ -15,13 +15,14 @@
         </paned>
         <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="718">
           <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="403">
-            <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
+            <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="1">
               <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
               <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+              <item name="GitDock" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
             </notebook>
             <item name="search_files" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
           </paned>
-          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
         </paned>
       </paned>
     </dock>

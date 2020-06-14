@@ -3,7 +3,7 @@ Maximized=1
 Geometry=1920x1002+0+0
 
 [File Loader]
-Files=../../include/gim.h#84
+Files=../../include/gim.h#51%%%../../src/gim_gkp_password.cc#180
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -17,12 +17,12 @@ Program uri=../../../../Projects/gim3/gim_shell/gimshell
 Run in terminal=2
 Working directories=../../../../Projects/gim3
 
-[Commit Logs]
-Logs=Little variations
+[Project Manager]
+Shortcut=Gim//src//libgim.a%%%Gim//gim_gkdp//gkdp%%%Gim//gim_gkfp//gkfp%%%Gim//gim_shell//gimshell%%%Gim//gim_stat//gimstat%%%Gim//gkmake//gkmake
+Expand=Gim%%%Gim//gkmake%%%Gim//gkmake//gkmake%%%Gim//src%%%Gim//src//libgim.a
 
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2
+[Commit Logs]
+Logs=Sÿ%%%Sÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Z%%%™ÿ%%%™ÿ%%%™ÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Çÿ%%%Çÿ%%%œÿ%%%œÿ%%%œÿ%%%œÿ%%%œÿ%%%œÿ%%%¯ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%˜ÿ%%%B%%%Ãÿ%%%€ÿ%%%c%%%c%%%c%%%Åÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%Vÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%cÿ%%%cÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%Äÿ%%%€ÿ%%%€ÿ%%%€ÿ%%%€ÿ%%%€ÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Rÿ%%%Åÿ%%%Sÿ%%%Sÿ%%%Sÿ%%%Sÿ%%%b%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%­ÿ%%%\rÿ%%%\rÿ%%%\rÿ%%%\rÿ%%%\rÿ%%%\rÿ%%%\rÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%% %%%A%%%A%%%A%%%A%%%A%%%A%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%x%%%x%%%Uÿ%%%Uÿ%%%Uÿ%%%Uÿ%%%Uÿ%%%Uÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Uÿ%%%Uÿ%%%Uÿ%%%­ÿ%%% ş%%% ş%%% ş%%% ş%%% ş%%% ş%%% ş%%%‘ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%% %%% %%% %%% %%% %%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%Tÿ%%%gÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Pÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Qÿ%%%Ãÿ%%%«ÿ%%%œÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%šÿ%%%r%%%g%%%F%%%«ÿ%%%ªÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%G%%%f%%%f%%%f%%%›ÿ%%%ÿ%%%ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%–ÿ%%%—ÿ%%%—ÿ%%%—ÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%	ÿ%%%p%%%D%%%¾ÿ%%%ÿ%%%ÿ%%%ÿ%%%™ÿ%%%™ÿ%%%™ÿ%%%™ÿ%%%™ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%% ş%%% ş%%% ş%%%cÿ%%%cÿ%%%™ÿ%%%™ÿ%%%‘ÿ%%%˜ÿ%%%˜ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%•ÿ%%%cÿ%%%cÿ%%%9%%%8%%%p%%%/%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%ÿÿ%%%ÿÿ%%%Vÿ%%%Wÿ%%%¾ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%‰ÿ%%%ÿÿ%%%ÿÿ%%%ÿ%%%ÿ
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -31,3 +31,7 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
+
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
+Stop at beginning=2
