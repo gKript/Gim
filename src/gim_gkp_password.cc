@@ -160,6 +160,7 @@ _gim_flag	gim_password_obj::isPrime( _gim_Ulong n ) {
  
 void	gim_password_obj::calc( void ) {
 	_gim_Uint8	c = 0 , t=0 ;
+	gim_error->set( "gim_password_obj::calc" , "Calculating passworg digest and seed..." );
 	if ( strlen( password ) == 0 )
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_password_obj::calc" , "No password setted. Security issue?" , __GIM_ERROR );
 	if ( password_already_calc == __GIM_NO ) {
@@ -173,10 +174,10 @@ void	gim_password_obj::calc( void ) {
 		seed_main	= 1 ;
 	//	init - Digest
 //		puts("Copio i digest nella struttura");
-		strcpy(password_md5    , gim_checksum->md5   ( password			, (unsigned long)t - 1 ) );
-		strcpy(password_sha1   , gim_checksum->sha1  ( password_md5		, (unsigned long)strlen( password_md5	 ) - 1 ) );
-		strcpy(password_sha256 , gim_checksum->sha256( password_sha1	, (unsigned long)strlen( password_sha1   ) - 1 ) );
-		strcpy(password_sha512 , gim_checksum->sha512( password_sha256	, (unsigned long)strlen( password_sha256 ) - 1 ) );
+		strncpy(password_md5    , gim_checksum->md5   ( password			, (unsigned long)t - 1 ) , sizeof(password_md5) );
+		strncpy(password_sha1   , gim_checksum->sha1  ( password_md5		, (unsigned long)strlen( password_md5	 ) - 1 ) , sizeof(password_sha1) );
+		strncpy(password_sha256 , gim_checksum->sha256( password_sha1	, (unsigned long)strlen( password_sha1   ) - 1 ) , sizeof(password_sha256) );
+		strncpy(password_sha512 , gim_checksum->sha512( password_sha256	, (unsigned long)strlen( password_sha256 ) - 1 ) , sizeof(password_sha512) );
 //		puts("Fatto... mi occupo della secondary");
 		if ( strlen( secondary ) )
 			strcpy(secondary_sha512 , gim_checksum->sha512( secondary	, (unsigned long)strlen( secondary ) ) );
@@ -224,7 +225,7 @@ void	gim_password_obj::recalc( void ) {
 	__GIM_CLEAR( password_sha256	, GIM_SHA256_SIZE , char );
 //	puts("__GIM_CLEAR( password_sha512...");
 	__GIM_CLEAR( password_sha512	, GIM_SHA512_SIZE , char );
-//	puts("__GIM_CLEAR( secondary_sha512q...");
+//	puts("__GIM_CLEAR( secondary_sha512...");
 	__GIM_CLEAR( secondary_sha512	, GIM_SHA512_SIZE , char );
 	seed_md5	= 0;
 	seed_sha1	= 0;
@@ -233,6 +234,7 @@ void	gim_password_obj::recalc( void ) {
 	seed_secondary = 0;
 	seed_main	= 0;
 	password_already_calc = __GIM_NO;
+//	puts("Chiamo la calc");
 	calc();
 }
 

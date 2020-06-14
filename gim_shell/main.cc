@@ -53,7 +53,7 @@ int main( int argc , char **argv ) {
 	ndb->create_table( "second" );
 	ndb->create_table( "third" );
 */
-	gim_error->Set( GIM_ERROR_FATAL , "::main" , "test di error con : %s - %s" , gim_version_small() , gim_version_micro() );
+//	gim_error->Set( GIM_ERROR_FATAL , "::main" , "test di error con : %s - %s" , gim_version_small() , gim_version_micro() );
 
 	puts( "Gim shell 0.1.2" );
 	puts( gim_version_small() );

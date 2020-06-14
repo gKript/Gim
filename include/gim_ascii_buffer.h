@@ -94,7 +94,11 @@
 		    /*!gim_list_obj distructor
 		    */
 		    inline ~gim_ascii_file_obj() {
-				gim_error->set( "gim_list_obj::gim_ascii_file_obj" , "An ascii buffer deleted" );
+		    	delete lex;
+/*		    	if ( chrbuf != NULL ) {
+		    		gim_memory->Unlock_and_free( chrbuf );
+		    	}
+*/				gim_error->set( "gim_list_obj::gim_ascii_file_obj" , "An ascii buffer deleted" );
 		    };
     };
 

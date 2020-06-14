@@ -122,6 +122,7 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 _gim_flag	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
 		
+//		TO DO !!!
 
 	}
 }
