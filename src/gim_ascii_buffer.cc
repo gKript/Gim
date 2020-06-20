@@ -122,31 +122,16 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 }
 
 
-//		TO DO !!!
-/*
 
-_gim_flag	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
-	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
-		if( ( to_find != NULL ) && ( sizeof( to_find ) < sizeof( _gim_Uint32 ) ) {
-	}
-}
-
-
-*/
-
-
-//
 _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
-	_gim_Uint32 dim_find;
+	_gim_Uint32 dim_find = 0;
 	_gim_Uint32	idx_search	= 0;
 	_gim_Uint32  * idx_tmp;
-	char * buff				= chrbuf;
-	
+	char * buff	= this->chrbuf;
+	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::is_in_buffer" , "Starting" , __GIM_OK );
 	_gim_list * occurrences = new _gim_list;
-	
-	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+	if ( ( this->dimension > 0 ) && ( this->chrbuf != NULL ) ) {
 		if( ( strlen( to_find ) > 0 ) && ( to_find != NULL ) ) {
-			
 			dim_find = strlen( to_find );
 			while( ( idx_search + dim_find ) <= dimension ) {
 				if( *buff == to_find[ 0 ] ) {
@@ -158,10 +143,13 @@ _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 						idx_search += dim_find;
 					}
 					else {
-					idx_search++;
-					//buff = buff + idx_search;
-                    buff++;
+						idx_search++;
+				        buff++;
 					}
+				}
+				else {
+					idx_search++;
+		            buff++;
 				}
 			}
 			if( !( occurrences->items( ) ) ) {
@@ -175,6 +163,7 @@ _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 	else {
 		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "Buffer error" , __GIM_ERROR );
 	}
+	
 	return( occurrences );
 }
 
@@ -227,5 +216,6 @@ char *	gim_ascii_file_obj::get_buffer( void ) {
 	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::get_buffer" , "Buffer not defined" , __GIM_ERROR );
 	return NULL;
 }
+
 
 
