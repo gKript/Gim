@@ -37,6 +37,9 @@
 
 #include    "../include/gim_base_header.h"
 #include    "../include/gim_ascii_buffer.h"
+#include    "../include/gim_base_header.h"
+#include    "../include/gim_list.h"
+#include    "../include/gim_ascii_buffer.h"
 
 _gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
 	if ( ( dimension == 0 ) && ( size > 0 ) )  {
@@ -119,12 +122,60 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 }
 
 
+//		TO DO !!!
+/*
+
 _gim_flag	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
-		
-//		TO DO !!!
-
+		if( ( to_find != NULL ) && ( sizeof( to_find ) < sizeof( _gim_Uint32 ) ) {
 	}
+}
+
+
+*/
+
+
+//
+_gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
+	_gim_Uint32 dim_find;
+	_gim_Uint32	idx_search	= 0;
+	_gim_Uint32  * idx_tmp;
+	char * buff				= chrbuf;
+	
+	_gim_list * occurrences = new _gim_list;
+	
+	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
+		if( ( strlen( to_find ) > 0 ) && ( to_find != NULL ) ) {
+			
+			dim_find = strlen( to_find );
+			while( ( idx_search + dim_find ) <= dimension ) {
+				if( *buff == to_find[ 0 ] ) {
+					if( !( strncmp( buff , to_find , dim_find ) ) ) {  //sost strncmp
+                        idx_tmp = (_gim_Uint32 *)gim_memory->Alloc( sizeof( _gim_Uint32 ) , __GIM_ASCII_BUFFER , __GIM_HIDE );
+                        *idx_tmp = idx_search;
+						occurrences->add_item( idx_tmp );
+						buff += dim_find;
+						idx_search += dim_find;
+					}
+					else {
+					idx_search++;
+					//buff = buff + idx_search;
+                    buff++;
+					}
+				}
+			}
+			if( !( occurrences->items( ) ) ) {
+				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "No occurrences found" , __GIM_ERROR );
+			}
+		}
+		else {
+			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "String to find error" , __GIM_ERROR );
+		}
+	}
+	else {
+		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "Buffer error" , __GIM_ERROR );
+	}
+	return( occurrences );
 }
 
 
