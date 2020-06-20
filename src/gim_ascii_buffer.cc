@@ -135,22 +135,16 @@ _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 			dim_find = strlen( to_find );
 			while( ( idx_search + dim_find ) <= dimension ) {
 				if( *buff == to_find[ 0 ] ) {
-					if( !( strncmp( buff , to_find , dim_find ) ) ) {  //sost strncmp
+					if( !( strncmp( buff , to_find , dim_find ) ) ) {
                         idx_tmp = (_gim_Uint32 *)gim_memory->Alloc( sizeof( _gim_Uint32 ) , __GIM_ASCII_BUFFER , __GIM_HIDE );
                         *idx_tmp = idx_search;
 						occurrences->add_item( idx_tmp );
-						buff += dim_find;
-						idx_search += dim_find;
-					}
-					else {
-						idx_search++;
-				        buff++;
+						buff += dim_find-1;
+						idx_search += dim_find-1;
 					}
 				}
-				else {
-					idx_search++;
-		            buff++;
-				}
+				idx_search++;
+				buff++;
 			}
 			if( !( occurrences->items( ) ) ) {
 				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "No occurrences found" , __GIM_ERROR );
