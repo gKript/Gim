@@ -169,6 +169,10 @@ int main( int argc , char *argv[] ) {
 					if ( gkmake.parallel == __GIM_YES ) {
 						gkmake.num_core = gkconf->GetKeyINT( gkmake.prj_name , "number_of_threads" );
 					}
+					else if ( gkmake.parallel == __GIM_AUTO ) {
+						gkmake.parallel = __GIM_YES; 
+						gkmake.num_core = gim->identity->n_proc() + 1;
+					}
 				}
 				//  INT VALUES
 				if ( lex->str_equal( "total_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
@@ -363,7 +367,10 @@ int main( int argc , char *argv[] ) {
 				break;
 			}
 			case 't' : {
-				gkmake.num_core = atoi( gkopt->getoption()->argument );
+				if( ! strncmp( gkopt->getoption()->argument , "auto" , 4 ) )
+					gkmake.num_core = gim->identity->n_proc();
+				else	 
+					gkmake.num_core = atoi( gkopt->getoption()->argument );
 				sprintf( thread_command , " -j%d" , gkmake.num_core );
 				gkmake.parallel = __GIM_YES;
 				printf( "  MULTI THREADS build activated (%d threads)...\n" , gkmake.num_core );

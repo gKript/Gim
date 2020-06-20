@@ -56,7 +56,7 @@
 	enum memory_status {
 		__GIM_MEM_UNKNOWN = -1,
 		__GIM_MEM_LOCK = 20,
-		__GIM_MEM_UNLOCK = 21,
+		__GIM_MEM_UNLOCK
 	};
 	
 	/*!	\struct		gim_mem_list

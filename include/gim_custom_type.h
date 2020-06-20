@@ -52,6 +52,7 @@
 		__GIM_ERROR = -1 ,
 		__GIM_NO,
 		__GIM_YES,
+		__GIM_AUTO,
 		__GIM_WARNING,
 		__GIM_OPEN,
 		__GIM_CLOSE,

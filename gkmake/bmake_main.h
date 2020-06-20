@@ -28,7 +28,7 @@
 
 	#include <gim/gim.h>
 	
-	#define	GKMAKE_VERSION			"0.7-3"
+	#define	GKMAKE_VERSION			"0.7-4"
 	#define MAKEFILE				"Makefile"
 	#define	GKMAKE_FILE_COUNTER		".gkmake_conf"
 	#define GKMAKE_INCLUDE			"_bmake.h"

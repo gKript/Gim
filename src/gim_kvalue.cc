@@ -163,6 +163,10 @@ _gim_flag	gim_prsr_obj::AddKeyFlag( const char * section_name , const char * key
 			sprintf( tmp , "NO" );
 			break;
 		}
+		case __GIM_AUTO : {
+			sprintf( tmp , "AUTO" );
+			break;
+		}
 		case __GIM_TRUE : {
 			sprintf( tmp , "TRUE" );
 			break;
@@ -655,6 +659,7 @@ _gim_flag	gim_prsr_obj::GetKeyFLAG( const char * section_name , const char * key
 	if ( tmp != NULL ) {
 		if ( Lexical.str_equal( tmp , "YES" ) == __GIM_YES ) return __GIM_YES;
 		else if ( Lexical.str_equal( tmp , "NO"  ) == __GIM_YES ) return __GIM_NO;
+		else if ( Lexical.str_equal( tmp , "AUTO"  ) == __GIM_YES ) return __GIM_AUTO;
 		else if ( Lexical.str_equal( tmp , "TRUE"   ) == __GIM_YES ) return __GIM_TRUE;
 		else if ( Lexical.str_equal( tmp , "FALSE"   ) == __GIM_YES ) return __GIM_FALSE;
 		else if ( Lexical.str_equal( tmp , "A"   ) == __GIM_YES ) return __LEX_A;
