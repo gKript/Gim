@@ -122,11 +122,17 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 }
 
 
+_gim_list	*	gim_ascii_file_obj::is_in_buffer( const char * to_find ) {
+	char str[512];
+	strcpy( str , to_find );
+	return ( is_in_buffer( str ) );
+}
+
 
 _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 	_gim_Uint32 dim_find = 0;
 	_gim_Uint32	idx_search	= 0;
-	_gim_Uint32  * idx_tmp;
+	_gim_Uint32	* idx_tmp;
 	char * buff	= this->chrbuf;
 	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::is_in_buffer" , "Starting" , __GIM_OK );
 	_gim_list * occurrences = new _gim_list;
@@ -160,6 +166,14 @@ _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 	
 	return( occurrences );
 }
+
+
+
+_gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_list * occurrence , char * new_part ) {
+
+
+}
+
 
 
 _gim_flag	gim_ascii_file_obj::seekf( _gim_flag position ) {

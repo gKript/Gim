@@ -1,7 +1,7 @@
 /***************************************************************************
  *            gim_gkmake.h
  *
- *  Saturday 20-06-2020 02:00:39
+ *  Saturday 20-06-2020 16:20:03
  *  Copyright  2006  asyntote
  *  gkmake version : 0.7-4
  *  asyntote@gkript.org
@@ -38,9 +38,9 @@
 #define	GIM_GKMAKE_VERSIONING
 
    #define GIM_AUTHOR                       asyntote
-   #define GIM_GKMAKE_TOTAL_BUILD           1115
-   #define GIM_GKMAKE_BUILD                 998
-   #define GIM_GKMAKE_LAST_BUILD            "Saturday 20-06-2020 02:00:39"
+   #define GIM_GKMAKE_TOTAL_BUILD           1120
+   #define GIM_GKMAKE_BUILD                 1001
+   #define GIM_GKMAKE_LAST_BUILD            "Saturday 20-06-2020 16:20:03"
 
 #endif
 

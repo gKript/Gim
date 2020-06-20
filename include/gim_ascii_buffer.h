@@ -55,18 +55,59 @@
 	#define	 __GIM_FIRST		0
 	#define	 __GIM_LAST			1
 
-    class gim_ascii_file_obj {
+	/*!	\struct		gim_file_manager_list
+		\warning	\n <b>It is not possible to use directly this struct.</b>
+		\internal
+		\brief		This struct is used by Gim to hold trace of your opearation on files.
+					Please read the documentation on gim_file_manager_obj.
+	*/
+	struct gim_in_buffer_item {
+		_gim_Uint32		class_id;
+		char			searched[512];
+		_gim_flag		occurrance;
+	};
+
+	typedef	struct	gim_in_buffer_item		_gim_in_buffer;	
+
+	/*! \class 		gim_ascii_file_obj
+		\brief		The Gim ascci file class is useful to ...\n
+					\code 
+	
+		#include <stdio.h>
+		#include <unistd.h>				
+		#include <gim/gim.h>
+		int main( int argc , char **argv ) {
+			gim_obj * gim = new gim_obj;
+			_gim_ascii_buffer * test = new _gim_ascii_buffer;
+			
+			
+			delete test;
+			delete gim;
+			return 0;
+		}
+			
+					\endcode	
+
+		\author		Corrado Tumiati	-	skymatrix@alice.it
+		\author		Danilo Zannoni	-	asyntote@gmail.com
+		\author		gKript.org
+		\version	3.0
+		\date		2003-2020
+	*/
+	    class gim_ascii_file_obj {
 		public:
 					 _gim_flag				set_dimension( _gim_int32 size );
 					 _gim_flag				append( char * to_append );
-					 //_gim_flag				append( const char * to_append );
+//					 _gim_flag				append( const char * to_append );
 					 _gim_flag				append( const char * format , ... );
 //					 _gim_flag				append( _gim_string * str_to_append );
 					 _gim_flag				substitute( char * variable , char * text );
 					 _gim_flag				insert_variable( char * variable );
 					 _gim_int32				lenght( void );
 					 _gim_int32				lines( void );
+                     _gim_list *           	is_in_buffer( const char * to_find );
                      _gim_list *           	is_in_buffer( char * to_find );
+                     _gim_flag				in_buffer_subst( _gim_list * occurrence , char * new_part );
 				     char *					get_buffer( void );					 
 					 _gim_flag				seekf( _gim_flag position );
 					 _gim_flag				seek( _gim_int32 position );

@@ -7,8 +7,8 @@
     documentation_path = documentation/
     documentation_command = ./make_doc.sh
     multi_threads_enable = AUTO
-    total_build_number = 1115
-    succesful_build_number = 998
+    total_build_number = 1120
+    succesful_build_number = 1001
     clean = NO
     use_sudo = YES
     project_header_generation = YES
