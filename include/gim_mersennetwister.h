@@ -129,6 +129,7 @@
 
 		_gim_Ulong randInt();                       // integer in [0,2^32-1]
 		_gim_Ulong randInt( const _gim_Ulong &n );      // integer in [0,n] for n < 2^32
+		_gim_Uint32 randUInt8();
 		double operator()() { return rand(); }  // same as rand()
 		
 		// Re-seeding functions with same behavior as initializers
@@ -212,6 +213,16 @@
 			i = randInt() & used;  // toss unused bits to shorten search
 		while ( i > n );
 		return i;
+	}
+
+
+	inline _gim_Uint32 MTRand::randUInt8() {
+		_gim_Uint8 res = 0;
+		_gim_int32 t = 0;
+		
+		t = (_gim_int32)labs(randInt());
+		res = t % 0xff;
+		return res;
 	}
 
 

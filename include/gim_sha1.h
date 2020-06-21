@@ -42,63 +42,51 @@
 				[ http://www.gkript.org/gkript-gpl.html ]
 */ 		
 
-/*
-SHA-1 in C
-By Steve Reid <steve@edmweb.com>
-100% Public Domain
+/*	Thanks for this code to Jasin Bushnaief */
 
-Test Vectors (from FIPS PUB 180-1)
-"abc"
-  A9993E36 4706816A BA3E2571 7850C26C 9CD0D89D
-"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-  84983E44 1C3BD26E BAAE4AA1 F95129E5 E54670F1
-A million repetitions of "a"
-  34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F
-*/
-
-/* #define LITTLE_ENDIAN * This should be #define'd if true. */
-/* #define SHA1HANDSOFF * Copies data before messing with it. */
-
-/* Hash a single 512-bit block. This is the core of the algorithm. */
 
 #ifndef _GIM_SHA1_H_
 #define _GIM_SHA1_H_
-	
-	#include <stdio.h>
+
+
+	#include <assert.h>
+	#include <ctype.h>
+	#include <stdlib.h>
 	#include <string.h>
-	
-	typedef struct {
-		unsigned int state[5];
-		unsigned int count[2];
-		unsigned char buffer[64];
-	} SHA1_CTX;
-	
+	#include <stdint.h>
+
+	typedef struct _Sha1Ctx
+	{
+		uint8_t block[64];
+		uint32_t h[5];
+		uint64_t bytes;
+		uint32_t cur;
+	} Sha1Ctx;
+
+	// don't just forward declare as we want to pass it around by value
+	typedef struct _Sha1Digest
+	{
+		uint32_t digest[5];
+	} Sha1Digest;
+
+			
 	class gim_sha1_obj {
 		public:
-			void SHA1Transform( unsigned int state[5] , unsigned char buffer[64] );
-			void SHA1Init( SHA1_CTX * context );
-			void SHA1Update( SHA1_CTX * context , unsigned char * data , unsigned int len );
-			void SHA1Final( unsigned char digest[20] , SHA1_CTX * context );
+			Sha1Ctx 	* Sha1Ctx_create	(void);
+			void		Sha1Ctx_reset		(Sha1Ctx*);
+			void		Sha1Ctx_write		(Sha1Ctx*, const void* msg, uint64_t bytes);
+			Sha1Digest	Sha1Ctx_getDigest	(Sha1Ctx*);
+			void		Sha1Ctx_release		(Sha1Ctx*);
+			Sha1Digest	Sha1_get 			(const void * msg , uint64_t bytes);
+			Sha1Digest	Sha1Digest_fromStr	(const char* src);
+			void		Sha1Digest_toStr	(const Sha1Digest* digest, char* dst);
+			
+		private:
+			void		processBlock		(Sha1Ctx * ctx);
+			uint32_t	rotl32				(uint32_t x, int b);
+			uint32_t	get32				(const void* p);
+			uint32_t	f					(int t, uint32_t b, uint32_t c, uint32_t d);
 	};
-	
-	#define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
-	
-	/* blk0() and blk() perform the initial expand. */
-	/* I got the idea of expanding during the round function from SSLeay */
-	#ifdef LITTLE_ENDIAN
-	#define blk0(i) (block->l[i] = (rol(block->l[i],24)&0xFF00FF00) \
-		|(rol(block->l[i],8)&0x00FF00FF))
-	#else
-	#define blk0(i) block->l[i]
-	#endif
-	#define blk(i) (block->l[i&15] = rol(block->l[(i+13)&15]^block->l[(i+8)&15] \
-		^block->l[(i+2)&15]^block->l[i&15],1))
-	
-	/* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
-	#define R0(v,w,x,y,z,i) z+=((w&(x^y))^y)+blk0(i)+0x5A827999+rol(v,5);w=rol(w,30);
-	#define R1(v,w,x,y,z,i) z+=((w&(x^y))^y)+blk(i)+0x5A827999+rol(v,5);w=rol(w,30);
-	#define R2(v,w,x,y,z,i) z+=(w^x^y)+blk(i)+0x6ED9EBA1+rol(v,5);w=rol(w,30);
-	#define R3(v,w,x,y,z,i) z+=(((w|x)&y)|(w&x))+blk(i)+0x8F1BBCDC+rol(v,5);w=rol(w,30);
-	#define R4(v,w,x,y,z,i) z+=(w^x^y)+blk(i)+0xCA62C1D6+rol(v,5);w=rol(w,30);
+		
 
 #endif //_GIM_SHA1_H_

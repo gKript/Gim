@@ -84,25 +84,18 @@ char *	gim_checksum_obj::md5( char * file_name ) {
 
 
 char *	gim_checksum_obj::sha1( char * buffer , _gim_Uint32 size ) {
-	char				digest[20];
 	static char			hex[41];
-	SHA1_CTX			c;
 	gim_sha1_obj		sha1;
-	_gim_Uint8			i;
-	sha1.SHA1Init( &c );
-	sha1.SHA1Update( &c , ( unsigned char * )buffer , size );
-	sha1.SHA1Final( ( unsigned char * )digest , &c );
-	for( i = 0 ; i < 20 ; i++ )
-		snprintf( ( hex + ( 2 * i ) ) , 3 , "%02x" , ( unsigned char ) digest[i] );
+	
+	Sha1Digest computed = sha1.Sha1_get( (void *)buffer, size );
+	sha1.Sha1Digest_toStr( &computed , hex );
+
 	return hex;
 }
 
 
 char *	gim_checksum_obj::sha1( char * file_name ) {
-	char				digest[20];
 	static char			hex[41];
-	SHA1_CTX			c;
-	_gim_Uint8			i;
 	_gim_buffer			buffer = NULL;
 	gim_file_obj		file( file_name );
 	gim_sha1_obj		sha1;
@@ -113,11 +106,8 @@ char *	gim_checksum_obj::sha1( char * file_name ) {
 		gim_error->set( "gim_checksum_obj::sha1" , 2 );
 		return NULL;
 	}
-	sha1.SHA1Init( &c );
-	sha1.SHA1Update( &c , ( unsigned char * ) buffer , file.size() );
-	sha1.SHA1Final( ( unsigned char * ) digest , &c );
-	for( i = 0 ; i < 20 ; i++ )
-		snprintf( ( hex + ( 2 * i ) ) , 3 , "%02x" , (unsigned char)digest[i] );
+	Sha1Digest computed = sha1.Sha1_get( (void *)buffer, file.size() );
+	sha1.Sha1Digest_toStr( &computed , hex );
 	file.close();
 	return hex;
 }
