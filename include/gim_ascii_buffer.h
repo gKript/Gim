@@ -61,16 +61,20 @@
 		\brief		This struct is used by Gim to hold trace of your opearation on files.
 					Please read the documentation on gim_file_manager_obj.
 	*/
-	struct gim_in_buffer_item {
-		_gim_Uint32		class_id;
-		char			searched[512];
-		_gim_flag		occurrance;
-	};
 
-	typedef	struct	gim_in_buffer_item		_gim_in_buffer;	
+	  /*!  \struct    gim_in_buffer_result
+		\brief    This struct is used by Gim to...
+	  */
+	  struct gim_in_buffer_result {
+		_gim_Uint32		class_id;
+		char *			pattern;
+		_gim_list *		occurrence;
+	  };
+
+	typedef	struct gim_in_buffer_result		_gim_in_buffer;	
 
 	/*! \class 		gim_ascii_file_obj
-		\brief		The Gim ascci file class is useful to ...\n
+		\brief		The Gim ascii file class is useful to ...\n
 					\code 
 	
 		#include <stdio.h>
@@ -105,8 +109,8 @@
 					 _gim_flag				insert_variable( char * variable );
 					 _gim_int32				lenght( void );
 					 _gim_int32				lines( void );
-                     _gim_list *           	is_in_buffer( const char * to_find );
-                     _gim_list *           	is_in_buffer( char * to_find );
+                     _gim_in_buffer *      	is_in_buffer( const char * to_find );
+                     _gim_in_buffer *      	is_in_buffer( char * to_find );
                      _gim_flag				in_buffer_subst( _gim_list * occurrence , char * new_part );
 				     char *					get_buffer( void );					 
 					 _gim_flag				seekf( _gim_flag position );

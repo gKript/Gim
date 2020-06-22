@@ -37,9 +37,7 @@
 
 #include    "../include/gim_base_header.h"
 #include    "../include/gim_ascii_buffer.h"
-#include    "../include/gim_base_header.h"
 #include    "../include/gim_list.h"
-#include    "../include/gim_ascii_buffer.h"
 
 _gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
 	if ( ( dimension == 0 ) && ( size > 0 ) )  {
@@ -122,37 +120,50 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 }
 
 
-_gim_list	*	gim_ascii_file_obj::is_in_buffer( const char * to_find ) {
-	char str[512];
+_gim_in_buffer	*	gim_ascii_file_obj::is_in_buffer( const char * to_find ) {
+	char * str = NULL;
+	_gim_in_buffer * result = NULL;
+	_gim_Uint32 dim_find = 0;
+	
+	dim_find = strlen( to_find );
+	str = (char *)( gim_memory->Alloc( ++dim_find , __GIM_ASCII_BUFFER , __GIM_HIDE ) );
 	strcpy( str , to_find );
-	return ( is_in_buffer( str ) );
+	result = is_in_buffer( str );
+	gim_memory->Free( str );
+	return ( result );
 }
 
 
-_gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
-	_gim_Uint32 dim_find = 0;
-	_gim_Uint32	idx_search	= 0;
-	_gim_Uint32	* idx_tmp;
-	char * buff	= this->chrbuf;
+_gim_in_buffer *	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
+	_gim_Uint32			dim_find = 0;
+	_gim_Uint32			idx_search = 0;
+	_gim_Uint32	*		idx_tmp;
+	char * 				buff = this->chrbuf;
+	char *				str_to_find;
+	_gim_in_buffer *	result;
+	_gim_list *			list_occurrence = new _gim_list;
+	
 	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::is_in_buffer" , "Starting" , __GIM_OK );
-	_gim_list * occurrences = new _gim_list;
 	if ( ( this->dimension > 0 ) && ( this->chrbuf != NULL ) ) {
 		if( ( strlen( to_find ) > 0 ) && ( to_find != NULL ) ) {
+			result = (_gim_in_buffer *)gim_memory->Alloc( sizeof( _gim_in_buffer ) , __GIM_ASCII_BUFFER , __GIM_HIDE );
 			dim_find = strlen( to_find );
-			while( ( idx_search + dim_find ) <= dimension ) {
+			str_to_find = (char *)gim_memory->Alloc( dim_find, __GIM_ASCII_BUFFER , __GIM_HIDE );
+			strcpy( str_to_find , to_find );
+			while( ( idx_search + dim_find ) <= this->dimension ) {
 				if( *buff == to_find[ 0 ] ) {
 					if( !( strncmp( buff , to_find , dim_find ) ) ) {
                         idx_tmp = (_gim_Uint32 *)gim_memory->Alloc( sizeof( _gim_Uint32 ) , __GIM_ASCII_BUFFER , __GIM_HIDE );
                         *idx_tmp = idx_search;
-						occurrences->add_item( idx_tmp );
-						buff += dim_find-1;
-						idx_search += dim_find-1;
+						list_occurrence->add_item( idx_tmp );
+						buff += ( dim_find - 1 );
+						idx_search += ( dim_find - 1 );
 					}
 				}
 				idx_search++;
 				buff++;
 			}
-			if( !( occurrences->items( ) ) ) {
+			if( !( list_occurrence->items( ) ) ) {
 				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "No occurrences found" , __GIM_ERROR );
 			}
 		}
@@ -163,8 +174,11 @@ _gim_list	*	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 	else {
 		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "Buffer error" , __GIM_ERROR );
 	}
-	
-	return( occurrences );
+	result->class_id = 3;
+	result->pattern = str_to_find;
+	result->occurrence = list_occurrence;
+	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::is_in_buffer" , "Done!" , __GIM_OK );
+	return( result );
 }
 
 
