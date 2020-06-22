@@ -1,0 +1,9 @@
+<map id="gim_file_manager_obj::flush" name="gim_file_manager_obj::flush">
+<area shape="rect" id="node1" title="Use this method if you want tu flush a buffer into a file opened in __GIM_WRITE." alt="" coords="423,74,569,115"/>
+<area shape="rect" id="node2" href="$a32267.html#a5bb68fb110230f63217f53d73160242c" title=" " alt="" coords="199,5,375,32"/>
+<area shape="rect" id="node4" href="$a32267.html#aa09b8295a172d1d5a23ced95f8812b33" title=" " alt="" coords="219,56,355,83"/>
+<area shape="rect" id="node6" href="$a32271.html#aeb5cf2544552b663149c2f97787bdc7b" title="With this method you can extract an item (file) physically on the disk at the specified path." alt="" coords="199,107,375,133"/>
+<area shape="rect" id="node7" href="$a32267.html#a4d7c8574820afec94f001a42d255bdc1" title=" " alt="" coords="204,157,369,184"/>
+<area shape="rect" id="node3" href="$a32267.html#acedaf2a40c611ce23b86baab60d6c500" title=" " alt="" coords="5,5,151,32"/>
+<area shape="rect" id="node5" href="$a32267.html#a34888358f854019e3b4eb3db15306fe5" title=" " alt="" coords="11,107,145,133"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="gim_cnc_generic_obj::num2char" name="gim_cnc_generic_obj::num2char">
+<area shape="rect" id="node1" title=" " alt="" coords="411,39,555,80"/>
+<area shape="rect" id="node2" href="$a20177.html#a804d7eb6992b42ed660a0d804d3791e5" title="Use this function to encode a byte." alt="" coords="208,5,363,47"/>
+<area shape="rect" id="node4" href="$a20165.html#a1e13eba00769502a1b4e04ce3e45066e" title=" " alt="" coords="211,71,359,112"/>
+<area shape="rect" id="node3" href="$a20177.html#a358016aac0ac5e81183b34b50f6f05c6" title="Use this function to encode a buffer." alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node5" href="$a20173.html#a3deedc887ddcbfc73ee45b15f6b64dd1" title="Set a CnC feature ON or Off; e.g. set( ADVANCEDPASSWORD , ON )" alt="" coords="23,78,142,105"/>
+</map>

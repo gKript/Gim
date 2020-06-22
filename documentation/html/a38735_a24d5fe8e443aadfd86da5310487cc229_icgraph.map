@@ -1,0 +1,26 @@
+<map id="gim_checksum_obj::md5" name="gim_checksum_obj::md5">
+<area shape="rect" id="node1" title="Use this function to get an md5 hash from a buffer." alt="" coords="1088,449,1253,476"/>
+<area shape="rect" id="node2" href="$a38899.html#a1931df87c39308123bf49e6bedc5f7d7" title="This function is used to calc the password digest and the inner seeds." alt="" coords="873,248,1033,274"/>
+<area shape="rect" id="node6" href="$a38723.html#acedaf2a40c611ce23b86baab60d6c500" title=" " alt="" coords="5,474,151,501"/>
+<area shape="rect" id="node8" href="$a38723.html#a4d7c8574820afec94f001a42d255bdc1" title=" " alt="" coords="211,144,376,170"/>
+<area shape="rect" id="node19" href="$a38767.html#aa519cbc3cd51d258dbe54e4b09d8431b" title=" " alt="" coords="865,373,1040,400"/>
+<area shape="rect" id="node21" href="$a38735.html#adf440aca9555cef3ec9cd851e7cd070b" title="Use this function to get an md5 hash from a file." alt="" coords="870,474,1035,501"/>
+<area shape="rect" id="node22" href="$a38723.html#a700493099de2c561ffbc47a01d689e7b" title=" " alt="" coords="660,525,796,552"/>
+<area shape="rect" id="node23" href="$a38727.html#a4f9adfbd8bcdc0f7bb9547eb5b251f48" title=" " alt="" coords="885,576,1021,602"/>
+<area shape="rect" id="node24" href="$a38723.html#a16d784710bd73abf57a99145d2c01454" title=" " alt="" coords="871,424,1034,450"/>
+<area shape="rect" id="node3" href="$a38879.html#a0ede23529ff4a4c668b63b957b720424" title="An very good method to encrypt or decrypt a buffer &#160;&#160;It use an external file as key,..." alt="" coords="655,240,801,282"/>
+<area shape="rect" id="node4" href="$a38879.html#ab62edf19e207c51641fa1b4a58e459f6" title="An efficient method to encrypt or decrypt a buffer &#160;&#160;Performance = not excessive good &#160;&#160;Safety = very..." alt="" coords="440,150,587,191"/>
+<area shape="rect" id="node10" href="$a38759.html#a358016aac0ac5e81183b34b50f6f05c6" title="Use this function to encode a buffer." alt="" coords="651,358,805,399"/>
+<area shape="rect" id="node11" href="$a38747.html#a1e13eba00769502a1b4e04ce3e45066e" title=" " alt="" coords="654,58,802,99"/>
+<area shape="rect" id="node13" href="$a38899.html#a7d8e61bb1d4dcec4741555b885f453ee" title="This function is used to recalc the password digest and the inner seeds." alt="" coords="643,306,813,333"/>
+<area shape="rect" id="node18" href="$a38879.html#a4fe7768bcbf0e6ef882b3e1eed3f4ff4" title=" " alt="" coords="655,175,801,216"/>
+<area shape="rect" id="node5" href="$a38723.html#a5bb68fb110230f63217f53d73160242c" title=" " alt="" coords="205,194,381,221"/>
+<area shape="rect" id="node7" href="$a38727.html#a80ede16047e70ac72a8bb2931109359e" title=" " alt="" coords="227,245,360,272"/>
+<area shape="rect" id="node9" href="$a38723.html#a34888358f854019e3b4eb3db15306fe5" title=" " alt="" coords="11,144,145,170"/>
+<area shape="rect" id="node12" href="$a38755.html#a3deedc887ddcbfc73ee45b15f6b64dd1" title="Set a CnC feature ON or Off; e.g. set( ADVANCEDPASSWORD , ON )" alt="" coords="454,65,573,92"/>
+<area shape="rect" id="node14" href="$a38899.html#a5cf0f4f697fcf8b41c70c9a6fdb1c162" title="This function is used to set a password, used by Gim when necessary." alt="" coords="436,306,591,333"/>
+<area shape="rect" id="node17" href="$a38899.html#a8c2633296f24a3c6620d4ea4adb20fc8" title="This function is used to set a password, used by Gim when necessary." alt="" coords="436,234,591,275"/>
+<area shape="rect" id="node15" href="$a38723.html#a098c1435be584499c5e83476971fcc74" title="With this method you can set a password in a GKDP file." alt="" coords="200,353,387,380"/>
+<area shape="rect" id="node16" href="$a38727.html#a069238f3430812c56acb95c45c565d67" title="With this method you can set a password in a GKDP file." alt="" coords="199,302,388,329"/>
+<area shape="rect" id="node20" href="$a38767.html#ae22d64a051f374bcea07285c7da2ccd4" title=" " alt="" coords="639,424,817,450"/>
+</map>

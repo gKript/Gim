@@ -1,0 +1,4 @@
+<map id="gim_obj::stop_operation" name="gim_obj::stop_operation">
+<area shape="rect" id="node1" title="This method say to Gim to stop the current operation if possible." alt="" coords="5,5,164,32"/>
+<area shape="rect" id="node2" href="$a13617.html#a435075eb61665b78df76863fda2b066f" title="With this method you can say to Gim to the new state." alt="" coords="212,5,339,32"/>
+</map>

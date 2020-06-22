@@ -1,0 +1,10 @@
+<map id="gim_memory_obj::Check" name="gim_memory_obj::Check">
+<area shape="rect" id="node1" title="Use this method to checl if the memory pointed by to_check was allocated with gim_memory_obj::Alloc." alt="" coords="637,46,800,73"/>
+<area shape="rect" id="node2" href="$a38847.html#a8121c174eb94bc5499e817f1b853a3b5" title="Use this method to load an opened file in __GIM_READ to a buffer." alt="" coords="433,5,579,47"/>
+<area shape="rect" id="node5" href="$a38967.html#a54820770a716c9c5333fb28286467001" title=" " alt="" coords="423,71,589,112"/>
+<area shape="rect" id="node3" href="$a38723.html#a4d7c8574820afec94f001a42d255bdc1" title=" " alt="" coords="204,13,369,39"/>
+<area shape="rect" id="node4" href="$a38723.html#a34888358f854019e3b4eb3db15306fe5" title=" " alt="" coords="11,13,145,39"/>
+<area shape="rect" id="node6" href="$a38955.html#a7b8b921877d35e6f1f480cb5dcda36ab" title=" " alt="" coords="213,70,360,97"/>
+<area shape="rect" id="node7" href="$a38723.html#a5bb68fb110230f63217f53d73160242c" title=" " alt="" coords="199,121,375,147"/>
+<area shape="rect" id="node8" href="$a38723.html#acedaf2a40c611ce23b86baab60d6c500" title=" " alt="" coords="5,121,151,147"/>
+</map>

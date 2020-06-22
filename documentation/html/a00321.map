@@ -1,0 +1,7 @@
+<map id="gim_gkfp_obj" name="gim_gkfp_obj">
+<area shape="rect" id="node1" title="Generic Information Manager Documentation gkfp object &#160;&#160;GKP &#45; GKript Package &#160;With this class you can..." alt="" coords="212,477,331,701"/>
+<area shape="rect" id="node2" href="$a00479.html" title="A Gim class to encrypt and decrypt whichever things." alt="" coords="5,235,172,371"/>
+<area shape="rect" id="node3" href="$a00499.html" title="It is the inner class used by Gim to manage the header of a Gkp file." alt="" coords="14,5,163,141"/>
+<area shape="rect" id="node4" href="$a00495.html" title="This struct is useful to verify if the header is intact or damaged. Gim test the header each time is ..." alt="" coords="196,264,347,341"/>
+<area shape="rect" id="node5" href="$a00491.html" title="This is the header struct of a Gkp file ( gkdp and gkfp )." alt="" coords="371,191,523,415"/>
+</map>

@@ -39,6 +39,11 @@
 #include    "../include/gim_ascii_buffer.h"
 #include    "../include/gim_list.h"
 
+
+_gim_int32	gim_ascii_file_obj::get_dimension( void ) {
+	return dimension;
+}
+
 _gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
 	if ( ( dimension == 0 ) && ( size > 0 ) )  {
 		dimension = size;

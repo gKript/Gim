@@ -1,0 +1,62 @@
+<map id="gim_error_obj::get" name="gim_error_obj::get">
+<area shape="rect" id="node1" title="Gim has one inner management of the errors &#160;With this function it is possible to interrogate,..." alt="" coords="1096,1437,1220,1464"/>
+<area shape="rect" id="node2" href="$a32375.html#a3674feaa2b15dd42e553d43b537b214b" title=" " alt="" coords="924,1463,1048,1489"/>
+<area shape="rect" id="node3" href="$a32483.html#a312f74ac78ba84016b9fd0d704967550" title="This function is used to put a comment on the file." alt="" coords="684,173,865,200"/>
+<area shape="rect" id="node4" href="$a32483.html#a0578ad4fb891731cc768fd70bd696814" title="To add a new key in a existing section to a ini file ( value must be a char* )" alt="" coords="701,224,848,251"/>
+<area shape="rect" id="node5" href="$a32483.html#abf7f3a5cc91fbbb54011c4140a2cab6a" title=" " alt="" coords="673,275,876,301"/>
+<area shape="rect" id="node6" href="$a32503.html#a90600732e175c98b59a86ad68f109478" title="This method is used by Gim to add a line to the log." alt="" coords="705,325,844,352"/>
+<area shape="rect" id="node7" href="$a32503.html#a049273178479bcdbde46863feab609f8" title=" " alt="" coords="705,377,844,418"/>
+<area shape="rect" id="node8" href="$a32483.html#a14c540c967fe63434a39c96818f1b473" title="To add a new section to the ini file." alt="" coords="690,443,859,469"/>
+<area shape="rect" id="node9" href="$a32483.html#a462c2afd8739d14e57827224ba77789d" title=" " alt="" coords="690,494,859,535"/>
+<area shape="rect" id="node10" href="$a32423.html#ab62edf19e207c51641fa1b4a58e459f6" title="An efficient method to encrypt or decrypt a buffer &#160;&#160;Performance = not excessive good &#160;&#160;Safety = very..." alt="" coords="451,682,597,723"/>
+<area shape="rect" id="node11" href="$a32267.html#a5bb68fb110230f63217f53d73160242c" title=" " alt="" coords="199,813,375,840"/>
+<area shape="rect" id="node12" href="$a32267.html#acedaf2a40c611ce23b86baab60d6c500" title=" " alt="" coords="5,813,151,840"/>
+<area shape="rect" id="node13" href="$a32511.html#a9412902fdd403046624f73c4af6d27d8" title="This method is useful in order to alloc memory holding trace." alt="" coords="697,1320,852,1347"/>
+<area shape="rect" id="node14" href="$a32275.html#aa5f319f3f187ee2a3adddfb778238490" title=" " alt="" coords="713,1371,837,1413"/>
+<area shape="rect" id="node15" href="$a32443.html#a1931df87c39308123bf49e6bedc5f7d7" title="This function is used to calc the password digest and the inner seeds." alt="" coords="695,712,855,739"/>
+<area shape="rect" id="node16" href="$a32303.html#a358016aac0ac5e81183b34b50f6f05c6" title="Use this function to encode a buffer." alt="" coords="447,747,601,789"/>
+<area shape="rect" id="node17" href="$a32483.html#a0d0c9ddcfd53fd9c479584ad26467e60" title="To change the value to an existing key." alt="" coords="691,1437,859,1464"/>
+<area shape="rect" id="node18" href="$a32391.html#aedb542169b6b9f7427d0f4d51594d084" title="This method is used to close a file opened with this file manager." alt="" coords="451,915,597,957"/>
+<area shape="rect" id="node19" href="$a32271.html#a23ab1d379afbd685d4e941e1e11e9cf4" title=" " alt="" coords="217,865,356,892"/>
+<area shape="rect" id="node20" href="$a32459.html#a281f18ab5fc5bf39ca26aeb4adcafa52" title="This method is useful to close the html page." alt="" coords="201,1059,372,1085"/>
+<area shape="rect" id="node21" href="$a32311.html#a90f5b767cfdcc55f2859138e182bc272" title=" " alt="" coords="207,1139,367,1165"/>
+<area shape="rect" id="node22" href="$a32499.html#a7b8b921877d35e6f1f480cb5dcda36ab" title=" " alt="" coords="701,1488,848,1515"/>
+<area shape="rect" id="node23" href="$a32391.html#a53e3ab6f9335a40611773003f1958acf" title="This method is in capital in order placing greater attention &#160;&#160;on the meant of it&#39;s name." alt="" coords="701,1539,848,1581"/>
+<area shape="rect" id="node24" href="$a32483.html#a6312e55ed26573ae9ac3536c44520f2a" title="To delete an existing key." alt="" coords="453,991,595,1017"/>
+<area shape="rect" id="node25" href="$a32483.html#a8bc755237a32677a046f178af49f5d4d" title="To delete an existing section from a ini file." alt="" coords="692,1269,857,1296"/>
+<area shape="rect" id="node26" href="$a32483.html#a05bcc769b3a7bff690f843d94f5b0a68" title="This function is used in order to destroy the object and release all the allocated memmory." alt="" coords="457,1219,591,1245"/>
+<area shape="rect" id="node27" href="$a32259.html#a4910e56da13be7d0d4538ff3b97adf36" title="This method say to Gim to unload every allocated memory and classes before to delete." alt="" coords="723,5,827,32"/>
+<area shape="rect" id="node28" href="$a32483.html#a73866a79d44d364c3f9b02ab55aed70c" title="This function is used in order to read an existing configuration file." alt="" coords="709,1605,840,1632"/>
+<area shape="rect" id="node29" href="$a32311.html#a2f4e6bcc5ca06e79ad4a5ad4bf2201a9" title=" " alt="" coords="675,1656,874,1683"/>
+<area shape="rect" id="node30" href="$a32459.html#a0600ab14740a03afc2f23c2099295de9" title="This method is useful to print a string in the html page." alt="" coords="704,1707,845,1733"/>
+<area shape="rect" id="node31" href="$a32459.html#ac264392eff035275aeb40b5fe0f65de1" title="This method is useful to print a TAG in the html page." alt="" coords="691,1757,858,1784"/>
+<area shape="rect" id="node32" href="$a32459.html#a3c593622483729678c5e513cf984b869" title="This method is useful to close a TAG in the html page." alt="" coords="453,1051,595,1093"/>
+<area shape="rect" id="node33" href="$a32459.html#a68ab95555d45e4ff3d6ed0ddf788caf4" title="This method is useful to open a TAG in the html page." alt="" coords="704,1809,845,1850"/>
+<area shape="rect" id="node34" href="$a32459.html#a701978b8fbada3e1de47d13927b01b0e" title="This method is useful to export a string enclosed in a TAG ( open and close ) in the html page." alt="" coords="704,1874,845,1915"/>
+<area shape="rect" id="node35" href="$a32391.html#abe793d8c91143a1d76d44dbf3e9f3f30" title="Use this method if you want tu flush a buffer into a file opened in __GIM_WRITE." alt="" coords="451,614,597,655"/>
+<area shape="rect" id="node36" href="$a32395.html#ace50dfabdc7938d3f007066d5ed62310" title="Use this method if you want tu flush a buffer into a file opened in __GIM_WRITE." alt="" coords="713,1940,836,1967"/>
+<area shape="rect" id="node37" href="$a32511.html#a49e47e08863729ae369a5f72be208c16" title="Use this method in order to free the memory allocated with gim_memory_obj::Alloc." alt="" coords="699,965,851,992"/>
+<area shape="rect" id="node38" href="$a32311.html#aa519cbc3cd51d258dbe54e4b09d8431b" title=" " alt="" coords="687,1991,862,2017"/>
+<area shape="rect" id="node39" href="$a32311.html#adbd67e36b3bcd5ac41ecb81c055577d8" title=" " alt="" coords="691,2041,858,2068"/>
+<area shape="rect" id="node40" href="$a32311.html#a48de7603ac7425324cc777ad97a6b600" title=" " alt="" coords="700,2093,849,2134"/>
+<area shape="rect" id="node41" href="$a32311.html#a59acc8103fe6f44bd16eaf4e9b1107d9" title=" " alt="" coords="696,2159,853,2185"/>
+<area shape="rect" id="node42" href="$a32311.html#a2be5c45b8da6e8679f6ad9db1a22f3f2" title=" " alt="" coords="684,2209,865,2236"/>
+<area shape="rect" id="node43" href="$a32471.html#ad526c308abdd074b59eb094778ca4beb" title="Method useful to fill all inner struct with the relative information." alt="" coords="705,2260,844,2287"/>
+<area shape="rect" id="node44" href="$a32275.html#a18d4c95bcc4e35a8b15e218ff0e422dd" title=" " alt="" coords="713,2311,837,2353"/>
+<area shape="rect" id="node45" href="$a32499.html#a827f0f72ad06998672c2129e707488df" title=" " alt="" coords="701,2377,848,2404"/>
+<area shape="rect" id="node46" href="$a32359.html#a8ecc94bb89ce6b0ed9a03c3dbb6acbf8" title=" " alt="" coords="710,2429,839,2470"/>
+<area shape="rect" id="node47" href="$a32359.html#a9310b7b960499619d3fe8ea1a6da0522" title=" " alt="" coords="710,2494,839,2535"/>
+<area shape="rect" id="node48" href="$a32511.html#ab1ea65677b3682409d72883eb201a3ea" title=" " alt="" coords="701,2559,848,2601"/>
+<area shape="rect" id="node49" href="$a32483.html#ae42a0ceb89f5a9024a802bd322b0b153" title="To know how many section are present in a ini file." alt="" coords="673,2625,876,2652"/>
+<area shape="rect" id="node50" href="$a32483.html#a50b3f47573dcac63c4d8146926fe2bfb" title="To know how many section are present in a ini file." alt="" coords="684,2727,865,2769"/>
+<area shape="rect" id="node51" href="$a32483.html#af9b5b93bf92574107cd257c025a844fc" title="To get the name of a specific section number." alt="" coords="423,2705,625,2732"/>
+<area shape="rect" id="node52" href="$a32483.html#ad7c9e7bb243479a2b855af950b0f7e9a" title="In order to obtain the value of one key ( flag )" alt="" coords="434,2805,614,2832"/>
+<area shape="rect" id="node53" href="$a32483.html#ae510c136fc7405165055d973bba1712c" title="In order to obtain the value of one key ( float )" alt="" coords="439,2881,609,2908"/>
+<area shape="rect" id="node54" href="$a32483.html#aa2e36a3ea919514ebd945a836c61db5a" title="In order to obtain the value of one key ( int )" alt="" coords="441,2945,607,2972"/>
+<area shape="rect" id="node55" href="$a32423.html#aed4e45f3b075de60ee97c51396ce467d" title=" " alt="" coords="210,2963,363,3005"/>
+<area shape="rect" id="node56" href="$a32483.html#a9e83a75765de306aacfa9be8cd3b4cb3" title="To get the name of a specific section number." alt="" coords="685,3047,865,3073"/>
+<area shape="rect" id="node57" href="$a32483.html#a1987268da93406291de76c4c06ca985f" title="In order to obtain the value of one key ( char* )" alt="" coords="689,2844,860,2871"/>
+<area shape="rect" id="node58" href="$a32275.html#ac8b5aafe31aa62b4c34285d570fe6c8c" title=" " alt="" coords="709,3098,840,3139"/>
+<area shape="rect" id="node59" href="$a32279.html#aaaf46aa115cab01e05c3ceb46349aaeb" title="gim_checksum_obj constructor." alt="" coords="694,57,855,98"/>
+<area shape="rect" id="node60" href="$a32299.html#afa57d3153fc5cca37fff70fc31182b7e" title=" " alt="" coords="687,123,862,149"/>
+</map>

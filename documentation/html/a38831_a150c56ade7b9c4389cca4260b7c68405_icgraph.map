@@ -1,0 +1,32 @@
+<map id="gim_error_obj::Set" name="gim_error_obj::Set">
+<area shape="rect" id="node1" title=" " alt="" coords="707,807,833,833"/>
+<area shape="rect" id="node2" href="$a38847.html#aedb542169b6b9f7427d0f4d51594d084" title="This method is used to close a file opened with this file manager." alt="" coords="486,369,633,410"/>
+<area shape="rect" id="node14" href="$a38767.html#ae22d64a051f374bcea07285c7da2ccd4" title=" " alt="" coords="7,781,186,808"/>
+<area shape="rect" id="node22" href="$a38767.html#a2f4e6bcc5ca06e79ad4a5ad4bf2201a9" title=" " alt="" coords="460,1025,659,1052"/>
+<area shape="rect" id="node23" href="$a38767.html#aa519cbc3cd51d258dbe54e4b09d8431b" title=" " alt="" coords="237,781,411,808"/>
+<area shape="rect" id="node24" href="$a38767.html#a48de7603ac7425324cc777ad97a6b600" title=" " alt="" coords="485,959,634,1001"/>
+<area shape="rect" id="node25" href="$a38767.html#a2be5c45b8da6e8679f6ad9db1a22f3f2" title=" " alt="" coords="469,604,650,631"/>
+<area shape="rect" id="node26" href="$a38767.html#a6a224125a04f7b73350472314243bf1a" title=" " alt="" coords="504,807,615,833"/>
+<area shape="rect" id="node27" href="$a38767.html#ac5ff99c062b28cdbb7604e43a72c9e15" title=" " alt="" coords="265,845,383,872"/>
+<area shape="rect" id="node28" href="$a38767.html#a1b6d03884ccf078e6806727ebb49c8c9" title=" " alt="" coords="484,756,635,783"/>
+<area shape="rect" id="node29" href="$a38767.html#a009257aa110e90674b5195d5be650042" title=" " alt="" coords="481,655,637,681"/>
+<area shape="rect" id="node30" href="$a38767.html#a94d8cc0509250eeb5c08fff27d2dd504" title=" " alt="" coords="476,1076,643,1103"/>
+<area shape="rect" id="node3" href="$a38847.html#a124a58571e29c1cc4403b424a08b8838" title=" " alt="" coords="251,259,397,301"/>
+<area shape="rect" id="node4" href="$a38851.html#a6597191844a31b9c2a315a06e7923331" title="Use this to close a file previously opened." alt="" coords="261,208,387,235"/>
+<area shape="rect" id="node8" href="$a38727.html#a23ab1d379afbd685d4e941e1e11e9cf4" title=" " alt="" coords="255,376,393,403"/>
+<area shape="rect" id="node9" href="$a38915.html#a281f18ab5fc5bf39ca26aeb4adcafa52" title="This method is useful to close the html page." alt="" coords="239,325,409,352"/>
+<area shape="rect" id="node11" href="$a38723.html#acedaf2a40c611ce23b86baab60d6c500" title=" " alt="" coords="24,452,169,479"/>
+<area shape="rect" id="node12" href="$a38723.html#a5bb68fb110230f63217f53d73160242c" title=" " alt="" coords="236,427,412,453"/>
+<area shape="rect" id="node13" href="$a38767.html#a90f5b767cfdcc55f2859138e182bc272" title=" " alt="" coords="244,579,404,605"/>
+<area shape="rect" id="node15" href="$a38735.html#adf440aca9555cef3ec9cd851e7cd070b" title="Use this function to get an md5 hash from a file." alt="" coords="241,629,407,656"/>
+<area shape="rect" id="node16" href="$a38723.html#a700493099de2c561ffbc47a01d689e7b" title=" " alt="" coords="256,680,392,707"/>
+<area shape="rect" id="node17" href="$a38727.html#a4f9adfbd8bcdc0f7bb9547eb5b251f48" title=" " alt="" coords="256,56,392,83"/>
+<area shape="rect" id="node18" href="$a38727.html#aeb5cf2544552b663149c2f97787bdc7b" title="With this method you can extract an item (file) physically on the disk at the specified path." alt="" coords="236,107,412,133"/>
+<area shape="rect" id="node19" href="$a38723.html#a34888358f854019e3b4eb3db15306fe5" title=" " alt="" coords="29,56,164,83"/>
+<area shape="rect" id="node20" href="$a38727.html#ae32ae5331d17d7db9ac0863ee7675091" title=" " alt="" coords="256,528,392,555"/>
+<area shape="rect" id="node21" href="$a38723.html#a4d7c8574820afec94f001a42d255bdc1" title=" " alt="" coords="241,5,407,32"/>
+<area shape="rect" id="node5" href="$a38735.html#acf37daf835fe525420ab46a6040bdae9" title="Use this function to get an sha1 hash from a file." alt="" coords="13,157,181,184"/>
+<area shape="rect" id="node6" href="$a38735.html#a7f7570fb8d34919645120b79485e6901" title="Use this function to get an sha256 hash from a file." alt="" coords="5,208,188,235"/>
+<area shape="rect" id="node7" href="$a38735.html#a917c82dea0fc227a14395024dcdeb6e5" title="Use this function to get an sha512 hash from a file." alt="" coords="5,259,188,285"/>
+<area shape="rect" id="node10" href="$a38915.html#a801c51eebd86cb7c104378f17a12662c" title=" " alt="" coords="30,318,163,359"/>
+</map>

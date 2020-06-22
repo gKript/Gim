@@ -1,0 +1,13 @@
+<map id="gim_fatal_test" name="gim_fatal_test">
+<area shape="rect" id="node1" title="If you call this function Gim generates a FATAL occurrence. It is useful to test the FATAL error." alt="" coords="5,175,109,201"/>
+<area shape="rect" id="node2" href="$a07670.html#a3674feaa2b15dd42e553d43b537b214b" title=" " alt="" coords="157,175,281,201"/>
+<area shape="rect" id="node3" href="$a07798.html#a049273178479bcdbde46863feab609f8" title=" " alt="" coords="331,109,470,150"/>
+<area shape="rect" id="node7" href="$a07670.html#aee0af6e62f754134c59e6a0f34cdec50" title="Gim has one inner management of the errors &#160;With this function it is possible to interrogate,..." alt="" coords="339,175,463,201"/>
+<area shape="rect" id="node11" href="$a07798.html#ac147613ddee5a6beccd35dfa6d73e1f4" title=" " alt="" coords="329,225,472,252"/>
+<area shape="rect" id="node4" href="$a07858.html#abdbceb54772f956c33cc2084c85e8e0a" title="Use this function in order obtain the difference from start ." alt="" coords="520,5,679,32"/>
+<area shape="rect" id="node5" href="$a07786.html#af696d5083f9083c494e8b9153e8692fa" title=" " alt="" coords="537,57,662,98"/>
+<area shape="rect" id="node6" href="$a07786.html#ac653798a9ee47f25f0c6c41d793d6154" title=" " alt="" coords="537,122,662,163"/>
+<area shape="rect" id="node8" href="$a07554.html#a4910e56da13be7d0d4538ff3b97adf36" title="This method say to Gim to unload every allocated memory and classes before to delete." alt="" coords="547,251,651,277"/>
+<area shape="rect" id="node10" href="$a07858.html#adfba8472d37700be7115c7a58ae531be" title="Use this function in order obtain the process time ." alt="" coords="524,188,675,215"/>
+<area shape="rect" id="node9" href="$a07554.html#a435075eb61665b78df76863fda2b066f" title="With this method you can say to Gim to the new state." alt="" coords="727,251,853,277"/>
+</map>

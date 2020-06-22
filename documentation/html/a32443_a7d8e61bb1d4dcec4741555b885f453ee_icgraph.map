@@ -1,0 +1,12 @@
+<map id="gim_password_obj::recalc" name="gim_password_obj::recalc">
+<area shape="rect" id="node1" title="This function is used to recalc the password digest and the inner seeds." alt="" coords="639,107,809,133"/>
+<area shape="rect" id="node2" href="$a32443.html#a5cf0f4f697fcf8b41c70c9a6fdb1c162" title="This function is used to set a password, used by Gim when necessary." alt="" coords="436,56,591,83"/>
+<area shape="rect" id="node5" href="$a32443.html#a8c2633296f24a3c6620d4ea4adb20fc8" title="This function is used to set a password, used by Gim when necessary." alt="" coords="436,129,591,170"/>
+<area shape="rect" id="node3" href="$a32267.html#a098c1435be584499c5e83476971fcc74" title="With this method you can set a password in a GKDP file." alt="" coords="200,5,387,32"/>
+<area shape="rect" id="node4" href="$a32271.html#a069238f3430812c56acb95c45c565d67" title="With this method you can set a password in a GKDP file." alt="" coords="199,56,388,83"/>
+<area shape="rect" id="node6" href="$a32267.html#a5bb68fb110230f63217f53d73160242c" title=" " alt="" coords="205,107,381,133"/>
+<area shape="rect" id="node8" href="$a32271.html#a80ede16047e70ac72a8bb2931109359e" title=" " alt="" coords="227,157,360,184"/>
+<area shape="rect" id="node9" href="$a32267.html#a4d7c8574820afec94f001a42d255bdc1" title=" " alt="" coords="211,208,376,235"/>
+<area shape="rect" id="node7" href="$a32267.html#acedaf2a40c611ce23b86baab60d6c500" title=" " alt="" coords="5,107,151,133"/>
+<area shape="rect" id="node10" href="$a32267.html#a34888358f854019e3b4eb3db15306fe5" title=" " alt="" coords="11,208,145,235"/>
+</map>

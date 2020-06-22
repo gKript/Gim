@@ -1,0 +1,28 @@
+<map id="gim_prsr_obj::Read" name="gim_prsr_obj::Read">
+<area shape="rect" id="node1" title="This function is used in order to read an existing configuration file." alt="" coords="5,577,137,603"/>
+<area shape="rect" id="node2" href="$a20365.html#aea5f93a1c49cb2d8327b2934107143d3" title=" " alt="" coords="185,460,311,501"/>
+<area shape="rect" id="node8" href="$a20249.html#a3674feaa2b15dd42e553d43b537b214b" title=" " alt="" coords="753,450,877,477"/>
+<area shape="rect" id="node19" href="$a20365.html#af045963c4fed6001ce5532978562f62d" title=" " alt="" coords="185,212,311,253"/>
+<area shape="rect" id="node24" href="$a20357.html#a63ca9c82021142ee10934e7e9617a1fe" title="This function is used in order to write a configuration file." alt="" coords="561,627,704,654"/>
+<area shape="rect" id="node25" href="$a20357.html#a8b0969ebb12806509f3f338bce743a2e" title="This function is used in order to generate a configuration file from code." alt="" coords="189,678,307,705"/>
+<area shape="rect" id="node3" href="$a20365.html#a3401e38f43c1e25a7cb560fe4c88c974" title=" " alt="" coords="570,177,695,219"/>
+<area shape="rect" id="node4" href="$a20365.html#a935c11479eadccfb7f9677bb844ec4e6" title=" " alt="" coords="373,395,499,436"/>
+<area shape="rect" id="node18" href="$a20365.html#a1248f12ffa7da4bd3bcb2309e7b15114" title=" " alt="" coords="373,460,499,501"/>
+<area shape="rect" id="node5" href="$a20365.html#a0746e5837388455a57f19550f56de75a" title=" " alt="" coords="570,243,695,284"/>
+<area shape="rect" id="node17" href="$a20365.html#a748b0e6122dbcc046e5f9f10c5839a94" title=" " alt="" coords="570,308,695,349"/>
+<area shape="rect" id="node6" href="$a20365.html#a8225ae1619a895907afd0df8bfa87f64" title=" " alt="" coords="752,276,877,317"/>
+<area shape="rect" id="node7" href="$a20365.html#a8f774461a6f6c683c45ea5b3b9c54e1f" title=" " alt="" coords="752,124,877,165"/>
+<area shape="rect" id="node9" href="$a20377.html#a049273178479bcdbde46863feab609f8" title=" " alt="" coords="927,384,1066,425"/>
+<area shape="rect" id="node13" href="$a20249.html#aee0af6e62f754134c59e6a0f34cdec50" title="Gim has one inner management of the errors &#160;With this function it is possible to interrogate,..." alt="" coords="935,501,1059,527"/>
+<area shape="rect" id="node16" href="$a20377.html#ac147613ddee5a6beccd35dfa6d73e1f4" title=" " alt="" coords="925,551,1068,578"/>
+<area shape="rect" id="node10" href="$a20437.html#abdbceb54772f956c33cc2084c85e8e0a" title="Use this function in order obtain the difference from start ." alt="" coords="1116,358,1275,385"/>
+<area shape="rect" id="node11" href="$a20365.html#af696d5083f9083c494e8b9153e8692fa" title=" " alt="" coords="1133,409,1258,451"/>
+<area shape="rect" id="node12" href="$a20365.html#ac653798a9ee47f25f0c6c41d793d6154" title=" " alt="" coords="1133,292,1258,333"/>
+<area shape="rect" id="node14" href="$a20133.html#a4910e56da13be7d0d4538ff3b97adf36" title="This method say to Gim to unload every allocated memory and classes before to delete." alt="" coords="1143,475,1247,502"/>
+<area shape="rect" id="node15" href="$a20437.html#adfba8472d37700be7115c7a58ae531be" title="Use this function in order obtain the process time ." alt="" coords="1120,526,1271,553"/>
+<area shape="rect" id="node20" href="$a20265.html#a293f5dcf3f6810d3ee2464632b5e63f4" title="To know if a file exist or not on filesystem." alt="" coords="363,277,509,319"/>
+<area shape="rect" id="node21" href="$a20365.html#a1b1e08e39d923f16a06acfe876a71619" title=" " alt="" coords="373,49,499,91"/>
+<area shape="rect" id="node22" href="$a20365.html#add0f334a28be2c38e9da06ba408feab1" title=" " alt="" coords="373,147,499,188"/>
+<area shape="rect" id="node23" href="$a20365.html#af4b32a0cca2bfa2406206a1bd72f5241" title=" " alt="" coords="373,212,499,253"/>
+<area shape="rect" id="node26" href="$a20385.html#a777f28271ee9af607125242da68fe3d7" title="This method is useful in order to alloc memory holding trace." alt="" coords="359,729,513,755"/>
+</map>

@@ -1,0 +1,14 @@
+<map id="gim_memory_obj::Alloc" name="gim_memory_obj::Alloc">
+<area shape="rect" id="node1" title="This method is useful in order to alloc memory holding trace." alt="" coords="5,149,160,176"/>
+<area shape="rect" id="node2" href="$a32511.html#a777f28271ee9af607125242da68fe3d7" title="This method is useful in order to alloc memory holding trace." alt="" coords="208,124,363,151"/>
+<area shape="rect" id="node3" href="$a32375.html#a3674feaa2b15dd42e553d43b537b214b" title=" " alt="" coords="223,175,347,201"/>
+<area shape="rect" id="node4" href="$a32503.html#a049273178479bcdbde46863feab609f8" title=" " alt="" coords="413,109,551,150"/>
+<area shape="rect" id="node8" href="$a32375.html#aee0af6e62f754134c59e6a0f34cdec50" title="Gim has one inner management of the errors &#160;With this function it is possible to interrogate,..." alt="" coords="420,175,544,201"/>
+<area shape="rect" id="node12" href="$a32503.html#ac147613ddee5a6beccd35dfa6d73e1f4" title=" " alt="" coords="411,225,553,252"/>
+<area shape="rect" id="node5" href="$a32563.html#abdbceb54772f956c33cc2084c85e8e0a" title="Use this function in order obtain the difference from start ." alt="" coords="601,5,760,32"/>
+<area shape="rect" id="node6" href="$a32491.html#af696d5083f9083c494e8b9153e8692fa" title=" " alt="" coords="618,57,743,98"/>
+<area shape="rect" id="node7" href="$a32491.html#ac653798a9ee47f25f0c6c41d793d6154" title=" " alt="" coords="618,122,743,163"/>
+<area shape="rect" id="node9" href="$a32259.html#a4910e56da13be7d0d4538ff3b97adf36" title="This method say to Gim to unload every allocated memory and classes before to delete." alt="" coords="629,251,733,277"/>
+<area shape="rect" id="node11" href="$a32563.html#adfba8472d37700be7115c7a58ae531be" title="Use this function in order obtain the process time ." alt="" coords="605,188,756,215"/>
+<area shape="rect" id="node10" href="$a32259.html#a435075eb61665b78df76863fda2b066f" title="With this method you can say to Gim to the new state." alt="" coords="808,251,935,277"/>
+</map>
