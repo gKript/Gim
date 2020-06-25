@@ -111,7 +111,7 @@
 					 _gim_int32				lines( void );
                      _gim_in_buffer *      	is_in_buffer( const char * to_find );
                      _gim_in_buffer *      	is_in_buffer( char * to_find );
-                     _gim_flag				in_buffer_subst( _gim_list * occurrence , char * new_part );
+                     _gim_flag				in_buffer_subst( _gim_in_buffer * resulting , char * new_part );
 				     char *					get_buffer( void );					 
 					 _gim_flag				seekf( _gim_flag position );
 					 _gim_flag				seek( _gim_int32 position );
