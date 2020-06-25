@@ -261,12 +261,12 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 	else {
 		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::in_buffer_subst" , "Buffer error" , __GIM_ERROR );
 	}
-	//delete( chrbuf );
+	gim_memory->Free( chrbuf );
 	this->chrbuf = subst_buff_start;
 	subst->class_id = 4;
 	subst->pattern = str_to_sub;
 	subst->occurrence = list_tmp;
-	//delete( resulting );
+	gim_memory->Free ( resulting );
 	*resulting = *subst;
 	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::in_buffer_subst" , "Done!" , __GIM_OK );
 	return( __GIM_OK );
