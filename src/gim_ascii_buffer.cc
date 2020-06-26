@@ -39,11 +39,6 @@
 #include    "../include/gim_ascii_buffer.h"
 #include    "../include/gim_list.h"
 
-
-_gim_int32	gim_ascii_file_obj::get_dimension( void ) {
-	return dimension;
-}
-
 _gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
 	if ( ( dimension == 0 ) && ( size > 0 ) )  {
 		dimension = size;
@@ -261,12 +256,12 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 	else {
 		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::in_buffer_subst" , "Buffer error" , __GIM_ERROR );
 	}
-	gim_memory->Free( chrbuf );
+	//delete( chrbuf );
 	this->chrbuf = subst_buff_start;
 	subst->class_id = 4;
 	subst->pattern = str_to_sub;
 	subst->occurrence = list_tmp;
-	gim_memory->Free ( resulting );
+	//delete( resulting );
 	*resulting = *subst;
 	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::in_buffer_subst" , "Done!" , __GIM_OK );
 	return( __GIM_OK );

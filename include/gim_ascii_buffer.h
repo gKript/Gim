@@ -100,7 +100,6 @@
 	*/
 	    class gim_ascii_file_obj {
 		public:
-					 _gim_int32				get_dimension( void );
 					 _gim_flag				set_dimension( _gim_int32 size );
 					 _gim_flag				append( char * to_append );
 //					 _gim_flag				append( const char * to_append );
