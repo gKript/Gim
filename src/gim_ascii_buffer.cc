@@ -120,7 +120,7 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 }
 
 
-_gim_in_buffer	*	gim_ascii_file_obj::is_in_buffer( const char * to_find ) {
+_gim_in_buffer *	gim_ascii_file_obj::is_in_buffer( const char * to_find ) {
 	char * str = NULL;
 	_gim_in_buffer * result = NULL;
 	_gim_Uint32 dim_find = 0;
@@ -182,11 +182,6 @@ _gim_in_buffer *	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 }
 
 
-
-//_gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_list * occurrence , char * new_part ) {
-//}
-
-
 _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char * new_part ) {
 
 	_gim_in_buffer *	subst = NULL;
@@ -222,11 +217,9 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 				
 				resulting->occurrence->rewind( );
 				it_num = resulting->occurrence->items( );
-				//printf("%s\n\n",buff);
 				for( id = 1 ; id <= it_num ; id++ ) {
 					offset = (_gim_Uint32 *)resulting->occurrence->get_item( id );
 					while( idx < *offset ) {
-						//printf("%c",buff);
 						*( subst_buff++ ) = *( buff++ );
 						idx++;
 						idx_sub++;
@@ -240,7 +233,6 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 					subst_buff += new_part_dim;
 				}
 				while( idx < this->dimension ) {
-					//printf("%c",buff);
 					*( subst_buff++ ) = *( buff++ );
 					idx++;
 				}
@@ -256,12 +248,12 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 	else {
 		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::in_buffer_subst" , "Buffer error" , __GIM_ERROR );
 	}
-	//delete( chrbuf );
+	//gim_memory->Unlock_and_free ( chrbuf ); );
 	this->chrbuf = subst_buff_start;
 	subst->class_id = 4;
 	subst->pattern = str_to_sub;
 	subst->occurrence = list_tmp;
-	//delete( resulting );
+	//gim_memory->Unlock_and_free ( resulting );
 	*resulting = *subst;
 	gim_error->set( GIM_ERROR_MESSAGE , "gim_ascii_file_obj::in_buffer_subst" , "Done!" , __GIM_OK );
 	return( __GIM_OK );
