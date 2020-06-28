@@ -239,14 +239,17 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 			}
 			else {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::in_buffer_subst" , "String to substitute error" , __GIM_ERROR );
+				return( __GIM_NOT_OK );
 			}
 		}
 		else {
 			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::in_buffer_subst" , "Occurrence data error" , __GIM_ERROR );
+			return( __GIM_NOT_OK );
 		}
 	}
 	else {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::in_buffer_subst" , "Buffer error" , __GIM_ERROR );
+		return( __GIM_NOT_OK );
 	}
 	//gim_memory->Unlock_and_free ( chrbuf ); );
 	this->chrbuf = subst_buff_start;
@@ -271,13 +274,10 @@ char *	gim_ascii_file_obj::load( char * filename , char * new_buffer , _gim_flag
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Opening file error" , __GIM_ERROR );
 		return( NULL );
 	}
-	while( feof( fp ) ) {
-		flen++;
-	}
 	fseek( fp , 0L , SEEK_END );
 	flen = (_gim_Uint32)ftell( fp );
 	fseek( fp , 0L , SEEK_SET );
-	printf("Load: Len = \"%d\"\n",flen);
+	printf("Load: File len = \"%d\"\n",flen);
 	if( !flen ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "File is empty" , __GIM_ERROR );
 		return( NULL );
@@ -297,7 +297,9 @@ char *	gim_ascii_file_obj::load( char * filename , char * new_buffer , _gim_flag
 				}
 				else {
 					if( this->dimension < flen ) {
-						//resize internal buffer
+						//TODO: here resize internal buffer, when ::Realloc() will be written!
+						gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Internal buffer re-allocation not yet implemented" , __GIM_ERROR );
+						return( NULL );
 					}
 				}
 			}

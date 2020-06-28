@@ -105,7 +105,7 @@
 //					 _gim_flag				append( const char * to_append );
 					 _gim_flag				append( const char * format , ... );
 //					 _gim_flag				append( _gim_string * str_to_append );
-					 _gim_flag				substitute( char * variable , char * text );
+//					 _gim_flag				substitute( char * variable , char * text );
 					 _gim_flag				insert_variable( char * variable );
 					 _gim_int32				lenght( void );
 					 _gim_int32				lines( void );
@@ -116,10 +116,11 @@
 					 _gim_flag				seekf( _gim_flag position );
 					 _gim_flag				seek( _gim_int32 position );
 					 char *					load( char * filename , char * new_buffer , _gim_flag overwrite );
+					 char *					flush( char * filename , char * new_buffer , _gim_flag overwrite );
 					 
 		private:
-					 _gim_int32				index;
-					 _gim_int32				dimension;
+					 _gim_Uint32			index;
+					 _gim_Uint32			dimension;
 					 char *					chrbuf;
 
 					 prsr_lexical_class *   lex;
