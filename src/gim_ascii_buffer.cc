@@ -39,7 +39,7 @@
 #include    "../include/gim_ascii_buffer.h"
 #include    "../include/gim_list.h"
 
-_gim_flag  gim_ascii_file_obj::set_dimension( _gim_int32 size ) {
+_gim_flag  gim_ascii_file_obj::set_dimension( _gim_Uint32 size ) {
 	if ( ( dimension == 0 ) && ( size > 0 ) )  {
 		dimension = size;
 		chrbuf = (char *)gim_memory->Alloc( sizeof( char ) * dimension , __GIM_ASCII_BUFFER , __GIM_HIDE );
@@ -168,11 +168,11 @@ _gim_in_buffer *	gim_ascii_file_obj::is_in_buffer( char * to_find ) {
 			}
 		}
 		else {
-			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "String to find error" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::is_in_buffer" , "String to find error" , __GIM_ERROR );
 		}
 	}
 	else {
-		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::is_in_buffer" , "Buffer error" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::is_in_buffer" , "Buffer error" , __GIM_ERROR );
 	}
 	result->class_id = 3;
 	result->pattern = str_to_find;
@@ -238,15 +238,15 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 				}
 			}
 			else {
-				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::in_buffer_subst" , "String to substitute error" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::in_buffer_subst" , "String to substitute error" , __GIM_ERROR );
 			}
 		}
 		else {
-			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::in_buffer_subst" , "Occurrence data error" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::in_buffer_subst" , "Occurrence data error" , __GIM_ERROR );
 		}
 	}
 	else {
-		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::in_buffer_subst" , "Buffer error" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::in_buffer_subst" , "Buffer error" , __GIM_ERROR );
 	}
 	//gim_memory->Unlock_and_free ( chrbuf ); );
 	this->chrbuf = subst_buff_start;
@@ -260,7 +260,75 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 }
 
 
-
+char *	gim_ascii_file_obj::load( char * filename , char * new_buffer , _gim_flag overwrite ) {
+	FILE *			fp = NULL;
+	_gim_Uint32		flen = 0;
+	_gim_Uint32		idx = 0;
+	_gim_int32		character = 0;
+	char *			buffer = NULL;
+	
+	if( ( fp = fopen( filename , "r" ) ) == NULL ){
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Opening file error" , __GIM_ERROR );
+		return( NULL );
+	}
+	while( feof( fp ) ) {
+		flen++;
+	}
+	fseek( fp , 0L , SEEK_END );
+	flen = (_gim_Uint32)ftell( fp );
+	fseek( fp , 0L , SEEK_SET );
+	printf("Load: Len = \"%d\"\n",flen);
+	if( !flen ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "File is empty" , __GIM_ERROR );
+		return( NULL );
+	}
+	if( new_buffer == NULL ) {
+		if( this->dimension == 0 ) {
+			this->set_dimension( flen );	//ripristinare
+			//this->set_dimension( 1024 );
+			printf("Load: Dimension len = \"%d\"\n",this->dimension);
+		}
+		else {
+			if( this->lenght( ) > 0 ) {
+				if( overwrite == 0 ) {	//to define
+					printf("Load: internal buffer from user lenght = \"%d\"\n", this->lenght( ) );
+					gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Internal buffer not empty, overwrite not permitted" , __GIM_ERROR );
+					return( NULL );
+				}
+				else {
+					if( this->dimension < flen ) {
+						//resize internal buffer
+					}
+				}
+			}
+		}
+		buffer = this->chrbuf;
+	}
+	else {
+		if( strlen( new_buffer ) < flen ) {
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Buffer too small" , __GIM_ERROR );
+			return( NULL );
+		}
+		printf("Load: New_Buffer len = \"%d\"\n",strlen( new_buffer ));
+		buffer = new_buffer;
+	}
+	for( idx = 0; idx < flen ; idx++ ) {
+		character = fgetc( fp );
+		if( character == EOF ) {
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Reading file error" , __GIM_ERROR );
+			fclose( fp );
+			return( NULL );
+		}
+		*( buffer + idx ) = (char)character;
+		printf(" -%c- ", character);
+		printf(" +%c+ ", *(buffer+idx));
+	}
+	puts("\nLoad: ok");
+	printf( "Load: Buffer = \"%s\"\n" , buffer );
+	printf("Load: Buffer pointer = \"%p\"\n", buffer );
+	fclose( fp );
+	return( buffer );
+}
 
 
 

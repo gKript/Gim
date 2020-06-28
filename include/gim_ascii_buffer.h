@@ -100,7 +100,7 @@
 	*/
 	    class gim_ascii_file_obj {
 		public:
-					 _gim_flag				set_dimension( _gim_int32 size );
+					 _gim_flag				set_dimension( _gim_Uint32 size );
 					 _gim_flag				append( char * to_append );
 //					 _gim_flag				append( const char * to_append );
 					 _gim_flag				append( const char * format , ... );
@@ -115,6 +115,7 @@
 				     char *					get_buffer( void );					 
 					 _gim_flag				seekf( _gim_flag position );
 					 _gim_flag				seek( _gim_int32 position );
+					 char *					load( char * filename , char * new_buffer , _gim_flag overwrite );
 					 
 		private:
 					 _gim_int32				index;
