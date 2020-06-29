@@ -160,6 +160,15 @@
 			*/
 			char *	sha512( char * file_name );
 			
+			/*! \fn		_gim_Uint32	chsum( char * digest )
+				\brief	Use this function to get a checksum starti from a Digest
+				\param	diget	The source Digest for the checksum<BR>
+									\a digest != NULL
+				\return the checksum value (Unsigned int 32bit)
+			*/
+			_gim_Uint32	chsum( char * digest );
+
+			
 			//! gim_checksum_obj constructor.
 			/*!
 				The gim_checksum_obj constructor make a control on the dimension of the standard type int

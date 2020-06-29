@@ -66,6 +66,7 @@
 	class gim_string_obj {
 		public:
 
+			void		set			( const char * to_set );
 			void		set			( char * to_set );
 			void		clean		( void );
 			char *		c_str		( void );
@@ -73,6 +74,7 @@
 			_gim_Uint16 length		( void );
 			_gim_Uint16 capacity	( void );
 			_gim_flag	empty		( void );
+			void		cat			( const char * to_cat );
 			void		cat			( char * to_cat );
 			_gim_flag	find		( char * to_find );
 			char *		left_find	( char to_find );

@@ -25,6 +25,14 @@
 #include "../include/gim_string.h"
 
 
+void		gim_string_obj::set			( const char * to_set ) {
+	char Tstr[32768];
+	__GIM_CLEAR( Tstr , 32768 , char );
+	strcpy( Tstr , to_set );
+	return ( set( Tstr ) );
+}
+
+
 void		gim_string_obj::set			( char * to_set ) {
 	gim_error->set( "gim_string_obj::set" , "Setting a new string value" );
 	if ( strlen( data->str ) != 0 )
@@ -69,6 +77,12 @@ _gim_flag	gim_string_obj::empty		( void ) {
 	if ( strlen( data->str ) != 0 )
 		return __GIM_NO;
 	return __GIM_YES;
+}
+
+
+void		gim_string_obj::cat			( const char * to_cat ) {
+	if ( strlen( data->str ) != 0 )
+		strcat( data->str , to_cat );
 }
 
 
