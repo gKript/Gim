@@ -130,6 +130,34 @@ void	gim_memory_obj::down( void ) {
 }
 
 
+void *	gim_memory_obj::Duplicate( void * to_dup ) {
+	void *	duplicated;
+	_gim_flag	found = __GIM_NO;
+	gim_mem_list *	before = startlist;
+	char	message[256];
+	if ( to_dup == NULL ) 
+		gim_error->set( GIM_ERROR_FATAL , "gim_memory_obj::Duplicate" , "It is not possible to pass a NULL pointer" , __GIM_ERROR );
+	if ( startlist == NULL )
+		gim_error->set( "gim_memory_obj::Free" , 14 );
+	else {
+		for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
+			if ( ( unsigned long long ) to_dup == ( unsigned long long )currentlist->data ) {
+				found = __GIM_YES;
+				duplicated = Alloc( currentlist->size , currentlist->caller );
+				return duplicated;
+			}
+			else
+				before = currentlist;
+		}
+		if ( found == __GIM_NO ) {
+			sprintf( message , "Frame NOT found : index[%p]" , to_dup );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_memory_obj::Free" , message , __GIM_ERROR );
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
 
 void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden ) {
 	if ( virt_mem == __GIM_OFF ) {

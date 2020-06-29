@@ -38,6 +38,7 @@
 #include    "../include/gim_base_header.h"
 #include    "../include/gim_ascii_buffer.h"
 #include    "../include/gim_list.h"
+#include    "../include/gim_file.h"
 
 _gim_flag  gim_ascii_file_obj::set_dimension( _gim_Uint32 size ) {
 	if ( ( dimension == 0 ) && ( size > 0 ) )  {
@@ -262,7 +263,7 @@ _gim_flag	gim_ascii_file_obj::in_buffer_subst( _gim_in_buffer * resulting , char
 	return( __GIM_OK );
 }
 
-
+/*
 char *	gim_ascii_file_obj::load( char * filename , char * new_buffer , _gim_flag overwrite ) {
 	FILE *			fp = NULL;
 	_gim_Uint32		flen = 0;
@@ -330,6 +331,43 @@ char *	gim_ascii_file_obj::load( char * filename , char * new_buffer , _gim_flag
 	printf("Load: Buffer pointer = \"%p\"\n", buffer );
 	fclose( fp );
 	return( buffer );
+}
+*/
+
+_gim_flag	gim_ascii_file_obj::load( char * filename , _gim_flag overwrite = __GIM_NO ) {
+	_gim_file		Ftl( filename );
+	_gim_Uint32		idx = 0;
+	_gim_int32		character = 0;
+	char *			buffer = NULL;
+	
+	if( Ftl.check() == __GIM_NOT_EXIST ){
+		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::load" , "Opening file error" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+	if( ! Ftl.size() ) {
+		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::load" , "File is empty" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+	if( ! this->dimension ) {
+		dimension = Ftl.size();
+		Ftl.load();
+		chrbuf = (char *)gim_memory->Duplicate( Ftl.buffer() );
+		Ftl.unload();
+	}
+	else {
+		if( overwrite == __GIM_OVERWRITE ) {
+			gim_memory->Free( chrbuf );
+			Ftl.load();
+			chrbuf = (char *)gim_memory->Duplicate( Ftl.buffer() );
+			Ftl.unload();
+		}
+		else {
+			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::load" , "Internal buffer not empty, overwrite not permitted" , __GIM_ERROR );
+			return __GIM_ERROR;
+		}
+	}
+	gim_error->Set( "gim_ascii_file_obj::load" , "Loaded the file \"%s\" as new buffer: Size = %d" , Ftl.name() , Ftl.size() );
+	return __GIM_OK;
 }
 
 

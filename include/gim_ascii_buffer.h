@@ -54,6 +54,8 @@
 
 	#define	 __GIM_FIRST		0
 	#define	 __GIM_LAST			1
+	
+	#define	__GIM_OVERWRITE		__GIM_YES
 
 	/*!	\struct		gim_file_manager_list
 		\warning	\n <b>It is not possible to use directly this struct.</b>
@@ -115,7 +117,8 @@
 				     char *					get_buffer( void );					 
 					 _gim_flag				seekf( _gim_flag position );
 					 _gim_flag				seek( _gim_int32 position );
-					 char *					load( char * filename , char * new_buffer , _gim_flag overwrite );
+//					 char *					load( char * filename , char * new_buffer , _gim_flag overwrite );
+					 _gim_flag				load( char * filename , _gim_flag overwrite );
 					 char *					flush( char * filename , char * new_buffer , _gim_flag overwrite );
 					 
 		private:
@@ -141,10 +144,9 @@
 		    */
 		    inline ~gim_ascii_file_obj() {
 		    	delete lex;
-/*		    	if ( chrbuf != NULL ) {
-		    		gim_memory->Unlock_and_free( chrbuf );
-		    	}
-*/				gim_error->set( "gim_list_obj::gim_ascii_file_obj" , "An ascii buffer deleted" );
+		    	if ( chrbuf != NULL )
+		    		gim_memory->Free( chrbuf );
+				gim_error->set( "gim_list_obj::gim_ascii_file_obj" , "An ascii buffer deleted" );
 		    };
     };
 

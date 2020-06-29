@@ -140,7 +140,8 @@ libgim_a-gim_ascii_buffer.o: gim_ascii_buffer.cc \
  ../include/gim_identity.h ../include/gim_version.h \
  ../include/gim_gkmake.h ../include/gim_interface.h \
  ../include/gim_error.h ../include/gim_time.h \
- ../include/gim_ascii_buffer.h ../include/gim_list.h
+ ../include/gim_ascii_buffer.h ../include/gim_list.h \
+ ../include/gim_file.h ../include/gim_gkp_utils.h
 
 /usr/include/stdc-predef.h:
 
@@ -481,3 +482,7 @@ libgim_a-gim_ascii_buffer.o: gim_ascii_buffer.cc \
 ../include/gim_ascii_buffer.h:
 
 ../include/gim_list.h:
+
+../include/gim_file.h:
+
+../include/gim_gkp_utils.h:

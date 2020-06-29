@@ -259,6 +259,8 @@
 			*/
 			_gim_flag	Check( void *  to_check );
 			
+			void *		Duplicate( void * id );
+			
 			char *		metric_converter( _gim_Ulong size );
 
 			void		hide( _gim_flag flag );
