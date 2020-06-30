@@ -72,6 +72,7 @@
 		__GIM_NOT_READY,
 		__GIM_RUNNING,
 		__GIM_NOT_RUNNING,
+		__GIM_UNKNOWN,
 		__LEX_UNKNOWN,
 		__LEX_A,
 		__LEX_B,

@@ -72,6 +72,8 @@
 	#define	GIM_ERROR_CRITICAL	" C  "
 	#define	GIM_ERROR_FATAL		" \033[1;31mF\033[0m  "
 	
+	#define	GIM_ERROR_UNKNOWN	" UU "
+	
 	/*!	\enum	variable_set	
 		\brief	The list of commands for the menagement of the gim behavior. \n
 				To know like setting up these parameters to consult the documentation on the class gim_error_obj. \n

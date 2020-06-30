@@ -160,15 +160,22 @@ void	gim_error_obj::Set	( const char * type , const char * function , const char
 	char	message[1024];
 	if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
 		value = __GIM_OK;
-	else if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
-		value = __GIM_ERROR;
-	else	
+	else if ( ! ( strcmp ( type , GIM_ERROR_WARNING ) ) )
 		value = __GIM_NOT_OK;
+	else if ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )
+		value = __GIM_ERROR;
+	else if ( ! ( strcmp ( type , GIM_ERROR_FATAL ) ) )
+		value = __GIM_ERROR;
+	else
+		value = __GIM_UNKNOWN;
 	va_list	VAList;
 	va_start( VAList , format );
 	vsprintf( message , format , VAList );
 	va_end( VAList );
-	set( type , function , message , value );
+	if ( value == __GIM_UNKNOWN ) 
+		set( GIM_ERROR_UNKNOWN , function , message , value );
+	else
+		set( type , function , message , value );
 }
 
 
