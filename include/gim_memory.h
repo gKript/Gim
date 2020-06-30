@@ -259,6 +259,19 @@
 			*/
 			_gim_flag	Check( void *  to_check );
 			
+			/*!	\fn		void *	Relloc( void * pntr , size_t size , char * id )
+				\brief	This method is useful in order to expand an allocated slot memory.
+				\param	pntr	The pointer to the memory slot you want to expand
+								\a pntr != NULL 
+				\param	size	The size of the memory you want to expand the allocated slot\n
+								\a size >= 0
+				\param	id		the id indicates the calling function.\n
+								\a id != NULL
+				\return an handle to the new expanded slot memory or \n
+						NULL in case of error
+			*/
+			void *		Relloc( void * pntr , size_t size , char * id );
+						
 			void *		Duplicate( void * id );
 			
 			char *		metric_converter( _gim_Ulong size );

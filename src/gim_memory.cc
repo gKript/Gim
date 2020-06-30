@@ -108,11 +108,11 @@ void	gim_memory_obj::up		( void ) {
 		endlist			= startlist;
 		allocated		= 0;
 		allocated_peek	= 0;
-//		gim_error->set( "gim_memory_obj::up" , 9 );
+		gim_error->set( "gim_memory_obj::up" , 9 );
 	}
-//	else {
-//		gim_error->set( GIM_ERROR_WARNING , "gim_memory_obj::up" , "" ,0 );
-//	}
+	else {
+		gim_error->set( GIM_ERROR_WARNING , "gim_memory_obj::up" , "" ,0 );
+	}
 }
 
 void	gim_memory_obj::down( void ) {
@@ -150,8 +150,46 @@ void *	gim_memory_obj::Duplicate( void * to_dup ) {
 				before = currentlist;
 		}
 		if ( found == __GIM_NO ) {
-			sprintf( message , "Frame NOT found : index[%p]" , to_dup );
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_memory_obj::Free" , message , __GIM_ERROR );
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_memory_obj::Free" , "Frame NOT found : index[%p]" , to_dup );
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
+
+void *	gim_memory_obj::Relloc( void * pntr , size_t size , char * id ) {
+	_gim_flag	found = __GIM_NO;
+	gim_mem_list *	before = startlist;
+	if ( pntr == NULL ) 
+		gim_error->set( GIM_ERROR_FATAL , "gim_memory_obj::Realloc" , "It is not possible to pass a NULL pointer" , __GIM_ERROR );
+	if ( startlist == NULL )
+		gim_error->set( "gim_memory_obj::Free" , 14 );
+	else {
+		for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
+			if ( ( unsigned long long ) pntr == ( unsigned long long )currentlist->data ) {
+				found = __GIM_YES;
+				if ( size < currentlist->size )
+					  gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Realloc" , "Size is lower than the original one but, I proceed on." );
+				else if ( size = currentlist->size )
+					  gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Realloc" , "Size is the same as the original one but, I proceed on." );
+
+				void *	temp = realloc( currentlist->data , size );
+				if ( temp ) {
+					currentlist->size = size;
+					currentlist->data = temp;
+					return temp;
+				}
+				else {
+					gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Realloc" , "Realloc fails! Probably, there's not enough free memory to use!" );
+					return NULL;
+				}
+			}
+			else
+				before = currentlist;
+		}
+		if ( found == __GIM_NO ) {
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_memory_obj::Realloc" , "Frame NOT found : index[%p]" , pntr );
 			return NULL;
 		}
 	}

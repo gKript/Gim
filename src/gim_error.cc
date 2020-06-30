@@ -158,10 +158,12 @@ void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
 
 void	gim_error_obj::Set	( const char * type , const char * function , const char * format , ... ) {
 	char	message[1024];
-	if ( ! ( strcmp ( type , GIM_ERROR_FATAL ) ) )
+	if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
+		value = __GIM_OK;
+	else if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
 		value = __GIM_ERROR;
-	else
-		value = 0;
+	else	
+		value = __GIM_NOT_OK;
 	va_list	VAList;
 	va_start( VAList , format );
 	vsprintf( message , format , VAList );
