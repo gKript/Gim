@@ -1,3 +1,0 @@
-<map id="gim_global_item_handler" name="gim_global_item_handler">
-<area shape="rect" id="node1" title="This struct is the gim file descriptor, for example is returnd by gim_file_manager_obj::open or used ..." alt="" coords="5,5,171,156"/>
-</map>

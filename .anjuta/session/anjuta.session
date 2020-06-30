@@ -1,6 +1,9 @@
 [Anjuta]
 Maximized=1
-Geometry=1920x981+0+0
+Geometry=1920x998+0+0
+
+[File Loader]
+Files=../../gkmake/main.cc#66%%%../../../gimtest/gimtest.cc#13%%%../../src/gim_ascii_buffer.cc#135%%%../../include/gim_ascii_buffer.h#85%%%../../include/gim_file.h#121%%%../../src/gim_list.cc#52%%%../../include/gim_list.h#1%%%../../src/gim_file.cc#106%%%../../include/gim_mersennetwister.h#245%%%../../include/gim_custom_type.h#153%%%../../src/gim_sha1.cc#139%%%../../include/gim_sha1.h#85%%%../../include/gim_checksum.h#1%%%../../src/gim_checksum.cc#110
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -10,13 +13,17 @@ Case Sensitive=1
 Highlight Match=1
 
 [Execution]
-Program uri=../../../../Projects/gim3/gim_shell/gimshell
+Program uri=../../../gim3/gim_shell/gimshell
 Run in terminal=2
-Working directories=../../../../Projects/gim3
+Working directories=../../../gim3
 
 [Project Manager]
 Shortcut=Gim//src//libgim.a%%%Gim//gim_gkdp//gkdp%%%Gim//gim_gkfp//gkfp%%%Gim//gim_shell//gimshell%%%Gim//gim_stat//gimstat%%%Gim//gkmake//gkmake
 Expand=Gim%%%Gim//gkmake%%%Gim//gkmake//gkmake%%%Gim//include%%%Gim//include//libgim_include%%%Gim//src%%%Gim//src//libgim.a
+
+[Debugger]
+Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:%%%1:../../src/gim_version.cc:47:0:
+Stop at beginning=2
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:
@@ -25,7 +32,3 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug='CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling='CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized='CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
-
-[Debugger]
-Breakpoint=1:../../include/gim_ascii_buffer.h:81:0:
-Stop at beginning=2

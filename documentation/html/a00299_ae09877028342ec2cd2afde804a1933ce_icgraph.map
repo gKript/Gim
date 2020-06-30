@@ -1,4 +1,0 @@
-<map id="gim_signal_received" name="gim_signal_received">
-<area shape="rect" id="node1" title="This funtion is automatically called by Gim when a signal will be received." alt="" coords="187,5,327,32"/>
-<area shape="rect" id="node2" href="$a00299.html#a834f2335a873a9fd2301344b9511c1a3" title="This funtion is automatically called by Gim at the constructor. It set the default action when a sign..." alt="" coords="5,5,139,32"/>
-</map>

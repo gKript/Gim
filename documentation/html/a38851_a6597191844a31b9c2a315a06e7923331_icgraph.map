@@ -1,6 +1,0 @@
-<map id="gim_file_obj::close" name="gim_file_obj::close">
-<area shape="rect" id="node1" title="Use this to close a file previously opened." alt="" coords="236,56,363,83"/>
-<area shape="rect" id="node2" href="$a38735.html#acf37daf835fe525420ab46a6040bdae9" title="Use this function to get an sha1 hash from a file." alt="" coords="13,5,181,32"/>
-<area shape="rect" id="node3" href="$a38735.html#a7f7570fb8d34919645120b79485e6901" title="Use this function to get an sha256 hash from a file." alt="" coords="5,56,188,83"/>
-<area shape="rect" id="node4" href="$a38735.html#a917c82dea0fc227a14395024dcdeb6e5" title="Use this function to get an sha512 hash from a file." alt="" coords="5,107,188,133"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="gim_prsr_obj::ExistSection" name="gim_prsr_obj::ExistSection">
-<area shape="rect" id="node1" title="In order to check if a section exitst or not." alt="" coords="445,39,620,65"/>
-<area shape="rect" id="node2" href="$a07778.html#a14c540c967fe63434a39c96818f1b473" title="To add a new section to the ini file." alt="" coords="228,13,397,40"/>
-<area shape="rect" id="node4" href="$a07738.html#a6d6bddaea255c19a80dd64720bef56b8" title=" " alt="" coords="14,57,171,98"/>
-<area shape="rect" id="node3" href="$a07778.html#a68a436c10fd79cc2e6c677bba441e4cf" title="To copy an existing section from a configuration file to another one \paran from A pointer to the cla..." alt="" coords="5,5,180,32"/>
-</map>

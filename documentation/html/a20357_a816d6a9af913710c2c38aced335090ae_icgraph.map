@@ -1,7 +1,0 @@
-<map id="gim_prsr_obj::AddKey" name="gim_prsr_obj::AddKey">
-<area shape="rect" id="node1" title="To add a new key in a existing section to a ini file ( value must be an int )" alt="" coords="228,81,375,108"/>
-<area shape="rect" id="node2" href="$a20357.html#a33f4f1aa6b7ffb30ae0fcb1403c256df" title="To add a new key in a existing section to a ini file ( value must be a float )" alt="" coords="19,5,166,32"/>
-<area shape="rect" id="node3" href="$a20357.html#a06880f80254bc85ea536f2e2539e67e7" title="To add a new key in a existing section to a ini file ( value must be a flag)" alt="" coords="7,56,179,83"/>
-<area shape="rect" id="node4" href="$a20357.html#a68a436c10fd79cc2e6c677bba441e4cf" title="To copy an existing section from a configuration file to another one \paran from A pointer to the cla..." alt="" coords="5,107,180,133"/>
-<area shape="rect" id="node5" href="$a20317.html#a6d6bddaea255c19a80dd64720bef56b8" title=" " alt="" coords="14,158,171,199"/>
-</map>

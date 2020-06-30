@@ -1,5 +1,0 @@
-<map id="prsr" name="prsr">
-<area shape="rect" id="node1" title="This struct is the main node (title) of a configuration file in memory." alt="" coords="31,388,118,509"/>
-<area shape="rect" id="node2" href="$a00603.html" title="This struct is the section node (section) of a configuration file in memory." alt="" coords="5,219,144,325"/>
-<area shape="rect" id="node3" href="$a00607.html" title="This struct is tha key node (key) of a configuration file in memory." alt="" coords="5,5,144,156"/>
-</map>

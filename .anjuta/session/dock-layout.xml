@@ -1,4 +1,57 @@
 <?xml version="1.0"?>
 <dock-layout>
-  
-<layout name="__default__"><dock name="__dock_1" floating="no" width="-1" height="-1" floatx="0" floaty="0" skip-taskbar="yes"><paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="284"><paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="407"><notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes" page="-1"><item name="snippets_browser" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/><item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/></notebook><paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="480"><item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/><item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/></paned></paned><paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="718"><paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="403"><notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0"><item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/><item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/><item name="GitDock" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/></notebook><item name="search_files" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/></paned><item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/></paned></paned></dock></layout></dock-layout>
+  <layout name="back-up">
+    <dock name="__dock_1" floating="no" width="-1" height="-1" floatx="0" floaty="0" skip-taskbar="yes">
+      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="273">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="407">
+          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes" page="-1">
+            <item name="snippets_browser" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+            <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+          </notebook>
+          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="485">
+            <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+          </paned>
+        </paned>
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="585">
+          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="403">
+            <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="0">
+              <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+              <item name="GitDock" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+              <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            </notebook>
+            <item name="search_files" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+          </paned>
+          <item name="AnjutaMessageView" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+        </paned>
+      </paned>
+    </dock>
+  </layout>
+  <layout name="__default__">
+    <dock name="__dock_1" floating="no" width="-1" height="-1" floatx="0" floaty="0" skip-taskbar="yes">
+      <paned orientation="horizontal" resize="yes" locked="no" iconified="no" closed="no" position="273">
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="407">
+          <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes" page="-1">
+            <item name="snippets_browser" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+            <item name="AnjutaFileManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+          </notebook>
+          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="485">
+            <item name="AnjutaProjectManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            <item name="AnjutaSymbolDB" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+          </paned>
+        </paned>
+        <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="585">
+          <paned orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" position="403">
+            <notebook orientation="vertical" resize="yes" locked="no" iconified="no" closed="no" page="2">
+              <item name="AnjutaDocumentManager" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+              <item name="GitDock" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+              <item name="AnjutaTerminal" orientation="vertical" resize="yes" locked="no" iconified="no" closed="no"/>
+            </notebook>
+            <item name="search_files" orientation="vertical" resize="yes" locked="no" iconified="no" closed="yes"/>
+          </paned>
+          <item name="AnjutaMessageView" orientation="horizontal" resize="yes" locked="no" iconified="no" closed="yes"/>
+        </paned>
+      </paned>
+    </dock>
+  </layout>
+</dock-layout>

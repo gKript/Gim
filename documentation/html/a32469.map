@@ -1,5 +1,0 @@
-<map id="gim_identity_obj" name="gim_identity_obj">
-<area shape="rect" id="node1" title="It is a clas with all the informations about user and host." alt="" coords="57,307,199,516"/>
-<area shape="rect" id="node2" href="$a32467.html" title="This struct contain all informations collected about the host&#39;s memory. Defined as type _gim_memory." alt="" coords="5,57,141,193"/>
-<area shape="rect" id="node3" href="$a32463.html" title="This struct contain all informations collected about the host&#39;s processor. Defined as type _gim_proce..." alt="" coords="165,5,312,244"/>
-</map>

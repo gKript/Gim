@@ -1,4 +1,0 @@
-<map id="gim_html_page" name="gim_html_page">
-<area shape="rect" id="node1" title="This struct is used by Gim to make an html page." alt="" coords="33,219,143,325"/>
-<area shape="rect" id="node2" href="$a07682.html" title="This struct is the gim file descriptor, for example is returnd by gim_file_manager_obj::open or used ..." alt="" coords="5,5,171,156"/>
-</map>
