@@ -393,7 +393,7 @@ on `(hostname || uname -n) 2>/dev/null | sed 1q`
 "
 
 # Files that config.status was made for.
-config_files=" Makefile documentation/Makefile gim_stat/Makefile gkmake/Makefile gim_gkdp/Makefile gim_gkfp/Makefile gim_shell/Makefile include/Makefile src/Makefile"
+config_files=" Makefile documentation/Makefile gim_stat/Makefile gkmake/Makefile gimclassgen/Makefile gim_gkdp/Makefile gim_gkfp/Makefile gim_shell/Makefile include/Makefile src/Makefile gkmake/gkm_data/Makefile"
 config_headers=" config.h"
 config_commands=" depfiles"
 
@@ -441,7 +441,7 @@ ac_pwd='/home/asyntote/Projects/Gim'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/usr/bin/mkdir -p'
-AWK='mawk'
+AWK='gawk'
 test -n "$AWK" || AWK=awk
 # The default lists apply if the user does not specify any file.
 ac_need_defaults=:
@@ -552,11 +552,13 @@ do
     "documentation/Makefile") CONFIG_FILES="$CONFIG_FILES documentation/Makefile" ;;
     "gim_stat/Makefile") CONFIG_FILES="$CONFIG_FILES gim_stat/Makefile" ;;
     "gkmake/Makefile") CONFIG_FILES="$CONFIG_FILES gkmake/Makefile" ;;
+    "gimclassgen/Makefile") CONFIG_FILES="$CONFIG_FILES gimclassgen/Makefile" ;;
     "gim_gkdp/Makefile") CONFIG_FILES="$CONFIG_FILES gim_gkdp/Makefile" ;;
     "gim_gkfp/Makefile") CONFIG_FILES="$CONFIG_FILES gim_gkfp/Makefile" ;;
     "gim_shell/Makefile") CONFIG_FILES="$CONFIG_FILES gim_shell/Makefile" ;;
     "include/Makefile") CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "gkmake/gkm_data/Makefile") CONFIG_FILES="$CONFIG_FILES gkmake/gkm_data/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -664,7 +666,7 @@ S["am__tar"]="$${TAR-tar} chof - \"$$tardir\""
 S["AMTAR"]="$${TAR-tar}"
 S["am__leading_dot"]="."
 S["SET_MAKE"]=""
-S["AWK"]="mawk"
+S["AWK"]="gawk"
 S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="/usr/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"

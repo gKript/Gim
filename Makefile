@@ -206,7 +206,7 @@ AM_DEFAULT_VERBOSITY = 1
 AUTOCONF = autoconf
 AUTOHEADER = autoheader
 AUTOMAKE = automake-1.16
-AWK = mawk
+AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
@@ -301,7 +301,8 @@ SUBDIRS = src \
 	gim_shell \
 	documentation \
 	gim_stat \
-	gkmake 
+	gkmake \
+	gimclassgen 
 
 EXTRA_DIST = $(gimdoc_DATA) \
 	$(documentation_DATA)

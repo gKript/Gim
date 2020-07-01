@@ -33,37 +33,76 @@
 
 #include <gim/gim.h>
 
+#define	GKDP_MAJOR			0
+#define GKDP_MINOR			3
+#define	GKDP_SUBMINOR		1
+#define	GKDP_VERSION		"0.3-1"
+
+#define GKDP_DEBUG			__GIM_YES
+#define __GIM_KAOS_TRSHLD	55
+
+#define _LINE				puts("")
+
+
+void hand_shake( void ) {
+	printf( "gkdp creator V%d.%d\n" , GKDP_MAJOR , GKDP_MINOR );
+	_LINE;
+	puts(	"gKript data package generator" );
+	printf( "Powered by: %s\n" , gim_version_small() );
+	puts(	"Coded by gKript.org" );
+	puts(	"	!asyntote" );
+	puts(	"	!skymatrix" );
+	_LINE;
+}
+
+
+void usage( void ) {
+	puts(	"Usage:" );
+	puts( 	"  gkdp  GKP_file_name  path  [password]" );
+	_LINE;
+}
+
+
 int main ( int argc , char *argv[] ) {
 	_gim_flag	mode = __GIM_NO;
+	int stat=0;
 	
-/*	if ( ( argc < 3 ) || ( argc > 4 ) ) {
-		puts( "gkdp creator V0.3 usage :" );
-		puts( "gkdp nome.gkp path [password]\n" );
-		puts( "gkdp coded by AsYntote" );
-		puts( "asyntote@gkript.org" );
-		exit( -1 );
-	}
-*/	
-	if ( gim_check_version(2,3,0) != __GIM_OK ) {
+	if ( gim_check_version(2,8,7) != __GIM_OK ) {
+		_LINE;
 		printf( "%s\n\n" , gim_version() );
 		printf( "Gim is not updated at the required version.\n" );
-		printf( "For %s is necessary Gim >= 1.6-0\n" , argv[0] );
+		printf( "For %s is necessary Gim >= 2.8-7\n" , argv[0] );
 		exit( -1 );
 	}
 		
+	hand_shake();
+	
+	if ( ( argc < 3 ) || ( argc > 4 ) ) {
+		usage();
+		exit( -1 );
+	}
+
 	gim_set_application_name( "Gkdp_creator" );
 	gim_obj			* gim  = new gim_obj;
 	gim_gkdp_obj	* gkdp = new gim_gkdp_obj;
-
-	_gim_directory	* dir;
-
-	puts("Gkdp creator 0.3-1");
-	printf( "  Powered by %s\n" , gim_version() );
 	
+	_gim_string	gkp_file_name( argv[1] );
+	_gim_string	source( argv[2] );
+	_gim_string	passw;
+	_gim_string	gkp_system( "gimstat " );
+	
+	if ( GKDP_DEBUG == __GIM_YES ) {
+	   	gim->conf->ChangeKeyFlag( "debug", "f_debug" , __GIM_YES );
+		gim->conf->AddKeyComment( "debug", "f_debug" , PRSR_AFTER , "Forced YES by main program" );
+	}
+  	gim->conf->ChangeKey( "crypt", "iterations" , 5 );
+  	gim->conf->Write();
+
 	if ( argc > 1 ) {
-/*	
+	
 		if ( argc == 4 ) {
-			gkdp->set_password( argv[3] );
+			passw.set( argv[3] );
+			gkdp->set_password( passw.c_str() );
 			mode = __GIM_YES;
 			puts("Crypt activated");
 		}
@@ -72,63 +111,24 @@ int main ( int argc , char *argv[] ) {
 			puts("Crypt NOT activated");
 		}
 	
-		printf("Generating %s..." , argv[1] );
+		printf("Generating %s..." , gkp_file_name.c_str() );
 		fflush( stdout );
-		gkdp->New( argv[1] , mode );
-		gkdp->set_prg( "Gkdp_creator" , 0 , 3 , 0 );
-		gkdp->new_path( argv[2] );
+		gkdp->New( gkp_file_name.c_str() , mode );
+		gkdp->set_prg( "Gkdp_creator" , 0 , 3 , 1 );
+		gkdp->new_path( source.c_str() );
 		gkdp->write();
-		puts( "Done!");
-
-*/	
-		_gim_dir_item	* test = NULL;
-	
-		dir = new _gim_directory;
-		dir->recursion( __GIM_YES );
-		dir->also_hide( __GIM_YES );
-		if ( argc > 1 ) 
-			dir->make( argv[1] );
-		else {
-			dir->make( "./" );
-		}
-		while( test = dir->get_item( GIM_DIR_INCREMENT ) ) {
-			if ( test ) {
-				char message[256];
-				char type[16];
-				switch( test->type ) {
-					case REGFILE : {
-						strcpy( type , "   Reg   " );
-						sprintf( message , "%-10d%s%-40s" , test->size , type , test->name );
-						break;
-					}
-					case EMPTY : {
-						strcpy( type , "   Reg   " );
-						sprintf( message , "%-10d%s%-40s" , test->size , type , test->name );
-						break;
-					}
-					case REGNODE : {
-						strcpy( type , " - Dir - " );
-						sprintf( message , "          %s%-40s" , type , test->name );
-						break;
-					}
-					default : {
-						strcpy( type , "   Unk    " );
-						sprintf( message , "          %s%-40s" , type , test->name );
-						break;
-					}
-				}
-				puts( message );
-			}
-			dir->free_item( test );
-		}
-
-	}
+		puts( "Done!\n");
 		
-	delete dir;
+		gkp_system.cat( gkp_file_name.c_str() );
+		stat = system( gkp_system.c_str() );
+//		printf("%d - %d\n" , stat , stat/256);
+		if ( (stat/256) < __GIM_KAOS_TRSHLD ) {
+			puts("\n  WARNING:");
+			puts("      The content of this file does not have a high level of gKaos and could be violated.\n      We recommend to repeat now this command with the encryption option activated simply typing a password after the file name and the path.");
+			puts( "\n          gkfp nome.gkp path [password]\n" );
+		}
+	}
 	
-//:qqq\q
-
-//	delete mem;
 	delete gkdp;
 	delete gim;
 	

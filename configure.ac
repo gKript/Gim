@@ -22,9 +22,11 @@ Makefile
 documentation/Makefile
 gim_stat/Makefile
 gkmake/Makefile
+gimclassgen/Makefile
 gim_gkdp/Makefile
 gim_gkfp/Makefile
 gim_shell/Makefile
 include/Makefile
 src/Makefile
+gkmake/gkm_data/Makefile
 ])

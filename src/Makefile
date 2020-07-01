@@ -277,7 +277,7 @@ AM_DEFAULT_VERBOSITY = 1
 AUTOCONF = autoconf
 AUTOHEADER = autoheader
 AUTOMAKE = automake-1.16
-AWK = mawk
+AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2

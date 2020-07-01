@@ -14,3 +14,6 @@ gkmake_CXXFLAGS = -O3 \
 	-L../src/ 
 
 gkmake_LDADD = -lgim 
+
+SUBDIRS = \
+	gkm_data

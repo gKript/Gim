@@ -5304,7 +5304,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile documentation/Makefile gim_stat/Makefile gkmake/Makefile gim_gkdp/Makefile gim_gkfp/Makefile gim_shell/Makefile include/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile documentation/Makefile gim_stat/Makefile gkmake/Makefile gimclassgen/Makefile gim_gkdp/Makefile gim_gkfp/Makefile gim_shell/Makefile include/Makefile src/Makefile gkmake/gkm_data/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6048,11 +6048,13 @@ do
     "documentation/Makefile") CONFIG_FILES="$CONFIG_FILES documentation/Makefile" ;;
     "gim_stat/Makefile") CONFIG_FILES="$CONFIG_FILES gim_stat/Makefile" ;;
     "gkmake/Makefile") CONFIG_FILES="$CONFIG_FILES gkmake/Makefile" ;;
+    "gimclassgen/Makefile") CONFIG_FILES="$CONFIG_FILES gimclassgen/Makefile" ;;
     "gim_gkdp/Makefile") CONFIG_FILES="$CONFIG_FILES gim_gkdp/Makefile" ;;
     "gim_gkfp/Makefile") CONFIG_FILES="$CONFIG_FILES gim_gkfp/Makefile" ;;
     "gim_shell/Makefile") CONFIG_FILES="$CONFIG_FILES gim_shell/Makefile" ;;
     "include/Makefile") CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "gkmake/gkm_data/Makefile") CONFIG_FILES="$CONFIG_FILES gkmake/gkm_data/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

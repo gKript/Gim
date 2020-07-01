@@ -16,3 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifndef _GCG_HEDER_H
+#define _GCG_HEDER_H
+
+
+	#define	GCG_VERSION				"0.1-0"
+	
+	
+	#define _LINE					puts("")
+	
+
+	void hand_shake( void );
+
+
+#endif
