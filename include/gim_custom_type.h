@@ -120,6 +120,7 @@
 	typedef int								_gim_long;
 	typedef unsigned int					_gim_Ulong;
 	typedef long long						_gim_Llong;
+	typedef unsigned long long				_gim_ULlong;
 	typedef unsigned long long				_gim_address;
 	
 	
@@ -152,6 +153,40 @@
 	typedef	class	gim_list_obj 			_gim_list;
 	typedef	class	prsr_lexical_class		_gim_lex;
 	typedef class	gim_ascii_file_obj		_gim_ascii_buffer;
+	
+	
+	//	WORD_VAL, WORD_BITS, 	PicGIM code based	//
+
+    typedef union _WORD_VAL {		
+        _gim_Uint16		Val;
+        _gim_Uint8		V[ 2 ];
+        struct {
+            _gim_Uint8	LB;
+            _gim_Uint8	HB;
+        } byte;
+
+    } _gim_Uint16_VAL, _gim_Uint16_BITS;
+
+
+    typedef union _DWORD_VAL {
+        _gim_Uint32			Val;
+        _gim_Uint16			W[ 2 ];
+        _gim_Uint8			V[ 4 ];
+        struct {
+            _gim_Uint16		LW;
+            _gim_Uint16		HW;
+        } word;
+        struct {
+            _gim_Uint8		LB;
+            _gim_Uint8		HB;
+            _gim_Uint8		UB;
+            _gim_Uint8		MB;
+        } byte;
+        struct {
+            _gim_Uint16_VAL	low;
+            _gim_Uint16_VAL high;
+        } wordUnion;
+    } _gim_Uint32_VAL, _gim_Uint32_BITS;
 
 
 #endif /* _GIM_CUSTOM_TYPE_H_ */

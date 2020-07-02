@@ -82,6 +82,10 @@
 	#include <stdio.h>
 	#include <limits.h>
 	#include <time.h>
+	
+	
+	#define	_GIM_MT_ORIGINAL	__GIM_NO	//	__GIM_YES means the original MT algo; __GIM_NO means the modified MT algo
+	
 
 	/* Period parameters */  
 	#define MT_N 624
@@ -106,176 +110,47 @@
 		\warning	This class is not documented by <b>gkript.org</b>.
 	*/
 	class MTRand {
-	// Data
-	public:
-	
-
-	protected:
-		_gim_Ulong mt[MT_N];	/* the array for the state vector  */
-		int mti=MT_N+1;			/* mti==MT_N+1 means mt[MT_N] is not initialized */
-
-	//Methods
-	public:
-		MTRand( _gim_Ulong oneSeed );  // initialize with a simple _gim_Ulong
-		MTRand();  // auto-initialize with /dev/urandom or time() and clock()
+		// Data
+		public:
 		
-		// Access to 32-bit random numbers
-		double rand();                          // real number in [0,1]
-		double rand( const double &n );         // real number in [0,n]
-		double randExc();                       // real number in [0,1)
-		double randExc( const double &n );      // real number in [0,n)
-		double randDblExc();                    // real number in (0,1)
-		double randDblExc( const double &n  );   // real number in (0,n)
 
-		_gim_Ulong randInt();                       // integer in [0,2^32-1]
-		_gim_Ulong randInt( const _gim_Ulong &n );      // integer in [0,n] for n < 2^32
-		_gim_Uint32 randUInt8();
-		double operator()() { return rand(); }  // same as rand()
-		
-		// Re-seeding functions with same behavior as initializers
-		void seed( const _gim_Ulong oneSeed );
-		void seed();
-		
-	protected:
-		static _gim_Ulong hash( time_t t, clock_t c );
+		protected:
+			_gim_Uint32 mt[MT_N];	/* the array for the state vector  */
+			int mti=MT_N+1;			/* mti==MT_N+1 means mt[MT_N] is not initialized */
+
+		//Methods
+		public:
+			MTRand( _gim_Uint32 oneSeed );  // initialize with a simple _gim_Uint32
+			MTRand();  // auto-initialize with /dev/urandom or time() and clock()
+			
+			// Access to 32-bit random numbers
+			_gim_Uint32 rand();									// real number in [0,1]
+			_gim_Uint32 rand( const _gim_Uint32 &n );			// real number in [0,n]
+			_gim_Uint32 randExc();								// real number in [0,1)
+			_gim_Uint32 randExc( const _gim_Uint32 &n );		// real number in [0,n)
+			_gim_Uint32 randDblExc();                    		// real number in (0,1)
+//			_gim_Uint32 randDblExc( const _gim_Uint32 &n  );	// real number in (0,n)
+
+			_gim_Uint32 randInt( _gim_Uint32 range );           // integer in [0,range-1]
+			_gim_Uint32 randInt();                       		// integer in [0,2^32-1]
+
+			#if ( _GIM_MT_ORIGINAL == __GIM_NO )			
+				_gim_Uint32 randIntMT( const _gim_Uint32 &n );		// integer in [0,n] for n < 2^32
+			#endif
+			
+			_gim_Uint32 randUInt8();
+			_gim_Uint32 operator()() { return rand(); }			// same as rand()
+			
+			// Re-seeding functions with same behavior as initializers
+			void seed( const _gim_Uint32 oneSeed );
+			void seed();
+			
+		protected:
+			static _gim_Uint32 hash( time_t t, clock_t c );
+
 	};
 
 
-	inline MTRand::MTRand( _gim_Ulong oneSeed ) {
-		seed( oneSeed );
-	}
-
-	inline MTRand::MTRand() {
-		seed();
-	}
-
-	inline double MTRand::rand() {
-		return double(randInt()) * (1.0/4294967295.0);
-	}
-
-	inline double MTRand::rand( const double &n ) {
-		return double(randInt()) * n;
-	}
-
-	inline double MTRand::randExc() {
-		return double(randInt()) * (1.0/4294967296.0);
-	}
-
-	inline double MTRand::randExc( const double &n ) {
-		return randExc() * n;
-	}
-
-	inline _gim_Ulong MTRand::randInt() {
-		unsigned long y;
-		static unsigned long mag01[2]={0x0, MATRIX_A};
-		/* mag01[x] = x * MATRIX_A  for x=0,1 */
-
-		if (mti >= MT_N) { /* generate MT_N words at one time */
-		    int kk;
-
-		    if (mti == MT_N+1)   /* if sgenrand() has not been called, */
-		        randInt(4357); /* a default initial seed is used   */
-
-		    for (kk=0;kk<MT_N-MT_M;kk++) {
-		        y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-		        mt[kk] = mt[kk+MT_M] ^ (y >> 1) ^ mag01[y & 0x1];
-		    }
-		    for (;kk<MT_N-1;kk++) {
-		        y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-		        mt[kk] = mt[kk+(MT_M-MT_N)] ^ (y >> 1) ^ mag01[y & 0x1];
-		    }
-		    y = (mt[MT_N-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
-		    mt[MT_N-1] = mt[MT_M-1] ^ (y >> 1) ^ mag01[y & 0x1];
-
-		    mti = 0;
-		}
-	  
-		y = mt[mti++];
-		y ^= TEMPERING_SHIFT_U(y);
-		y ^= TEMPERING_SHIFT_S(y) & TEMPERING_MASK_B;
-		y ^= TEMPERING_SHIFT_T(y) & TEMPERING_MASK_C;
-		y ^= TEMPERING_SHIFT_L(y);
-
-		return y; 
-	}
-
-	inline _gim_Ulong MTRand::randInt( const _gim_Ulong &n )
-	{
-		_gim_Ulong used = n;
-		used |= used >> 1;
-		used |= used >> 2;
-		used |= used >> 4;
-		used |= used >> 8;
-		used |= used >> 16;
-		
-		_gim_Ulong i;
-		do
-			i = randInt() & used;  // toss unused bits to shorten search
-		while ( i > n );
-		return i;
-	}
-
-
-	inline _gim_Uint32 MTRand::randUInt8() {
-		_gim_Uint8 res = 0;
-		_gim_int32 t = 0;
-		
-		t = (_gim_int32)labs(randInt());
-		res = t % 0xff;
-		return res;
-	}
-
-
-	inline void MTRand::seed( const _gim_Ulong oneSeed ) {
-		/* setting initial seeds to mt[MT_N] using         */
-		/* the generator Line 25 of Table 1 in          */
-		/* [KNUTH 1981, The Art of Computer Programming */
-		/*    Vol. 2 (2nd Ed.), pp102]                  */
-		mt[0]= oneSeed & 0xffffffff;
-		for (mti=1; mti<MT_N; mti++)
-			mt[mti] = (69069 * mt[mti-1]) & 0xffffffff;
-	}
-
-	inline void MTRand::seed() {
-		register bool success = true;
-				
-		FILE* urandom = fopen( "/dev/urandom", "rb" );
-		if( urandom ) {
-			_gim_Ulong s;
-			success = fread( &s, sizeof(_gim_Ulong), 1, urandom );
-			fclose(urandom);
-			if( success ) 
-				seed( s );
-			else
-				seed( hash( time(NULL), clock() ) );
-		}
-		else
-			seed( hash( time(NULL), clock() ) );
-	}
-
-	inline _gim_Ulong MTRand::hash( time_t t, clock_t c )
-	{
-		// Get a _gim_Ulong from t and c
-		// Better than _gim_Ulong(x) in case x is floating point in [0,1]
-		// Based on code by Lawrence Kirby (fred@genesis.demon.co.uk)
-
-		static _gim_Ulong differ = 0;  // guarantee time-based seeds will change
-
-		_gim_Ulong h1 = 0;
-		unsigned char *p = (unsigned char *) &t;
-		for( size_t i = 0; i < sizeof(t); ++i )
-		{
-			h1 *= UCHAR_MAX + 2U;
-			h1 += p[i];
-		}
-		_gim_Ulong h2 = 0;
-		p = (unsigned char *) &c;
-		for( size_t j = 0; j < sizeof(c); ++j )
-		{
-			h2 *= UCHAR_MAX + 2U;
-			h2 += p[j];
-		}
-		return ( h1 + differ++ ) ^ h2;
-	}
-
 #endif
+
+

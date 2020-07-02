@@ -203,26 +203,34 @@ _gim_Uint32	gim_checksum_obj::chsum( char * digest ) {
 	prodotto = digest[0];
 	for( _gim_Uint32 i = 0 ; i < dlen ; i++ )
 		prodotto *= digest[i];
-//	printf( "Prodotto: %d\n" , prodotto );
 	sum = digest[0];
 	for( _gim_Uint32 i = 0 ; i < dlen ; i++ ) {	
 		sum = abs( (int)( sum + abs(digest[i]) ) );
-//		sum = abs( (int)( sum * prodotto ) );
-//		printf( "Chr: %d  -  " , digest[i] );
-//		printf( "Sum di partenza: %x  -  " , sum ); 
 		sum = abs( (int)( sum * digest[i] ) );
-//		sum = abs( (int)( sum * prodotto ) );
-//		printf( "Sum prodotto: %x  -  " , sum );
-//		sum = abs( (int)( sum - digest[i] ) );
-//		sum = abs( (int)( sum * prodotto ) );
-//		printf( "Sum sottratto: %x" , sum );
-//		puts("");
 	}
-//	printf("%x calcolato\n", sum );
 	return sum;
 }
 
 
 
+_gim_Uint8	gim_checksum_obj::chsum8( char * digest ) {
+	_gim_Uint8 sum = 0;
+	_gim_Uint32 prodotto = 0;
+	_gim_Uint32	dlen = 0;
+	if ( digest == NULL ) {
+		gim_error->set( GIM_ERROR_MESSAGE , "gim_checksum_obj::chsum" , "You cannot pass NULL as Digest" , __GIM_NOT_OK );
+		return 0;
+	}
+	dlen = strlen( digest );
+	prodotto = digest[0];
+	for( _gim_Uint32 i = 0 ; i < dlen ; i++ )
+		prodotto *= digest[i];
+	sum = digest[0];
+	for( _gim_Uint32 i = 0 ; i < dlen ; i++ ) {	
+		sum ^= abs( (int)( sum + abs(digest[i]) ) & 0xff );
+		sum ^= abs( (int)( sum * digest[i] ) & 0xff );
+	}
+	return ( sum & 0xff );
+}
 
 

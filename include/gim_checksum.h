@@ -161,13 +161,20 @@
 			char *	sha512( char * file_name );
 			
 			/*! \fn		_gim_Uint32	chsum( char * digest )
-				\brief	Use this function to get a checksum starti from a Digest
+				\brief	Use this function to get a checksum starting from a Digest
 				\param	diget	The source Digest for the checksum<BR>
 									\a digest != NULL
 				\return the checksum value (Unsigned int 32bit)
 			*/
 			_gim_Uint32	chsum( char * digest );
 
+			/*! \fn		_gim_Uint8	chsum8( char * digest )
+				\brief	Use this function to get a 8 bit checksum starting from a Digest
+				\param	diget	The source Digest for the checksum<BR>
+									\a digest != NULL
+				\return the checksum value (Unsigned int 32bit)
+			*/
+			_gim_Uint8	chsum8( char * digest );
 			
 			//! gim_checksum_obj constructor.
 			/*!
