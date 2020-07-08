@@ -476,7 +476,7 @@ _gim_flag	gim_db_obj::gdbs_line_syntax_check( _gim_Uint8 NoT ) {
 		gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_line_syntax_check" , "UNKNOWN TOKEN : ID = %2d - NoT = %d - [%s] [%s]", id , NoT , Tok[0] , Tok[1] );
 		return __SYNTAX_ERROR;
 	}
-	gim_error->Set( "gim_db_obj::gdbs_line_syntax_check" , "ID = %2d - NoT = %d - [%s] [%s]", id , NoT , Tok[0] , Tok[1] );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_line_syntax_check" , "ID = %2d - NoT = %d - [%s] [%s]", id , NoT , Tok[0] , Tok[1] );
 	switch ( id ) {
 		case 11 : {
 			_gim_gdbs_line * line = (_gim_gdbs_line *)gim_memory->Alloc( sizeof( _gim_gdbs_line ) , __GIM_GDBS_LINE , __GIM_HIDE );
@@ -687,13 +687,13 @@ _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 			}
 		}
 		else
-			gim_error->Set( "prsr_lexical_class::init_from_gdbs" , "SKIPPED" );
+			gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::init_from_gdbs" , "SKIPPED" );
 		l++;
 		gdbs_line_num++;
 	}
 	gdbs_close();
 	f = gdbs_execute();
-	gim_error->Set( "prsr_lexical_class::init_from_gdbs" , "GDBS: all done!" );
+	gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::init_from_gdbs" , "GDBS: all done!" );
 	return __GIM_OK;
 }
 
@@ -828,7 +828,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 
 	_gim_gdbs_line   * line = NULL;
 
-	gim_error->Set( "gim_db_obj::gdbs_execute" , "EXECUTING GDBS ITEMS [%3d]..." , gdbs_script->items() );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING GDBS ITEMS [%3d]..." , gdbs_script->items() );
 	do {
 		line = (_gim_gdbs_line *)gdbs_script->get_item();
 		if ( line != NULL ) {

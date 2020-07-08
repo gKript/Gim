@@ -56,7 +56,7 @@ void	gim_getopt_obj::scanopt( int argc, char * const argv[] ) {
 			temp_opt->argument = strdup( optarg );
 		temp_opt->opterror = optopt;
 //		printf( "opt %c - arg %s - optopt %X\n" , c , optarg , optopt );
-		printf( "opt %c - arg %s - optopt %X\n" , temp_opt->option , temp_opt->argument , temp_opt->opterror );
+//		printf( "opt %c - arg %s - optopt %X\n" , temp_opt->option , temp_opt->argument , temp_opt->opterror );
 		if ( ( c != '?' ) && ( c != ':' ) ) {
 			temp_opt->status = __GIM_OPT_OK;
 			optlist->add_item( temp_opt );

@@ -126,9 +126,9 @@
 			// Access to 32-bit random numbers
 			_gim_Uint32 rand();									// real number in [0,1]
 			_gim_Uint32 rand( const _gim_Uint32 &n );			// real number in [0,n]
-			_gim_Uint32 randExc();								// real number in [0,1)
-			_gim_Uint32 randExc( const _gim_Uint32 &n );		// real number in [0,n)
-			_gim_Uint32 randDblExc();                    		// real number in (0,1)
+//			_gim_Uint32 randExc();								// real number in [0,1)
+//			_gim_Uint32 randExc( const _gim_Uint32 &n );		// real number in [0,n)
+//			_gim_Uint32 randDblExc();                    		// real number in (0,1)
 //			_gim_Uint32 randDblExc( const _gim_Uint32 &n  );	// real number in (0,n)
 
 			_gim_Uint32 randInt( _gim_Uint32 range );           // integer in [0,range-1]

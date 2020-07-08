@@ -39,7 +39,7 @@
 
 #ifdef GKMAKE_VERSIONING
 		
-char *	gim_version			( void ) {
+char *	gim_version	( void ) {
 	static char	gim_ver[256];
 	if ( Lexical.str_equal( GIM_VERSION_STATE , "rel" ) == __GIM_YES )
 		sprintf( gim_ver , "Gim %s - Ver %d.%d-%d compiled on %s" , (const char *)GIM_MILESTONE , GIM_MAJOR , GIM_MINOR , GIM_SUBMINOR , GIM_BUILD_LAST );
@@ -67,6 +67,16 @@ char *	gim_version_small	( void ) {
 		sprintf( gim_ver , "Gim - Ver %d.%d-%d" , GIM_MAJOR , GIM_MINOR , GIM_SUBMINOR );
 	if ( Lexical.str_equal( GIM_VERSION_STATE , "dev" ) == __GIM_YES )
 		sprintf( gim_ver , "Gim - Ver %d.%d-%d-d" , GIM_MAJOR , GIM_MINOR , GIM_SUBMINOR );
+	return gim_ver;
+}
+
+
+char *	gim_version_mini	( void ) {
+	static char	gim_ver[256];
+	if ( Lexical.str_equal( GIM_VERSION_STATE , "rel" ) == __GIM_YES )
+		sprintf( gim_ver , "Gim-%d.%d-%d" , GIM_MAJOR , GIM_MINOR , GIM_SUBMINOR );
+	if ( Lexical.str_equal( GIM_VERSION_STATE , "dev" ) == __GIM_YES )
+		sprintf( gim_ver , "Gim-%d.%d-%d-d" , GIM_MAJOR , GIM_MINOR , GIM_SUBMINOR );
 	return gim_ver;
 }
 

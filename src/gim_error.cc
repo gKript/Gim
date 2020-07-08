@@ -142,19 +142,19 @@ void	gim_error_obj::set	( pid_t cur_pid , const char * type , const char * funct
 
 
 void	gim_error_obj::set	( const char * function , const char * message ) {
-	set( GIM_ERROR_MESSAGE , function , message , 0 );
+	set( GIM_ERROR_MESSAGE , function , char_filter( message , '\n' ) , 0 );
 }
 
-
+/*
 void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
 	char	message[1024];
 	va_list	VAList;
 	va_start( VAList , format );
 	vsprintf( message , format , VAList );
 	va_end( VAList );
-	set( GIM_ERROR_MESSAGE , function , message , 0 );
+	set( GIM_ERROR_MESSAGE , function , char_filter( message , '\n' ) , 0 );
 }
-
+*/
 
 void	gim_error_obj::Set	( const char * type , const char * function , const char * format , ... ) {
 	char	message[1024];
@@ -175,7 +175,7 @@ void	gim_error_obj::Set	( const char * type , const char * function , const char
 	if ( value == __GIM_UNKNOWN ) 
 		set( GIM_ERROR_UNKNOWN , function , message , value );
 	else
-		set( type , function , message , value );
+		set( type , function , char_filter( message , '\n' ) , value );
 }
 
 
@@ -308,3 +308,25 @@ void		gim_error_obj::lflush( void ) {
 		sprintf( message , "Succesfully deleted %d messages" , cnt );
 	set( "gim_error_obj::lflush" , message );
 }
+
+
+const char *		gim_error_obj::char_filter( const char * from , char to_filter ) {
+	_gim_Uint32	a = 0 , b = 0, l =0;
+	static char * tmp;
+	tmp = NULL;		
+	l = strlen( from );
+	tmp = strdup( from );
+	for( ; a < l ; a++ ) {
+		if ( from[a] != to_filter ) {
+			tmp[b] = from[a];
+			b++;
+		}
+	}
+	tmp[b] = '\0';
+	return (const char *)from;
+}
+
+
+
+
+

@@ -93,9 +93,10 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 			return __KEY ;
 		else if ( ( ! is_in_string( tmp , "#=[]<>" ) ) && ( strlen( tmp ) > 0 ) )
 			return __SYNTAX_ERROR;
+		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::scan_line" , "Lex A unknown token found" , __GIM_NOT_OK );
 		return __UNKNOWN;
 	}
-	if 	( lex_type == __LEX_B ) {
+	else if 	( lex_type == __LEX_B ) {
 		if	( Syntax.Feof == __GIM_ON ) 
 			return __END;
 		else if	( strlen( line ) == 1 ) 
@@ -111,6 +112,30 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 			return __KEY ;
 		else if ( ( ! is_in_string( tmp , "#=:<>" ) ) && ( strlen( tmp ) > 0 ) )
 			return __SYNTAX_ERROR;
+		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::scan_line" , "Lex B unknown token found" , __GIM_NOT_OK );
+		return __UNKNOWN;
+	}
+	else if 	( lex_type == __LEX_C ) {
+		if	( Syntax.Feof == __GIM_ON ) 
+			return __END;
+		else if	( strlen( line ) == 1 )	
+			return __BLANK;
+		char * tmp = strdup( char_filter( line , ' ' ) );
+		if ( is_in_string ( tmp , "#" ) ) 
+			return __COMMENT;
+		else if	( is_in_string ( tmp , "<" ) ) 
+			return __TITLE_O ;
+		else if ( is_in_string ( tmp , ">" ) ) 
+			return __TITLE_C ;
+		else if ( is_in_string ( tmp , "(" ) ) 
+			return __SECTION_O ;
+		else if ( is_in_string ( tmp , ")" ) ) 
+			return __SECTION_C ;
+		else if ( is_in_string ( tmp , "=" ) )
+			return __KEY ;
+		else if ( ( ! is_in_string( tmp , "#=()<>|" ) ) && ( strlen( tmp ) > 0 ) )
+			return __SYNTAX_ERROR;
+		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::scan_line" , "Lex C unknown token found" , __GIM_NOT_OK );	
 		return __UNKNOWN;
 	}
 	return __UNKNOWN;
@@ -134,11 +159,13 @@ _gim_flag	prsr_lexical_class::scan( gim_prsr_obj * prsr ) {
 		line = strdup( get_line ( prsr->prsr_obj->fp ) );
 		if ( lex_type == __LEX_A ) scan_a( line , prsr );
 		if ( lex_type == __LEX_B ) scan_b( line , prsr );
+		if ( lex_type == __LEX_C ) scan_c( line , prsr );
 	}
 	gim_error->set( "prsr_lexical_class::scan" , "finished" );
 	
 	return __GIM_OK;
 }
+
 
 void	prsr_lexical_class::scan_a( char * line , gim_prsr_obj * prsr ) {
 	static char	last_section_open[256];
@@ -230,6 +257,63 @@ void	prsr_lexical_class::scan_b( char * line , gim_prsr_obj * prsr ) {
 	}
 }
 
+
+void	prsr_lexical_class::scan_c( char * line , gim_prsr_obj * prsr ) {
+	static char	last_section_open[256];
+	switch ( scan_line ( line ) ) {
+		case __TITLE_O : {
+			puts("Title o");
+			char *tmp;
+			tmp = strdup( line );
+			tokenizer( tmp , PRSR_LEX_SEPARATORS );
+			strcpy( prsr->prsr_obj->title , Tok[1] );
+			Syntax.Title = __GIM_OPEN;
+			gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::scan_c" , "Creating object : %s" , Tok[1] );
+			break;
+		}
+		case __TITLE_C : {
+			puts("Title c");
+			Syntax.Title = __GIM_CLOSE;
+			break;
+		}
+		case __SECTION_O : {
+			puts("Section o");
+			char *tmp;
+			tmp = strdup( line );
+			tokenizer( tmp , PRSR_LEX_SEPARATORS );
+			strcpy( last_section_open , Tok[1] );
+			Syntax.Section = __GIM_OPEN;
+			prsr->AddSection( Tok[1] );
+			gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::scan_c" , "Creating section : %s" , Tok[1] );
+			break;
+		}
+		case __SECTION_C : {
+			puts("Section c");
+			__GIM_CLEAR( last_section_open , 256 , char );
+			Syntax.Section = __GIM_CLOSE;
+			break;
+		}
+		case __KEY : {
+			puts("Key");
+			char *tmp;
+			tmp = strdup( line );
+			tokenizer( tmp , PRSR_LEX_SEPARATORS );
+			prsr->AddKey( last_section_open , Tok[0] , Tok[1] );
+			gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::scan_c" , "Adding key %1s in section %s with value %s" , Tok[0] , last_section_open , Tok[1] );
+			break;
+		}
+		case __END : {
+			break;
+		}
+		default: {
+			gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::scan_c" , "Everything seems ok but this line is unknown :%s" , line );
+		}
+		
+	}
+}
+
+
+
 void	prsr_lexical_class::scan_lex_type( const char * filename ) {
 	char * line;
 	FILE *  tmpfp;
@@ -250,10 +334,14 @@ void	prsr_lexical_class::scan_lex_type( const char * filename ) {
 					lex_type = __LEX_B;
 					gim_error->set( "prsr_lexical_class::scan_lex_type" , "Lex is type B" );
 				}
+				if ( is_in_string ( line , "( " ) ) {
+					lex_type = __LEX_C;
+					gim_error->set( "prsr_lexical_class::scan_lex_type" , "Lex is type C" );
+				}
 			}
 		}
 		if ( lex_type == __LEX_UNKNOWN )
-			gim_error->set( "prsr_lexical_class::scan_lex_type" , "Lex is UNK__GIM_NOWN" );
+			gim_error->Set( GIM_ERROR_WARNING , "prsr_lexical_class::scan_lex_type" , "Lex is UNKNOWN" );
 		fclose(tmpfp);
 	}
 }
@@ -275,6 +363,11 @@ _gim_flag	prsr_lexical_class::scan_syntax( const char * filename , gim_prsr_obj 
 		case __LEX_B : {
 			prsr->Lex = __LEX_B ;
 			error = syntax_b( filename );
+			break;
+		}
+		case __LEX_C : {
+			prsr->Lex = __LEX_C ;
+			error = syntax_c( filename );
 			break;
 		}
 	}
@@ -411,6 +504,7 @@ _gim_flag prsr_lexical_class::syntax_a( const char * filename ) {
 	return error;
 }
 
+
 _gim_flag prsr_lexical_class::syntax_b( const char * filename ) {
 	unsigned int	Line_number = 0;
 	char	* line , tmp_error[512];
@@ -505,6 +599,122 @@ _gim_flag prsr_lexical_class::syntax_b( const char * filename ) {
 	fclose( tmpfp );
 	return error;
 }
+
+
+_gim_flag prsr_lexical_class::syntax_c( const char * filename ) {
+	unsigned int	Line_number = 0;
+	char	* line;
+	char	last_section_open[256];
+	FILE * 	tmpfp;
+	_gim_flag	error = __GIM_OK;
+	tmpfp = fopen( filename , "rb" );
+	if ( ! tmpfp ) return __GIM_NOT_EXIST;
+	Syntax.Title   = __GIM_CLOSE;
+	Syntax.Section = __GIM_CLOSE;
+	Syntax.Feof    = __GIM_OFF;
+	while ( ( ( Syntax.Feof == __GIM_OFF ) && ( error == 0 ) ) ) {
+		line = strdup( get_line ( tmpfp ) );
+		switch ( scan_line ( line ) ) {
+			case __BLANK : {
+				if ( Syntax.Section == __GIM_OPEN ) 
+					gim_error->Set( GIM_ERROR_WARNING , "prsr_lexical_class::syntax_c" , "blank line inside a section : %s::%d  -  Will be removed\n" , filename , Line_number );
+				break;
+			}
+			case __TITLE_O : {
+				if ( Syntax.Title == __GIM_OPEN ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received title twice : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				Syntax.Title = __GIM_OPEN;
+				break;
+			}
+			case __TITLE_C : {
+				if ( Syntax.Section == __GIM_OPEN ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received a 'title close' with a yet opened section : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				Syntax.Title = __GIM_CLOSE;
+				Syntax.Feof  = __GIM_ON;
+				break;
+			}
+			case __SECTION_O : {
+				char *tmp;
+				if ( Syntax.Section == __GIM_OPEN ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "Syntax error : last section open : %s\n" , last_section_open );
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received an 'open section' twice : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				if ( Syntax.Title == __GIM_CLOSE ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received open section before a title : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				tmp = strdup( line );
+				tokenizer( tmp , PRSR_LEX_SEPARATORS );
+				if ( strlen( Tok[1] ) == 0 ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received a 'section open' without section name : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				strcpy( last_section_open , Tok[1] );
+				Syntax.Section = __GIM_OPEN;
+				break;
+			}
+			case __SECTION_C : {
+				__GIM_CLEAR( last_section_open , PRSR_MAX_LINE , char );
+				Syntax.Section = __GIM_CLOSE;
+				break;
+			}
+			case __KEY : {
+				char *tmp;
+				if ( Syntax.Section == __GIM_CLOSE ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received a 'key' without a 'section open' : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				tmp = strdup( line );
+				tokenizer( tmp , PRSR_LEX_SEPARATORS );
+				if ( strlen( Tok[2] ) || strlen( Tok[3] ) || strlen( Tok[4] ) ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "too much tokens in line : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				else {
+					if ( ( ! strlen( Tok[0] ) ) || ( ! strlen( Tok[1] ) ) ) {
+						if ( ! strlen( Tok[0] ) )
+							gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received a value without a key : %s::%d\n" , filename , Line_number );
+						if ( ! strlen( Tok[1] ) )
+							gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received a key without a value : %s::%d\n" , filename , Line_number );
+						gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "I suggest to check the file" , __GIM_ERROR  );
+						error = __SYNTAX_ERROR;
+					}
+				}
+				break;
+			}
+			case __COMMENT : {
+				break;
+			}
+			case __SYNTAX_ERROR : {
+				gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "This line is unknown : %s::%d\n" , filename , Line_number );
+				error = __SYNTAX_ERROR;
+			}
+			case __END : {
+				if ( Syntax.Title == __GIM_CLOSE ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "received the end of file before a title : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				if ( strlen( line ) && ( is_in_string( ']' , line ) ) )	
+					Syntax.Section = __GIM_CLOSE;
+				if ( Syntax.Section == __GIM_OPEN ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::syntax_c" , "Received an unexpected EOF with a yet opened section : %s::%d\n" , filename , Line_number );
+					error = __SYNTAX_ERROR;
+				}
+				gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::syntax_c" , "Warning : maybe the file not contain the title close" , __GIM_ERROR );
+				break;
+			}
+		}
+		Line_number++;
+	}
+	fclose(tmpfp);
+	return error;
+}
+
 
 char *	prsr_lexical_class::char_filter( char * from , char to_filter ) {
 	_gim_Uint32	a = 0 , b = 0, l =0;

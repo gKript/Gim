@@ -451,12 +451,13 @@ _gim_flag	gim_prsr_obj::List( void ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::List" , "No parser object defined" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
-	printf( PRSR_START_FILE );
-	printf( "%s\n\n" , prsr_obj->title );
+	printf( PRSR_START_FILE , prsr_obj->title );
+	puts("\n");
 	if ( prsr_obj->first_section != NULL ) {
 		if ( Lex == __LEX_A ) {
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
-				printf( "%s%s\n" , PRSR_START_SECTION , tmp_section->section_name );
+				printf( PRSR_START_SECTION , tmp_section->section_name );
+				puts("");
 				if ( tmp_section->first_field ) {
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
 						printf( PRSR_A_KEY_STR , tmp_field->key , tmp_field->str_value );
@@ -466,11 +467,22 @@ _gim_flag	gim_prsr_obj::List( void ) {
 				printf( "%s\n\n" , PRSR_END_SECTION);
 			}
 		}
-		else {
+		else if ( Lex == __LEX_B ) {
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
 				if ( tmp_section->first_field ) {
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
 						printf( PRSR_B_KEY_STR , Lexical.str_down( tmp_section->section_name, strlen( tmp_section->section_name ) ) , tmp_field->key , tmp_field->str_value );
+						puts("");
+					}
+				}
+			}
+			puts("");
+		}
+		else if ( Lex == __LEX_C ) {
+			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
+				if ( tmp_section->first_field ) {
+					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
+						printf( PRSR_C_KEY_STR , Lexical.str_down( tmp_section->section_name, strlen( tmp_section->section_name ) ) , tmp_field->key , tmp_field->str_value );
 						puts("");
 					}
 				}
@@ -493,19 +505,19 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 	if ( ! prsr_obj->fp ) {
 		if ( Open( "wb" ) == __GIM_NOT_EXIST ) return __GIM_NOT_OK;
 	}
-	fprintf( prsr_obj->fp , "%s" , PRSR_START_FILE );
-	fprintf( prsr_obj->fp , "%s\n" , prsr_obj->title );
+	fprintf( prsr_obj->fp , PRSR_START_FILE , prsr_obj->title );
+	fprintf( prsr_obj->fp , "\n\n" );
 	if ( strlen( prsr_obj->comment ) != 0 ) 
-		fprintf( prsr_obj->fp , "# %s\n" , prsr_obj->comment );
+		fprintf( prsr_obj->fp , "  # %s\n" , prsr_obj->comment );
 	if ( prsr_obj->first_section != NULL ) {
 		if ( Lex == __LEX_A ) {
 			fprintf( prsr_obj->fp , "\n" );
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
 				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_BEFORE ) )
 					fprintf( prsr_obj->fp , "\n    # %s\n" , tmp_section->comment );
-				fprintf( prsr_obj->fp , "%s%s" , PRSR_START_SECTION , tmp_section->section_name );
+				fprintf( prsr_obj->fp , PRSR_START_SECTION , tmp_section->section_name );
 				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_INLINE ) )
-					fprintf( prsr_obj->fp , "        # %s" , tmp_section->comment );
+					fprintf( prsr_obj->fp , "    # %s" , tmp_section->comment );
 				fprintf( prsr_obj->fp , "\n" );
 				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_AFTER ) )
 					fprintf( prsr_obj->fp , "    # %s\n\n" , tmp_section->comment );
@@ -521,10 +533,10 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 							fprintf( prsr_obj->fp , "    # %s\n\n" , tmp_field->comment );
 					}
 				}
-				fprintf( prsr_obj->fp , "%s\n\n" , PRSR_END_SECTION);
+				fprintf( prsr_obj->fp , "%s\n\n\n" , PRSR_END_SECTION);
 			}
 		}
-		else {
+		else if ( Lex == __LEX_B ) {
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
 				if ( tmp_section->first_field ) {
 					if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_BEFORE ) )
@@ -544,11 +556,38 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 							fprintf( prsr_obj->fp , "  # %s" , tmp_field->comment );
 						fprintf( prsr_obj->fp , "\n" );
 						if ( ( tmp_field->comment != NULL ) && ( tmp_field->comment_position == PRSR_AFTER ) )
-							fprintf( prsr_obj->fp , "    # %s\n\n" , tmp_field->comment );
+							fprintf( prsr_obj->fp , "    # %s\n\n\n" , tmp_field->comment );
 					}
 				}
 			}
 		}
+		else if ( Lex == __LEX_C ) {
+			fprintf( prsr_obj->fp , "\n" );
+			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
+				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_BEFORE ) )
+					fprintf( prsr_obj->fp , "\n    # %s\n" , tmp_section->comment );
+				fprintf( prsr_obj->fp , PRSR_C_START_SECTION , tmp_section->section_name );
+				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_INLINE ) )
+					fprintf( prsr_obj->fp , "        # %s" , tmp_section->comment );
+				fprintf( prsr_obj->fp , "\n" );
+				if ( ( tmp_section->comment != NULL ) && ( tmp_section->comment_position == PRSR_AFTER ) )
+					fprintf( prsr_obj->fp , "    # %s\n\n" , tmp_section->comment );
+				if ( tmp_section->first_field ) {
+					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
+						if ( ( tmp_field->comment != NULL ) && ( tmp_field->comment_position == PRSR_BEFORE ) )
+							fprintf( prsr_obj->fp , "\n        # %s\n" , tmp_field->comment );
+						fprintf( prsr_obj->fp , PRSR_C_KEY_STR , tmp_field->key , tmp_field->str_value );
+						if ( ( tmp_field->comment != NULL ) && ( tmp_field->comment_position == PRSR_INLINE ) )
+							fprintf( prsr_obj->fp , "    # %s" , tmp_field->comment );
+						fprintf( prsr_obj->fp , "\n" );
+						if ( ( tmp_field->comment != NULL ) && ( tmp_field->comment_position == PRSR_AFTER ) )
+							fprintf( prsr_obj->fp ,   "        # %s\n\n" , tmp_field->comment );
+					}
+				}
+				fprintf( prsr_obj->fp , "%s\n\n\n" , PRSR_C_END_SECTION);
+			}
+		}
+		
 	}
 	fprintf( prsr_obj->fp , "%s\n" , PRSR_END_FILE );
 	Close( __NO_FLUSH );
@@ -558,15 +597,16 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 
 _gim_flag gim_prsr_obj::Read( const char * filename ) {
 	_gim_int8	scan_result;
-	gim_error->set( "gim_prsr_obj::Read" , "I'm try to read" );
+	gim_error->set( "gim_prsr_obj::Read" , "I am trying to read" );
 	scan_result = Lexical.scan_syntax( filename , this );
 	switch ( scan_result ) {
 		case __GIM_OK : {
 			Up( filename , NULL );
 			SetLex( Lexical.lex_type );
-			if ( ! prsr_obj ) return __GIM_NOT_OK;
+			if ( ! prsr_obj )
+				return __GIM_NOT_OK;
 			if ( Open("rb") == __GIM_NOT_EXIST ) {
-				gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Read" , "I cannot read this file" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Read" , "I can't read this file" , __GIM_ERROR );
 				return __GIM_NOT_EXIST;
 			}
 			if ( Lexical.scan( this ) == __GIM_OK ) {
@@ -814,6 +854,10 @@ void	gim_prsr_obj::SetLex( _gim_flag Lex ) {
 		gim_error->set( "gim_prsr_obj::SetLex" , "Lex setted to B" );
 		this->Lex = __LEX_B;
 	}
+	if ( Lex == __LEX_C ) {
+		gim_error->set( "gim_prsr_obj::SetLex" , "Lex setted to C" );
+		this->Lex = __LEX_C;
+	}
 }
 
 _gim_flag	gim_prsr_obj::GetLex( void ) {
@@ -928,12 +972,14 @@ _gim_buffer	gim_prsr_obj::WriteOnBuffer( void ) {
 		return NULL;
 	}
 	dest = (_gim_buffer)gim_memory->Alloc( 10240*sizeof( char ) , __GIM_MEM_OTHER , __GIM_HIDE );
-	strcat( dest , PRSR_START_FILE );
-	sprintf( dest , "%s%s\n\n" , dest , prsr_obj->title );
+	char Tmp[512];
+	sprintf( Tmp , PRSR_START_FILE , prsr_obj->title );
+	sprintf( dest , "%s%s\n\n" , dest , Tmp );
 	if ( prsr_obj->first_section != NULL ) {
 		if ( Lex == __LEX_A ) {
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
-				sprintf( dest , "%s%s%s\n", dest , PRSR_START_SECTION , tmp_section->section_name );
+				sprintf( Tmp , PRSR_START_SECTION , tmp_section->section_name );
+				sprintf( dest , "%s%s\n", dest , Tmp ); 
 				if ( tmp_section->first_field ) {
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
 						sprintf( dest , "%s    %s = %s" , dest , tmp_field->key , tmp_field->str_value );
@@ -944,7 +990,7 @@ _gim_buffer	gim_prsr_obj::WriteOnBuffer( void ) {
 				sprintf( dest , "%s%s\n\n" , dest , PRSR_END_SECTION);
 			}
 		}
-		else {
+		else if ( Lex == __LEX_B ) {
 			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
 				if ( tmp_section->first_field ) {
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
@@ -955,6 +1001,20 @@ _gim_buffer	gim_prsr_obj::WriteOnBuffer( void ) {
 				}
 			}
 			strcat( dest , "\n");
+		}
+		else if ( Lex == __LEX_C ) {
+			for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
+				sprintf( Tmp , PRSR_C_START_SECTION , tmp_section->section_name );
+				sprintf( dest , "%s%s\n", dest , Tmp);
+				if ( tmp_section->first_field ) {
+					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
+						sprintf( dest , "%s    %s = %s" , dest , tmp_field->key , tmp_field->str_value );
+//						if ( tmp_field->key_type == PRSR_GIM_INT ) sprintf( dest , "%s    %s = %d" , dest , tmp_field->key , tmp_field->int_value );
+						strcat( dest , "\n");
+					}
+				}
+				sprintf( dest , "%s%s\n\n" , dest , PRSR_C_END_SECTION );
+			}
 		}
 	}
 	strcat( dest , PRSR_END_FILE );

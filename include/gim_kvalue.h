@@ -59,21 +59,28 @@
 	#endif
 
 	
-	#define	PRSR_GIM_INT	0	
-	#define PRSR_GIM_STR	1
+	#define	PRSR_GIM_INT			0	
+	#define PRSR_GIM_STR			1
 
-	#define PRSR_START_FILE	"< "
-	#define PRSR_END_FILE	">"
+	#define PRSR_START_FILE			"< %s"
+	#define PRSR_END_FILE			">"
 
-	#define PRSR_START_SECTION	"  [ "
-	#define PRSR_END_SECTION	"  ]"
+	#define PRSR_START_SECTION		"    [ %s"
+	#define PRSR_END_SECTION		"    ]"
 
-	#define PRSR_A_KEY_INT		"    %s = %d"
-	#define PRSR_A_KEY_STR		"    %s = %s"
+	#define PRSR_A_KEY_INT			"        %s = %d"
+	#define PRSR_A_KEY_STR			"        %s = %s"
 
-	#define PRSR_B_KEY_INT		"    %s::%s = %d"
-	#define PRSR_B_KEY_STR		"    %s::%s = %s"
-	#define PRSR_B_SEPARATOR	"  >\n"
+	#define PRSR_B_START_SECTION	"    %s"
+	#define PRSR_B_KEY_INT			"        %s::%s = %d"
+	#define PRSR_B_KEY_STR			"        %s::%s = %s"
+	#define PRSR_B_SEPARATOR		"  >\n\n"
+
+	#define PRSR_C_START_SECTION	"    ( %s ) { "
+	#define PRSR_C_END_SECTION		"    } ------------------------------------"
+	#define PRSR_C_KEY_INT			"        %-32s = %d"
+	#define PRSR_C_KEY_STR			"        %-32s = %s"
+
 	
 	enum	gim_prsr_comment_position {
 		PRSR_NONE	= -1,

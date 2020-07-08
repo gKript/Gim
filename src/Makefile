@@ -163,7 +163,8 @@ am_libgim_a_OBJECTS = libgim_a-gim.$(OBJEXT) \
 	libgim_a-gim_time.$(OBJEXT) libgim_a-gim_version.$(OBJEXT) \
 	libgim_a-gim_list.$(OBJEXT) libgim_a-gim_picgim.$(OBJEXT) \
 	libgim_a-gim_getopt.$(OBJEXT) \
-	libgim_a-gim_ascii_buffer.$(OBJEXT)
+	libgim_a-gim_ascii_buffer.$(OBJEXT) \
+	libgim_a-gim_mersennetwister.$(OBJEXT)
 libgim_a_OBJECTS = $(am_libgim_a_OBJECTS)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
@@ -216,6 +217,7 @@ am__depfiles_remade = ./$(DEPDIR)/libgim_a-gim.Po \
 	./$(DEPDIR)/libgim_a-gim_log.Po \
 	./$(DEPDIR)/libgim_a-gim_md5.Po \
 	./$(DEPDIR)/libgim_a-gim_memory.Po \
+	./$(DEPDIR)/libgim_a-gim_mersennetwister.Po \
 	./$(DEPDIR)/libgim_a-gim_picgim.Po \
 	./$(DEPDIR)/libgim_a-gim_private_key.Po \
 	./$(DEPDIR)/libgim_a-gim_sha1.Po \
@@ -422,7 +424,8 @@ libgim_a_SOURCES = \
 	gim_list.cc    \
 	gim_picgim.cc    \
 	gim_getopt.cc    \
-	gim_ascii_buffer.cc
+	gim_ascii_buffer.cc    \
+	gim_mersennetwister.cc
 
 libgim_a_CXXFLAGS = \
 	-O3 \
@@ -540,6 +543,7 @@ include ./$(DEPDIR)/libgim_a-gim_list.Po # am--include-marker
 include ./$(DEPDIR)/libgim_a-gim_log.Po # am--include-marker
 include ./$(DEPDIR)/libgim_a-gim_md5.Po # am--include-marker
 include ./$(DEPDIR)/libgim_a-gim_memory.Po # am--include-marker
+include ./$(DEPDIR)/libgim_a-gim_mersennetwister.Po # am--include-marker
 include ./$(DEPDIR)/libgim_a-gim_picgim.Po # am--include-marker
 include ./$(DEPDIR)/libgim_a-gim_private_key.Po # am--include-marker
 include ./$(DEPDIR)/libgim_a-gim_sha1.Po # am--include-marker
@@ -1200,6 +1204,20 @@ libgim_a-gim_ascii_buffer.obj: gim_ascii_buffer.cc
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_ascii_buffer.obj `if test -f 'gim_ascii_buffer.cc'; then $(CYGPATH_W) 'gim_ascii_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/gim_ascii_buffer.cc'; fi`
 
+libgim_a-gim_mersennetwister.o: gim_mersennetwister.cc
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_mersennetwister.o -MD -MP -MF $(DEPDIR)/libgim_a-gim_mersennetwister.Tpo -c -o libgim_a-gim_mersennetwister.o `test -f 'gim_mersennetwister.cc' || echo '$(srcdir)/'`gim_mersennetwister.cc
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_mersennetwister.Tpo $(DEPDIR)/libgim_a-gim_mersennetwister.Po
+#	$(AM_V_CXX)source='gim_mersennetwister.cc' object='libgim_a-gim_mersennetwister.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_mersennetwister.o `test -f 'gim_mersennetwister.cc' || echo '$(srcdir)/'`gim_mersennetwister.cc
+
+libgim_a-gim_mersennetwister.obj: gim_mersennetwister.cc
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -MT libgim_a-gim_mersennetwister.obj -MD -MP -MF $(DEPDIR)/libgim_a-gim_mersennetwister.Tpo -c -o libgim_a-gim_mersennetwister.obj `if test -f 'gim_mersennetwister.cc'; then $(CYGPATH_W) 'gim_mersennetwister.cc'; else $(CYGPATH_W) '$(srcdir)/gim_mersennetwister.cc'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libgim_a-gim_mersennetwister.Tpo $(DEPDIR)/libgim_a-gim_mersennetwister.Po
+#	$(AM_V_CXX)source='gim_mersennetwister.cc' object='libgim_a-gim_mersennetwister.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgim_a_CXXFLAGS) $(CXXFLAGS) -c -o libgim_a-gim_mersennetwister.obj `if test -f 'gim_mersennetwister.cc'; then $(CYGPATH_W) 'gim_mersennetwister.cc'; else $(CYGPATH_W) '$(srcdir)/gim_mersennetwister.cc'; fi`
+
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
 tags: tags-am
@@ -1363,6 +1381,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libgim_a-gim_log.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_md5.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_memory.Po
+	-rm -f ./$(DEPDIR)/libgim_a-gim_mersennetwister.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_picgim.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_private_key.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_sha1.Po
@@ -1453,6 +1472,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libgim_a-gim_log.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_md5.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_memory.Po
+	-rm -f ./$(DEPDIR)/libgim_a-gim_mersennetwister.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_picgim.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_private_key.Po
 	-rm -f ./$(DEPDIR)/libgim_a-gim_sha1.Po

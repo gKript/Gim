@@ -42,11 +42,11 @@ gim_time_obj	debug_timer;
 void gim_log_obj::start	( void ) {
 	char message[256];
 	if ( ! initialized ) {
-//		gim_error->Set( "gim_log_obj::start" , "[" , 
+		gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "Start: %s" , debug_timer.date() );
 		if ( __GIM_LOG_FORCE == __GIM_YES ) {
 			log_fd = fopen ( __GIM_LOG_FILENAME , "wb" );
 			if ( log_fd == NULL ) {
-				gim_error->set( "gim_log_obj::start" , 6 );
+				gim_error->set( "gim_log_obj::start" , "I cannot open in write mode the debug file on disk" );
 			}
 			else {
 				initialized = __GIM_YES;
@@ -59,7 +59,7 @@ void gim_log_obj::start	( void ) {
 				gim_error->set( "gim_log_obj::start" , "This log use a standard format [ |$t|$p|$k_$f_|_$m ] due __GIM_LOG_FORCE" );
 			}
 		}
-		if ( __GIM_LOG_FORCE == __GIM_NO ) {
+		else if ( __GIM_LOG_FORCE == __GIM_NO ) {
 			if ( ! enabled ) {
 				if ( gim_conf->prsr_obj != NULL ) {
 					IF_EXIST_KEY_IN_CONF( "debug" , "f_debug" ) {
@@ -73,22 +73,21 @@ void gim_log_obj::start	( void ) {
 					}
 				}
 				else {
-					gim_error->set( GIM_ERROR_WARNING , "gim_log_obj::start" , "I cannot start the File debug in gim " , -1 );
-					gim_error->set( GIM_ERROR_WARNING , "gim_log_obj::start" , "    'cause the gim.conf was not loaded " , -1 );
+					gim_error->Set( GIM_ERROR_WARNING , "gim_log_obj::start" , "I cannot start the File debug in gim " );
+					gim_error->Set( GIM_ERROR_WARNING , "gim_log_obj::start" , "    because the gim.conf isn't loaded yet" );
 				}
 			}
 			if ( enabled ) {
 				log_fd = fopen ( gim_conf->GetKeySTR( "debug" , "f_debug_file" ) , "wb" );
 				if ( log_fd == NULL ) {
-					gim_error->set( "gim_log_obj::start" , 6 );
+					gim_error->set( "gim_log_obj::start" , "I cannot open the file dabug in write mode" );
 				}
 				else {
 					initialized = __GIM_YES;
 					debug_timer.start_usec();
-					gim_error->set( "gim_log_obj::start" , 3 );
-					sprintf( message , "File log start on %s" , debug_timer.date() );
-					gim_error->set( "gim_log_obj::start" , message );
-					gim_error->set( "gim_log_obj::start" , gim_version() );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "Start to use gim File Debug" );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "File log start on %s" , debug_timer.date() );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "%s" , gim_version() );
 				}
 			}
 		}

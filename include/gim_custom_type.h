@@ -76,6 +76,7 @@
 		__LEX_UNKNOWN,
 		__LEX_A,
 		__LEX_B,
+		__LEX_C,
 	};
 	
 	enum GimThState {

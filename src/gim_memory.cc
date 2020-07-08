@@ -116,7 +116,7 @@ void	gim_memory_obj::up		( void ) {
 }
 
 void	gim_memory_obj::down( void ) {
-	gim_error->Set( "gim_memory_obj::down" , "Memory allocation system goes down..." );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::down" , "Memory allocation system goes down..." );
 	if ( startlist != NULL ) 
 		release_memory_list();
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::down" , "Alocation peek is : %s" , metric_converter( allocated_peek ) );
@@ -137,7 +137,7 @@ void *	gim_memory_obj::Duplicate( void * to_dup ) {
 		gim_error->set( "gim_memory_obj::Free" , 14 );
 	else {
 		for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-			if ( ( unsigned long long ) to_dup == ( unsigned long long )currentlist->data ) {
+			if ( ( _gim_address ) to_dup == ( _gim_address )currentlist->data ) {
 				found = __GIM_YES;
 				duplicated = Alloc( currentlist->size , currentlist->caller );
 				return duplicated;
@@ -163,7 +163,7 @@ void *	gim_memory_obj::Relloc( void * pntr , size_t size , char * id ) {
 		gim_error->set( "gim_memory_obj::Free" , 14 );
 	else {
 		for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-			if ( ( unsigned long long ) pntr == ( unsigned long long )currentlist->data ) {
+			if ( ( _gim_address ) pntr == ( _gim_address )currentlist->data ) {
 				found = __GIM_YES;
 				if ( size < currentlist->size )
 					  gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Realloc" , "Size is lower than the original one but, I proceed on." );
@@ -240,9 +240,9 @@ void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden 
 		if ( tmplist->caller == id_to_code( "__ID_COMMAND_ERROR" ) )
 			gim_error->Set( GIM_ERROR_CRITICAL , "gim_memory_obj::Alloc" , "Allocated [%s] index[%p] , Allocation id : %s" , metric_converter( size ) , endlist->data , code_to_id( caller ) );
 		else
-			gim_error->Set( "gim_memory_obj::Alloc" , "Allocated [%s] index[%p] , Allocation id : %s" , metric_converter( size ) , endlist->data , code_to_id( caller )  );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Alloc" , "Allocated [%s] index[%p] , Allocation id : %s" , metric_converter( size ) , endlist->data , code_to_id( caller )  );
 		if ( virt_mem == __GIM_OFF )
-			gim_error->Set( "gim_memory_obj::alloc" , "Total memory allocated [%d] | Free memory for the application [%d]" , allocated , ( max_allocation - allocated )  );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::alloc" , "Total memory allocated [%d] | Free memory for the application [%d]" , allocated , ( max_allocation - allocated )  );
 	}
 	caller = __GIM_MEM_OTHER;
 	return tmplist->data;
@@ -313,7 +313,7 @@ _gim_flag	gim_memory_obj::Free	( void *  to_free ) {
 		gim_error->set( "gim_memory_obj::Free" , 14 );
 	else {
 		for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-			if ( ( unsigned long long ) to_free == ( unsigned long long )currentlist->data ) {
+			if ( ( _gim_address ) to_free == ( _gim_address )currentlist->data ) {
 				found = __GIM_YES;
 				if ( currentlist->lock == __GIM_MEM_LOCK )  {
 					if ( currentlist->caller == __GIM_MEM_OTHER ) {
@@ -325,12 +325,12 @@ _gim_flag	gim_memory_obj::Free	( void *  to_free ) {
 					}
 				}
 				if ( ( currentlist->hide != __GIM_HIDE ) || ( Hide == __GIM_NO ) )
-					gim_error->Set( "gim_memory_obj::Free" , "Free      [%s] index[%p] , Allocation id : %s" , metric_converter( currentlist->size ) , currentlist->data , code_to_id( currentlist->caller ) );
+					gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Free" , "Free      [%s] index[%p] , Allocation id : %s" , metric_converter( currentlist->size ) , currentlist->data , code_to_id( currentlist->caller ) );
 				free( currentlist->data );
 				allocated -= currentlist->size;
 				if ( ( currentlist->hide != __GIM_HIDE ) || ( Hide == __GIM_NO ) ) {
 					if ( virt_mem == __GIM_OFF )
-						gim_error->Set( "gim_memory_obj::Free" , "Total memory allocated [%d] | Free memory for the application [%d]" , allocated , (_gim_Uint32)( max_allocation - allocated ) );
+						gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Free" , "Total memory allocated [%d] | Free memory for the application [%d]" , allocated , (_gim_Uint32)( max_allocation - allocated ) );
 				}
 				if ( gim_interface != NULL ) {
 					if ( gim_interface->data != NULL ) {
@@ -359,7 +359,7 @@ _gim_flag	gim_memory_obj::Free	( void *  to_free ) {
 
 _gim_flag	gim_memory_obj::Check( void * to_check ) {
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-		if ( (unsigned long long)to_check == (unsigned long long)currentlist->data )
+		if ( (_gim_address)to_check == (_gim_address)currentlist->data )
 			return __GIM_EXIST;
 	}
 	return __GIM_NOT_EXIST;
@@ -401,7 +401,7 @@ _gim_Uint32	gim_memory_obj::release_memory_list( void ) {
 		total++;
 	}
 	total_size += ( sizeof( gim_mem_list ) * total );
-	gim_error->Set( "gim_memory_obj::destroy_list" , "Total element [%d] Not empty element [%d] Deallocated in MBytes [ %s - %d ]" , total , not_empty , metric_converter( total_size ) , total_size );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::destroy_list" , "Total element [%d] Not empty element [%d] Deallocated in MBytes [ %s - %d ]" , total , not_empty , metric_converter( total_size ) , total_size );
 	currentlist = NULL;
 	endlist = NULL;
 	return total;
@@ -484,7 +484,7 @@ void gim_memory_obj::Memory_update( void ) {
 		gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Memory_update", "Memory allocation limit activated");
 		if ( ( Limit >= 0 ) && ( Limit <= 100 ) ) 
 			max_allocation = (_gim_Uint32)( ( (float)gim_identity->mi->free * (float)Limit ) / 100.00 );
-			gim_error->Set( "gim_memory_obj::Memory_update" , "Allocation limit setted to %d%% (%s)" , Limit , metric_converter( max_allocation ) );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Memory_update" , "Allocation limit setted to %d%% (%s)" , Limit , metric_converter( max_allocation ) );
 	}
 	else {
 		gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Memory_update", "Memory allocation limit NOT activated");
@@ -507,9 +507,9 @@ void		gim_memory_obj::set_default_lock( _gim_flag deflock ) {
 void	gim_memory_obj::Vmem( _gim_flag flag ) {
 	virt_mem = flag;
 	if ( virt_mem == __GIM_ON )
-		gim_error->Set( "gim_memory_obj::Vmem" , "Virtual memory enabled" );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Vmem" , "Virtual memory enabled" );
 	else if ( virt_mem == __GIM_OFF )
-		gim_error->Set( "gim_memory_obj::Vmem" , "Virtual memory DISABLED" );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Vmem" , "Virtual memory DISABLED" );
 	else
 		gim_error->Set( GIM_ERROR_CRITICAL , "gim_memory_obj::Vmem" , "Virtual memory : UNKNOWN VALUE" , __GIM_ERROR );
 }
@@ -570,7 +570,7 @@ void		gim_memory_obj::peek_reset			( void ) {
 
 _gim_flag	gim_memory_obj::Unlock( void * to_unlock ) {
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-		if ( (unsigned long long)to_unlock == (unsigned long long)currentlist->data ) {
+		if ( (_gim_address)to_unlock == (_gim_address)currentlist->data ) {
 			if ( currentlist->lock == __GIM_MEM_UNLOCK ) {
 				gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Unlock", "This frame was already Unlocked");
 				return __GIM_MEM_UNLOCK;
@@ -587,7 +587,7 @@ _gim_flag	gim_memory_obj::Unlock( void * to_unlock ) {
 
 _gim_flag	gim_memory_obj::Lock( void * to_lock ) {
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-		if ( (unsigned long long)to_lock == (unsigned long long)currentlist->data ) {
+		if ( (_gim_address)to_lock == (_gim_address)currentlist->data ) {
 			if ( currentlist->lock == __GIM_MEM_LOCK ) {
 				gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Lock", "This frame was already Locked" );
 				return __GIM_MEM_LOCK;
@@ -604,7 +604,7 @@ _gim_flag	gim_memory_obj::Lock( void * to_lock ) {
 
 _gim_flag	gim_memory_obj::Get_lock_status( void * to_check ) {
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
-		if ( (unsigned long long)to_check == (unsigned long long)currentlist->data ) {
+		if ( (_gim_address)to_check == (_gim_address)currentlist->data ) {
 			return currentlist->lock;
 		}
 	}
@@ -623,7 +623,7 @@ _gim_flag	gim_memory_obj::Get_lock_status( void * to_check ) {
 
 
 gim_memory_page_obj::gim_memory_page_obj( size_t page_size ) {
-	gim_error->Set( "gim_memory_page_obj::gim_memory_page_obj", "Allocating a new Memory page" );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_page_obj::gim_memory_page_obj", "Allocating a new Memory page" );
 	page			= (_gim_buffer)gim_memory->Alloc( page_size , __GIM_MEM_PAGE_ADD , __GIM_HIDE );
 	internal_page	= (_gim_buffer)gim_memory->Alloc( page_size , __GIM_MEM_PAGE_ADD , __GIM_HIDE );
 	if ( ( page == NULL ) || ( internal_page == NULL ) )
@@ -631,7 +631,7 @@ gim_memory_page_obj::gim_memory_page_obj( size_t page_size ) {
 	else {
 		lstart = NULL;
 		lcurrent = NULL;
-		gim_error->Set( "gim_memory_page_obj::gim_memory_page_obj", "Allocation done!!!" );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_page_obj::gim_memory_page_obj", "Allocation done!!!" );
 	}
 }
 
@@ -639,8 +639,8 @@ gim_memory_page_obj::gim_memory_page_obj( size_t page_size ) {
 gim_memory_page_obj::~gim_memory_page_obj() {
 //	destroy_list();
 	gim_memory->Free( page );
-	gim_error->Set( "gim_memory_page_obj::~gim_memory_page_obj", "Memory page deallocated" );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_page_obj::~gim_memory_page_obj", "Memory page deallocated" );
 	gim_memory->Free( internal_page );
-	gim_error->Set( "gim_memory_page_obj::~gim_memory_page_obj", "Internal memory page deallocated" );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_page_obj::~gim_memory_page_obj", "Internal memory page deallocated" );
 }
 	

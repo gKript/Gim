@@ -55,7 +55,7 @@
 	#define PRSR_LEX_SECTION_C	"]"		/*!<	This is a key character for a section close TOK	*/
 	#define PRSR_LEX_COMMENT	"#"		/*!<	This is a key character for a comment TOK		*/
 	
-	#define PRSR_LEX_SEPARATORS "<>[]=:%\n#"	/*!<	This is the string of all separator characters	*/
+	#define PRSR_LEX_SEPARATORS "<>[]=:%()\n#"	/*!<	This is the string of all separator characters	*/
 	
 	/*!
 		\enum	file_type
@@ -102,6 +102,7 @@
 			_gim_flag	scan_line		( char * line );
 			_gim_flag 	syntax_a		( const char * filename );
 			_gim_flag 	syntax_b		( const char * filename );
+			_gim_flag 	syntax_c		( const char * filename );
 			_gim_flag	tokenizer		( char * line , const char * separator );
 			_gim_flag	str_equal		( const char * str , const char * str1 );
 			bool		is_in_string	( char *s1 , const char * s2 );
@@ -117,6 +118,7 @@
 			void		scan_lex_type	( const char * filename);
 			void		scan_a			( char * line , gim_prsr_obj * prsr );
 			void		scan_b			( char * line , gim_prsr_obj * prsr );
+			void		scan_c			( char * line , gim_prsr_obj * prsr );
 			void		strend			( char * str , char chr );
 			void 		remove_quotes	( char * str );
 			void		remove_linefeed	( char * str );

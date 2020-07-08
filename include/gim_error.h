@@ -137,7 +137,7 @@
 				\param	message	The message of the error.
 
 			*/
-			void		Set( const char * function , const char * format , ... );
+//			void		Set( const char * function , const char * format , ... );
 			
 			/*! \fn		void set( char * type , char * function , char * message , int value )
 				\brief	With this method you can set an error in Gim style from your program.\n
@@ -205,6 +205,7 @@
 		
 			_gim_flag	ladd( const char * type , const char * function , const char * message , int value );
 			void		lflush( void );
+			const char *		char_filter( const char * from , char to_filter );
 			
 	};
 

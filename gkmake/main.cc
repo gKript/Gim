@@ -134,10 +134,23 @@ int main( int argc , char *argv[] ) {
 	header->set_dimension( 20 * __GIM_KB ); 
 	
 	if ( gkconf->Read( cur_gkmake_file ) != __GIM_OK ) {
+		puts(" NON Letto !");
 		gkconf->Up( cur_gkmake_file , "gKmake configuration file" );
-		gkconf->SetLex( __LEX_A );
+		gkconf->SetLex( __LEX_C );
+		gkconf->AddSection( gim->identity->login() );
+		gkconf->AddKey( gim->identity->login() , "coder" , gim->identity->login() );
+		gkconf->AddKey( gim->identity->login() , "host" , gim->identity->node() );
+		gkconf->AddKey( gim->identity->login() , "architecture" , gim->identity->arch() );
+		gkconf->AddKey( gim->identity->login() , "gim_rel" , gim_version_mini() );
 	}
 	else {
+	
+		puts(" Letto !");
+		printf( "section in file #%d\n" , gkconf->GetHowManySection() );
+		for ( _gim_Uint8 s = 0 ; s < gkconf->GetHowManySection() ; s++ ) {
+			printf( "section #%d: %s\n" , gkconf->GetHowManySection() , gkconf->GetSectionName( s ) );
+
+		}	
 		for ( _gim_Uint8 s = 0 ; s < gkconf->GetHowManySection() ; s++ ) {
 			strcpy( gkmake.prj_name , gkconf->GetSectionName( s ) );
 			_gim_Uint8 c = 0, count = gkconf->GetHowManyKey( gkmake.prj_name );
@@ -145,39 +158,37 @@ int main( int argc , char *argv[] ) {
 				//STRINGS
 				if ( lex->str_equal( "prefix" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.prefix , gkconf->GetKeySTR( gkmake.prj_name , "prefix" ) ); 
-				if ( lex->str_equal( "author" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "author" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.author , gkconf->GetKeySTR( gkmake.prj_name , "author" ) ); 
-				if ( lex->str_equal( "include_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "include_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.include_path , gkconf->GetKeySTR( gkmake.prj_name , "include_path" ) ); 
-				if ( lex->str_equal( "documentation_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "documentation_path" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.documentation , gkconf->GetKeySTR( gkmake.prj_name , "documentation_path" ) ); 
-				if ( lex->str_equal( "documentation_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "documentation_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.doc_command , gkconf->GetKeySTR( gkmake.prj_name , "documentation_command" ) ); 
-				if ( lex->str_equal( "editor_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "editor_command" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.editor_command , gkconf->GetKeySTR( gkmake.prj_name , "editor_command" ) );
 				//FLAGS
-				if ( lex->str_equal( "clean" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "clean" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					gkmake.clean = gkconf->GetKeyFLAG( gkmake.prj_name , "clean" ); 
-				if ( lex->str_equal( "use_sudo" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "use_sudo" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					gkmake.sudo = gkconf->GetKeyFLAG( gkmake.prj_name , "use_sudo" ); 
-				if ( lex->str_equal( "project_header_generation" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "project_header_generation" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					gkmake.header_file = gkconf->GetKeyFLAG( gkmake.prj_name , "project_header_generation" ); 
-				if ( lex->str_equal( "header_file_name" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "header_file_name" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					strcpy( gkmake.header_file_name , gkconf->GetKeySTR( gkmake.prj_name , "header_file_name" ) );
-				if ( lex->str_equal( "multi_threads_enable" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) { 
+				else if ( lex->str_equal( "multi_threads_enable" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) { 
 					gkmake.parallel = gkconf->GetKeyFLAG( gkmake.prj_name , "multi_threads_enable" ); 
 					if ( gkmake.parallel == __GIM_YES ) {
 						gkmake.num_core = gkconf->GetKeyINT( gkmake.prj_name , "number_of_threads" );
-					}
-					else if ( gkmake.parallel == __GIM_AUTO ) {
-						gkmake.parallel = __GIM_YES; 
-						gkmake.num_core = gim->identity->n_proc() + 1;
+						if ( gkmake.num_core == 0 )
+							gkmake.num_core = gim->identity->n_proc() + 1;
 					}
 				}
 				//  INT VALUES
-				if ( lex->str_equal( "total_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "total_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					gkmake.tot_build = gkconf->GetKeyINT( gkmake.prj_name , "total_build_number" ); 
-				if ( lex->str_equal( "succesful_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
+				else if ( lex->str_equal( "succesful_build_number" , gkconf->GetKeyName( gkmake.prj_name , c ) ) == __GIM_YES ) 
 					gkmake.ok_build = gkconf->GetKeyINT( gkmake.prj_name , "succesful_build_number" ); 
 			}
 		}
@@ -202,7 +213,7 @@ int main( int argc , char *argv[] ) {
 				}
 				strcpy( gkmake.prj_name , gkopt->getoption()->argument );
 				gkconf->AddSection( gkmake.prj_name );
-//				gkconf->AddSectionComment( gkmake.prj_name , PRSR_INLINE , "This is the Project name" );
+				gkconf->AddSectionComment( gkmake.prj_name , PRSR_INLINE , "This is the Project name" );
 				break;
 			}
 			case 'A' : {
@@ -269,11 +280,11 @@ int main( int argc , char *argv[] ) {
 			}
 			case 'E' : {
 				strcpy( gkmake.editor_command , gkopt->getoption()->argument );
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "editor_command" )
-						gkconf->AddKey( gkmake.prj_name , "editor_command" , gkmake.editor_command );
-					IF_EXIST_KEY( gkconf , gkmake.prj_name , "editor_command" )
-						gkconf->ChangeKey( gkmake.prj_name , "editor_command" , gkmake.editor_command );
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
+					IF_NOT_EXIST_KEY( gkconf , gim->identity->login() , "editor_command" )
+						gkconf->AddKey( gim->identity->login() , "editor_command" , gkmake.editor_command );
+					IF_EXIST_KEY( gkconf , gim->identity->login() , "editor_command" )
+						gkconf->ChangeKey( gim->identity->login() , "editor_command" , gkmake.editor_command );
 				}
 				break;
 			}
@@ -292,9 +303,9 @@ int main( int argc , char *argv[] ) {
 					gkmake.sudo = __GIM_YES;
 				else 
 					gkmake.sudo = __GIM_NO;
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "use_sudo" )
-						gkconf->AddKeyFlag( gkmake.prj_name , "use_sudo" , gkmake.sudo );
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
+					IF_NOT_EXIST_KEY( gkconf , gim->identity->login() , "use_sudo" )
+						gkconf->AddKeyFlag( gim->identity->login() , "use_sudo" , gkmake.sudo );
 				}
 				break;
 			}
@@ -304,11 +315,11 @@ int main( int argc , char *argv[] ) {
 				else 
 					gkmake.clean = __GIM_NO;
 				
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "clean" ) 
-						gkconf->AddKeyFlag( gkmake.prj_name , "clean" , gkmake.clean );
-					IF_EXIST_KEY( gkconf , gkmake.prj_name , "clean" )
-						gkconf->ChangeKeyFlag( gkmake.prj_name , "clean" , gkmake.clean );
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
+					IF_NOT_EXIST_KEY( gkconf , gim->identity->login() , "clean" ) 
+						gkconf->AddKeyFlag( gim->identity->login() , "clean" , gkmake.clean );
+					IF_EXIST_KEY( gkconf , gim->identity->login() , "clean" )
+						gkconf->ChangeKeyFlag( gim->identity->login() , "clean" , gkmake.clean );
 				}
 				break;
 			}
@@ -337,32 +348,32 @@ int main( int argc , char *argv[] ) {
 			}
 			case 'T' : {
 				gkmake.parallel = __GIM_YES;
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
 					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "multi_threads_enable" ) {
 						gkconf->AddKeyFlag( gkmake.prj_name , "multi_threads_enable" , gkmake.parallel );
 					}
 				}
 				gkmake.num_core = atoi( gkopt->getoption()->argument );
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "number_of_threads" ) {
-						gkconf->AddKey( gkmake.prj_name , "number_of_threads" , gkmake.num_core );
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
+					IF_NOT_EXIST_KEY( gkconf , gim->identity->login() , "number_of_threads" ) {
+						gkconf->AddKey( gim->identity->login() , "number_of_threads" , gkmake.num_core );
 					}
 				}
 				break;
 			}
 			case 'M' : {
 				gkmake.tot_build = atoi( gkopt->getoption()->argument );
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "total_build_number" ) 
-						gkconf->AddKey( gkmake.prj_name , "total_build_number" , gkmake.tot_build );
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
+					IF_NOT_EXIST_KEY( gkconf , gim->identity->login() , "total_build_number" ) 
+						gkconf->AddKey( gim->identity->login() , "total_build_number" , gkmake.tot_build );
 				}
 				break;
 			}
 			case 'B' : {
 				gkmake.ok_build = atoi( gkopt->getoption()->argument );
-				IF_EXIST_SECTION( gkconf , gkmake.prj_name ) {
-					IF_NOT_EXIST_KEY( gkconf , gkmake.prj_name , "succesful_build_number" ) 
-						gkconf->AddKey( gkmake.prj_name , "succesful_build_number" , gkmake.ok_build );
+				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
+					IF_NOT_EXIST_KEY( gkconf , gim->identity->login() , "succesful_build_number" ) 
+						gkconf->AddKey( gim->identity->login() , "succesful_build_number" , gkmake.ok_build );
 				}
 				break;
 			}

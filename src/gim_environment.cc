@@ -157,7 +157,7 @@ void	gim_home_obj::up( void ) {
 			gim_memory->hide( __GIM_NO );
 			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Creation a default configuration file" , __GIM_ERROR );
 			gim_conf->Up( env_data->conf , GIM_CONFIGURATION_TITLE );
-			gim_conf->SetLex( __LEX_B );
+			gim_conf->SetLex( __LEX_C );
 			gim_conf->AddSection( "version" );
 			gim_conf->AddSection( "system" );
 			gim_conf->AddSection( "debug" );
@@ -319,15 +319,15 @@ void	gim_home_obj::up( void ) {
 					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim subminor version updated" , __GIM_ERROR );
 				}
 			}
-#ifdef GKMAKE_VERSIONING
-			IF_EXIST_KEY_IN_CONF( "version" , "built" ) {
-				if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_GKMAKE_BUILD ) {
-					gim_conf->ChangeKey( "version" , "built" , GIM_GKMAKE_BUILD );
-					changed = __GIM_YES;
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
+			#ifdef GKMAKE_VERSIONING
+				IF_EXIST_KEY_IN_CONF( "version" , "built" ) {
+					if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_GKMAKE_BUILD ) {
+						gim_conf->ChangeKey( "version" , "built" , GIM_GKMAKE_BUILD );
+						changed = __GIM_YES;
+						gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
+					}
 				}
-			}
-#endif
+			#endif
 			IF_EXIST_KEY_IN_CONF( "version" , "version" ) {
 				if ( Lexical.str_equal( gim_conf->GetKeySTR( "version" , "version" ) , GIM_VERSION ) == __GIM_NO ) {
 					gim_conf->ChangeKey( "version" , "version" , GIM_VERSION );
