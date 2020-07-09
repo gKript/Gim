@@ -157,7 +157,7 @@ void	gim_home_obj::up( void ) {
 			gim_memory->hide( __GIM_NO );
 			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Creation a default configuration file" , __GIM_ERROR );
 			gim_conf->Up( env_data->conf , GIM_CONFIGURATION_TITLE );
-			gim_conf->SetLex( __LEX_C );
+			gim_conf->SetLex( __LEX_B );
 			gim_conf->AddSection( "version" );
 			gim_conf->AddSection( "system" );
 			gim_conf->AddSection( "debug" );
