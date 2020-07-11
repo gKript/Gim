@@ -118,7 +118,7 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 	else if 	( lex_type == __LEX_C ) {
 		if	( Syntax.Feof == __GIM_ON ) 
 			return __END;
-		else if	( strlen( line ) == 1 )	
+		else if	( strlen( line ) < 3 )	
 			return __BLANK;
 		char * tmp = strdup( char_filter( line , ' ' ) );
 		if ( is_in_string ( tmp , "#" ) ) 
@@ -127,9 +127,9 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 			return __TITLE_O ;
 		else if ( is_in_string ( tmp , ">" ) ) 
 			return __TITLE_C ;
-		else if ( is_in_string ( tmp , "(" ) ) 
+		else if ( is_in_string ( tmp , "{" ) ) 
 			return __SECTION_O ;
-		else if ( is_in_string ( tmp , ")" ) ) 
+		else if ( is_in_string ( tmp , "}" ) ) 
 			return __SECTION_C ;
 		else if ( is_in_string ( tmp , "=" ) )
 			return __KEY ;
@@ -262,7 +262,7 @@ void	prsr_lexical_class::scan_c( char * line , gim_prsr_obj * prsr ) {
 	static char	last_section_open[256];
 	switch ( scan_line ( line ) ) {
 		case __TITLE_O : {
-			puts("Title o");
+//			puts("Title o");
 			char *tmp;
 			tmp = strdup( line );
 			tokenizer( tmp , PRSR_LEX_SEPARATORS );
@@ -272,12 +272,13 @@ void	prsr_lexical_class::scan_c( char * line , gim_prsr_obj * prsr ) {
 			break;
 		}
 		case __TITLE_C : {
-			puts("Title c");
+//			puts("Title c");
 			Syntax.Title = __GIM_CLOSE;
+			gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::scan_c" , "Creating object : %s" , prsr->prsr_obj->title );
 			break;
 		}
 		case __SECTION_O : {
-			puts("Section o");
+//			puts("Section o");
 			char *tmp;
 			tmp = strdup( line );
 			tokenizer( tmp , PRSR_LEX_SEPARATORS );
@@ -288,13 +289,14 @@ void	prsr_lexical_class::scan_c( char * line , gim_prsr_obj * prsr ) {
 			break;
 		}
 		case __SECTION_C : {
-			puts("Section c");
+//			puts("Section c");
+			gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::scan_c" , "Closing section : %s" , last_section_open );
 			__GIM_CLEAR( last_section_open , 256 , char );
 			Syntax.Section = __GIM_CLOSE;
 			break;
 		}
 		case __KEY : {
-			puts("Key");
+//			puts("Key");
 			char *tmp;
 			tmp = strdup( line );
 			tokenizer( tmp , PRSR_LEX_SEPARATORS );
@@ -305,10 +307,6 @@ void	prsr_lexical_class::scan_c( char * line , gim_prsr_obj * prsr ) {
 		case __END : {
 			break;
 		}
-		default: {
-			gim_error->Set( GIM_ERROR_CRITICAL , "prsr_lexical_class::scan_c" , "Everything seems ok but this line is unknown :%s" , line );
-		}
-		
 	}
 }
 
@@ -756,6 +754,7 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 		gim_memory->caller = __GIM_MEM_OTHER ;
 	}
 	l = strlen( tmp ) - 1;
+//	printf( "%s" , tmp );
 	for( a = 0 ; a < l ; a++ ) {
 		if ( i > 19 ) {
 			gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::tokenizer" , "too much token in line" , __GIM_ERROR  );
@@ -766,7 +765,8 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 				a = l;
 			}
 			else {
-				Tok[i][b] = '\0' ;
+				Tok[i][b] = '\0';
+//				printf( "%d:%s - " , i , Tok[i] );
 				i++;
 				b=0;
 			}
@@ -776,6 +776,7 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 			b++;
 		}
 	}
+//	printf( "\n%d\n\n" , i );
 	return i;
 }
 
@@ -815,7 +816,6 @@ char * prsr_lexical_class::str_offset_pre( char * line , _gim_Uint16 offset ) {
 }
 
 
-
 void	prsr_lexical_class::strend( char * str , char chr ) {
     if ( ! str )
         return;
@@ -823,6 +823,17 @@ void	prsr_lexical_class::strend( char * str , char chr ) {
     if ( ( p = strchr( str , chr ) ) )
         *p = 0;
 }
+
+
+char *	prsr_lexical_class::strend_s( char * str , char chr ) {
+    if ( ! str )
+        return NULL;
+    static char * p;
+    if ( ( p = strchr( str , chr ) ) )
+        *p = 0;
+    return p;
+}
+
 
 void 	prsr_lexical_class::remove_quotes( char * str ) {
     if ( ! str )

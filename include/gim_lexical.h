@@ -55,7 +55,7 @@
 	#define PRSR_LEX_SECTION_C	"]"		/*!<	This is a key character for a section close TOK	*/
 	#define PRSR_LEX_COMMENT	"#"		/*!<	This is a key character for a comment TOK		*/
 	
-	#define PRSR_LEX_SEPARATORS "<>[]=:%()\n#"	/*!<	This is the string of all separator characters	*/
+	#define PRSR_LEX_SEPARATORS "<>[]=:%()#\n"	/*!<	This is the string of all separator characters	*/
 	
 	/*!
 		\enum	file_type
@@ -120,6 +120,7 @@
 			void		scan_b			( char * line , gim_prsr_obj * prsr );
 			void		scan_c			( char * line , gim_prsr_obj * prsr );
 			void		strend			( char * str , char chr );
+			char *		strend_s		( char * str , char chr );
 			void 		remove_quotes	( char * str );
 			void		remove_linefeed	( char * str );
 			

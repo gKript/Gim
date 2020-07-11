@@ -65,14 +65,16 @@
 
 	extern char	gim_application_name[256];
  
-	#define	GIM_SEPARATOR		" ==="
-	#define	GIM_ERROR_OK		" ok "
-	#define	GIM_ERROR_MESSAGE	"    "
-	#define	GIM_ERROR_WARNING	" w  "
-	#define	GIM_ERROR_CRITICAL	" C  "
-	#define	GIM_ERROR_FATAL		" \033[1;31mF\033[0m  "
+	#define	GIM_SEPARATOR			" ==="
+	#define	GIM_ERROR_OK			" ok "
+	#define	GIM_ERROR_MESSAGE		"    "
+	#define	GIM_ERROR_WARNING		" w  "
+	#define	GIM_ERROR_CRITICAL		" C  "
+	#define	GIM_ERROR_FATAL			" \033[1;31mF\033[0m  "
 	
-	#define	GIM_ERROR_UNKNOWN	" UU "
+	#define	GIM_ERROR_UNKNOWN		" UU "
+	
+	#define	GIM_ERROR_PRG_MESSAGE	"--->"
 	
 	/*!	\enum	variable_set	
 		\brief	The list of commands for the menagement of the gim behavior. \n

@@ -74,10 +74,10 @@
 	#define PRSR_B_START_SECTION	"    %s"
 	#define PRSR_B_KEY_INT			"        %s::%s = %d"
 	#define PRSR_B_KEY_STR			"        %s::%s = %s"
-	#define PRSR_B_SEPARATOR		"  >\n\n"
+//	#define PRSR_B_SEPARATOR		"  >\n\n"
 
 	#define PRSR_C_START_SECTION	"    ( %s ) { "
-	#define PRSR_C_END_SECTION		"    } ------------------------------------"
+	#define PRSR_C_END_SECTION		"    } " //\n    # ------------------------------------"
 	#define PRSR_C_KEY_INT			"        %-32s = %d"
 	#define PRSR_C_KEY_STR			"        %-32s = %s"
 

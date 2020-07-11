@@ -160,6 +160,8 @@ void	gim_error_obj::Set	( const char * type , const char * function , const char
 	char	message[1024];
 	if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
 		value = __GIM_OK;
+	else if ( ! ( strcmp ( type , GIM_ERROR_PRG_MESSAGE ) ) )
+		value = __GIM_OK;
 	else if ( ! ( strcmp ( type , GIM_ERROR_WARNING ) ) )
 		value = __GIM_NOT_OK;
 	else if ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )

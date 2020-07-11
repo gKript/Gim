@@ -597,7 +597,7 @@ _gim_flag	gim_prsr_obj::Write( void ) {
 
 _gim_flag gim_prsr_obj::Read( const char * filename ) {
 	_gim_int8	scan_result;
-	gim_error->set( "gim_prsr_obj::Read" , "I am trying to read" );
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_prsr_obj::Read" , "I am trying to read: %s" , filename );
 	scan_result = Lexical.scan_syntax( filename , this );
 	switch ( scan_result ) {
 		case __GIM_OK : {
@@ -1008,7 +1008,7 @@ _gim_buffer	gim_prsr_obj::WriteOnBuffer( void ) {
 				sprintf( dest , "%s%s\n", dest , Tmp);
 				if ( tmp_section->first_field ) {
 					for( tmp_field = tmp_section->first_field ; tmp_field != NULL ; tmp_field = tmp_field->next_field ) {
-						sprintf( dest , "%s    %s = %s" , dest , tmp_field->key , tmp_field->str_value );
+						sprintf( dest , "%s        %-32s = %s" , dest , tmp_field->key , tmp_field->str_value );
 //						if ( tmp_field->key_type == PRSR_GIM_INT ) sprintf( dest , "%s    %s = %d" , dest , tmp_field->key , tmp_field->int_value );
 						strcat( dest , "\n");
 					}
