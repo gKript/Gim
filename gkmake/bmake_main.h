@@ -28,7 +28,7 @@
 
 	#include <gim/gim.h>
 	
-	#define	GKMAKE_VERSION			"0.8-2"
+	#define	GKMAKE_VERSION			"0.8-5"
 	#define MAKEFILE				"Makefile"
 	#define	GKMAKE_FILE_COUNTER		".gkmake_conf"
 	#define GKMAKE_INCLUDE			"_bmake.h"
@@ -47,13 +47,16 @@
 
 
 	struct gkmake_st {
+		
+		_gim_flag	coder_exist;
 	
 		char 		login[64];
 		char 		node[64];
 		char 		arch[64];
 		char		gim_rel[64];
-		
 		char		gkmake_rel[64];
+		
+		
 			
 		char		prefix[64];
 		char		include_path[256];
@@ -72,6 +75,10 @@
 		char		postmake_script[256];
 		int			tot_build;
 		int			ok_build;
+		
+		int			prj_sum_total_build;
+		int			prj_sum_ok_build;
+		
 		int			num_core;
 	};
 

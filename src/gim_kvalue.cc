@@ -104,11 +104,11 @@ _gim_flag	gim_prsr_obj::AddKey( const char * section_name , const char * key , c
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( value ) ) || ( strlen( value ) >= 64 ) )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of value" , __GIM_ERROR );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of value: %s" , value );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( key ) ) || ( strlen( key ) >= 64 ) )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of Key name" , __GIM_ERROR );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of Key name: %s" , key );
 		return __GIM_NOT_OK;
 	}
 	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );

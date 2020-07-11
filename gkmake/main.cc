@@ -145,11 +145,35 @@ int main( int argc , char *argv[] ) {
 		gkconf->AddKey( gim->identity->login() , "gkmake_rel" , GKMAKE_VERSION );
 	}
 	else {
-		strcpy( gkmake.login , gim->identity->login() );
-		strcpy( gkmake.node  , gim->identity->node() );
-		strcpy( gkmake.arch , gim->identity->arch() );
-		strcpy( gkmake.gim_rel , gim_version_mini() );
-		strcpy( gkmake.gim_rel , GKMAKE_VERSION );
+		strcpy( gkmake.login		, gim->identity->login() );
+		strcpy( gkmake.node			, gim->identity->node() );
+//		strcpy( gkmake.arch			, gim->identity->arch() );
+//		strcpy( gkmake.gim_rel		, gim_version_mini() );
+		strcpy( gkmake.gkmake_rel	, GKMAKE_VERSION );
+		
+		IF_EXIST_SECTION( gkconf , gkmake.login ) {
+			gkmake.coder_exist = __GIM_EXIST;
+			gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Coder found: %s" , gkmake.login );
+		}
+		else {
+			gkmake.coder_exist = __GIM_NOT_EXIST;
+			gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Coder NOT FOUND: %s" , gkmake.login );
+			gkconf->AddSection( gkmake.login );
+			gkconf->AddKey( gim->identity->login() , "coder" , gkmake.login );
+			gkconf->AddKey( gim->identity->login() , "host" , gkmake.node );
+			gkconf->AddKey( gim->identity->login() , "architecture" , gkmake.arch );
+			gkconf->AddKey( gim->identity->login() , "gim_rel" , gkmake.gim_rel );
+			gkconf->AddKey( gim->identity->login() , "gkmake_rel" , gkmake.gkmake_rel );
+			gkconf->AddKey( gim->identity->login() , "total_build_number" , 0 );
+			gkconf->AddKey( gim->identity->login() , "succesful_build_number" , 0 );
+			gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Coder added to the list file" );
+			puts  ( "  WARNING" );
+			printf( "    Hey %s, you were added into the configuration file \".gkmake_conf\" as new coder.\n" , gkmake.login );
+			printf( "    You can proceed in your gkmake personalization starting by typing \"gkmake -h\". \n" );
+			printf( "    Enjoy your coding time!\n\n" );
+			do_system = __GIM_NO;
+			printf( "    Run again to make the project.\n\n" );
+		}
 		
 		for ( _gim_Uint8 s = 0 ; s < gkconf->GetHowManySection() ; s++ ) {
 			char sectname[64];
@@ -166,73 +190,110 @@ int main( int argc , char *argv[] ) {
 				
 /*STRINGS */	if ( lex->str_equal( "prefix" , tmpkeyname ) == __GIM_YES ) {
 					strcpy( gkmake.prefix , gkconf->GetKeySTR( sectname , "prefix" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.prefix );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.prefix );
 				} 
 				else if ( lex->str_equal( "project_name" , tmpkeyname ) == __GIM_YES ) { 
 					strcpy( gkmake.prj_name , gkconf->GetKeySTR( sectname , "project_name" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.prj_name );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.prj_name );
 				} 
 				else if ( lex->str_equal( "author" , tmpkeyname ) == __GIM_YES ) { 
 					strcpy( gkmake.author , gkconf->GetKeySTR( sectname , "author" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.author );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.author );
 				} 
 				else if ( lex->str_equal( "include_path" , tmpkeyname ) == __GIM_YES ) { 
 					strcpy( gkmake.include_path , gkconf->GetKeySTR( sectname , "include_path" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.include_path );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.include_path );
+				} 
+				else if ( lex->str_equal( "gim_rel" , tmpkeyname ) == __GIM_YES ) { 
+					if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) {
+						strcpy( gkmake.gim_rel , gkconf->GetKeySTR( sectname , "gim_rel" ) );
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.gim_rel );
+						if ( lex->str_equal( gkmake.gim_rel , gim_version_mini() ) == __GIM_NO ) {
+							strcpy( gkmake.gim_rel , gim_version_mini() );
+							gkconf->ChangeKey( sectname , "gim_rel" , gkmake.gim_rel );
+							gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "gim release updated to: %s" ,gkmake.gim_rel );
+						}
+					}
+				} 
+				else if ( lex->str_equal( "gkmake_rel" , tmpkeyname ) == __GIM_YES ) { 
+					if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) {
+						strcpy( gkmake.gkmake_rel , gkconf->GetKeySTR( sectname , "gkmake_rel" ) );
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.gkmake_rel );
+						if ( lex->str_equal( gkmake.gkmake_rel , GKMAKE_VERSION ) == __GIM_NO ) {
+							strcpy( gkmake.gkmake_rel , GKMAKE_VERSION );
+							gkconf->ChangeKey( sectname , "gkmake_rel" , gkmake.gkmake_rel );
+							gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "gkmake release updated to: %s" ,gkmake.gkmake_rel );
+						}
+					}
 				} 
 				else if ( lex->str_equal( "documentation_path" , tmpkeyname ) == __GIM_YES ) { 
 					strcpy( gkmake.documentation , gkconf->GetKeySTR( sectname , "documentation_path" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.documentation );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.documentation );
 				} 
 				else if ( lex->str_equal( "documentation_command" , tmpkeyname ) == __GIM_YES ) { 
 					strcpy( gkmake.doc_command , gkconf->GetKeySTR( sectname , "documentation_command" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.doc_command );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.doc_command );
 				} 
-				else if ( lex->str_equal( "editor_command" , tmpkeyname ) == __GIM_YES ) { 
-					strcpy( gkmake.editor_command , gkconf->GetKeySTR( sectname , "editor_command" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.editor_command );
+				else if ( lex->str_equal( "editor_command" , tmpkeyname ) == __GIM_YES ) {
+					if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) {
+						strcpy( gkmake.editor_command , gkconf->GetKeySTR( sectname , "editor_command" ) );
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.editor_command );
+					}
 				}
 				else if ( lex->str_equal( "header_file_name" , tmpkeyname ) == __GIM_YES ) { 
 					strcpy( gkmake.header_file_name , gkconf->GetKeySTR( sectname , "header_file_name" ) );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.header_file_name);
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %s" , sectname , tmpkeyname , gkmake.header_file_name);
 				}
 /*FLAGS */		else if ( lex->str_equal( "clean" , tmpkeyname ) == __GIM_YES ) {
-					gkmake.clean = gkconf->GetKeyFLAG( sectname , "clean" ); 
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.clean );
+					if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) {
+						gkmake.clean = gkconf->GetKeyFLAG( sectname , "clean" ); 
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.clean );
+					}
 				}
-				else if ( lex->str_equal( "use_sudo" , tmpkeyname ) == __GIM_YES ) { 
-					gkmake.sudo = gkconf->GetKeyFLAG( sectname , "use_sudo" ); 
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.sudo );
+				else if ( lex->str_equal( "use_sudo" , tmpkeyname ) == __GIM_YES ) {
+					if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) { 
+						gkmake.sudo = gkconf->GetKeyFLAG( sectname , "use_sudo" ); 
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.sudo );
+					}
 				}
 				else if ( lex->str_equal( "project_header_generation" , tmpkeyname ) == __GIM_YES ) { 
 					gkmake.header_file = gkconf->GetKeyFLAG( sectname , "project_header_generation" );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.header_file );
+					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.header_file );
 				} 
-				else if ( lex->str_equal( "multi_threads_enable" , tmpkeyname ) == __GIM_YES ) { 
-					gkmake.parallel = gkconf->GetKeyFLAG( sectname , "multi_threads_enable" ); 
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.parallel );
-					if ( gkmake.parallel == __GIM_YES ) {
-						IF_EXIST_KEY( gkconf , sectname , "number_of_threads" ) {
-							gkmake.num_core = gkconf->GetKeyINT( sectname , "number_of_threads" );
-							gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key number_of_threads - Value %d" , sectname , gkmake.num_core );
-							if ( gkmake.num_core == 0 )
+				else if ( lex->str_equal( "multi_threads_enable" , tmpkeyname ) == __GIM_YES ) {
+			 		if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) { 
+						gkmake.parallel = gkconf->GetKeyFLAG( sectname , "multi_threads_enable" ); 
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.parallel );
+						if ( gkmake.parallel == __GIM_YES ) {
+							IF_EXIST_KEY( gkconf , sectname , "number_of_threads" ) {
+								gkmake.num_core = gkconf->GetKeyINT( sectname , "number_of_threads" );
+								gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key number_of_threads - Value %d" , sectname , gkmake.num_core );
+								if ( gkmake.num_core == 0 )
+									gkmake.num_core = gim->identity->n_proc() + 1;
+							}
+							else {
 								gkmake.num_core = gim->identity->n_proc() + 1;
-						}
-						else {
-							gkmake.num_core = gim->identity->n_proc() + 1;
-							gkconf->AddKey( gim->identity->login() , "number_of_threads" , gkmake.num_core );
+								gkconf->AddKey( gim->identity->login() , "number_of_threads" , gkmake.num_core );
+							}
 						}
 					}
 				}
 /*INT VALUES */	else if ( lex->str_equal( "total_build_number" , tmpkeyname ) == __GIM_YES ) {
-					gkmake.tot_build = gkconf->GetKeyINT( sectname , "total_build_number" );
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.tot_build );
+			 		if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) {
+						gkmake.tot_build = gkconf->GetKeyINT( sectname , "total_build_number" );
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.tot_build );
+					}
+					gkmake.prj_sum_total_build += gkconf->GetKeyINT( sectname , "total_build_number" );
 				} 
 				else if ( lex->str_equal( "succesful_build_number" , tmpkeyname ) == __GIM_YES ) { 
-					gkmake.ok_build = gkconf->GetKeyINT( sectname , "succesful_build_number" ); 
-					gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "  Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.ok_build );
+			 		if ( lex->str_equal( sectname , Lexical.str_up( gkmake.login , strlen( gkmake.login ) ) ) == __GIM_YES ) {
+						gkmake.ok_build = gkconf->GetKeyINT( sectname , "succesful_build_number" ); 
+						gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main" , "Section %s - Key %s - Value %d" , sectname , tmpkeyname , gkmake.ok_build );
+					}
+					gkmake.prj_sum_ok_build += gkconf->GetKeyINT( sectname , "succesful_build_number" );
 				}
 			}
+			
 		}
 	}
 	gkopt->rewind();
@@ -242,7 +303,7 @@ int main( int argc , char *argv[] ) {
 			case 'N' : {
 				if ( !gkopt->search( 'A' )  || !gkopt->search( 'P' ) ) {
 					puts( "  Errors on option:" );
-					puts( "   If you want to set a new project you have to set at least also the Author and the Prefix\n" );
+					puts( "    If you want to set a new project you have to set at least also the Author and the Prefix\n" );
 					print_help();
 					gkconf->Down();
 					delete header;
@@ -611,7 +672,7 @@ int main( int argc , char *argv[] ) {
 	if ( do_system == __GIM_YES ) {
 		if ( writec == __GIM_YES ) {
 			IF_EXIST_KEY( gkconf , gkmake.login , "succesful_build_number" )
-				printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , ++gkmake.tot_build , command );
+				printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , gkmake.tot_build + 1 , command );
 			else
 				printf( "  BUILDING THE PROJECT ( %s )...\n\n" , command ); 
 		}
@@ -621,12 +682,14 @@ int main( int argc , char *argv[] ) {
 		if ( ! system( command ) ) {
 			IF_EXIST_KEY( gkconf , gkmake.login , "succesful_build_number" ) { 
 				gkconf->ChangeKey( gkmake.login , "succesful_build_number" , ++gkmake.ok_build );
-				gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "    Upgrading Succesfull Build to %d" , gkmake.ok_build );
+				gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "Upgrading Succesfull Build to %d" , gkmake.ok_build );
 			}
 			else 
-				gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "    Succesfull Build NOT FOUND!" );
-			if ( writec == __GIM_YES )
+				gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "Succesfull Build NOT FOUND!" );
+			if ( writec == __GIM_YES ) {
 				printf( "\n  BUILT SUCCESFULLY ( %d )\n" , gkmake.ok_build );
+				printf( "      Your succesful build rate is: %3d%%\n\n" ,  (_gim_Uint8)( ( (float)((float)gkmake.ok_build / (float)gkmake.tot_build ) * 100 ) ) );
+			}
 			else
 				printf( "\n  BUILT SUCCESFULLY\n" );
 		}
@@ -635,10 +698,10 @@ int main( int argc , char *argv[] ) {
 	}
 	IF_EXIST_KEY( gkconf , gkmake.login , "total_build_number" ) {
 		gkconf->ChangeKey( gkmake.login , "total_build_number" , gkmake.tot_build );
-		gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "    Upgrading Total Build to %d" , gkmake.tot_build );
+		gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "Upgrading Total Build to %d" , gkmake.tot_build );
 	}
 	else 
-		gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "    Total Build NOT FOUND!" );
+		gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "Total Build NOT FOUND!" );
 	
 	if ( writec == __GIM_YES )
 		gkconf->Write();

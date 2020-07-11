@@ -111,8 +111,8 @@ void	make_header( void ) {
 	header->append( "#ifndef\t%s_GKMAKE_VERSIONING\n", gkmake.prefix );
 	header->append( "#define\t%s_GKMAKE_VERSIONING\n\n", gkmake.prefix );
 	header->append( "   #define %s_AUTHOR                       %s\n", gkmake.prefix , gkmake.author );
-	header->append( "   #define %s_GKMAKE_TOTAL_BUILD           %d\n", gkmake.prefix , gkmake.tot_build );
-	header->append( "   #define %s_GKMAKE_BUILD                 %d\n", gkmake.prefix , gkmake.ok_build );
+	header->append( "   #define %s_GKMAKE_TOTAL_BUILD           %d\n", gkmake.prefix , gkmake.prj_sum_total_build );
+	header->append( "   #define %s_GKMAKE_BUILD                 %d\n", gkmake.prefix , gkmake.prj_sum_ok_build );
 	header->append( "   #define %s_GKMAKE_LAST_BUILD            \"%s\"\n\n", gkmake.prefix , gkmake.last_build );
 	header->append( "#endif\n\n" );
 }

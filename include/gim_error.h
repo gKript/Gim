@@ -75,6 +75,8 @@
 	#define	GIM_ERROR_UNKNOWN		" UU "
 	
 	#define	GIM_ERROR_PRG_MESSAGE	"--->"
+	#define	GIM_ERROR_PRG_TAB		"    "
+	
 	
 	/*!	\enum	variable_set	
 		\brief	The list of commands for the menagement of the gim behavior. \n

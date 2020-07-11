@@ -158,6 +158,7 @@ void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
 
 void	gim_error_obj::Set	( const char * type , const char * function , const char * format , ... ) {
 	char	message[1024];
+	char	message_t[1024];
 	if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
 		value = __GIM_OK;
 	else if ( ! ( strcmp ( type , GIM_ERROR_PRG_MESSAGE ) ) )
@@ -174,6 +175,10 @@ void	gim_error_obj::Set	( const char * type , const char * function , const char
 	va_start( VAList , format );
 	vsprintf( message , format , VAList );
 	va_end( VAList );
+	if ( ! ( strcmp ( type , GIM_ERROR_PRG_MESSAGE ) ) ) {
+		sprintf( message_t , "    %s" , message );
+		strcpy( message , message_t ); 
+	}
 	if ( value == __GIM_UNKNOWN ) 
 		set( GIM_ERROR_UNKNOWN , function , message , value );
 	else
