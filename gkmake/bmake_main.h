@@ -28,7 +28,7 @@
 
 	#include <gim/gim.h>
 	
-	#define	GKMAKE_VERSION			"0.7-4"
+	#define	GKMAKE_VERSION			"0.8-2"
 	#define MAKEFILE				"Makefile"
 	#define	GKMAKE_FILE_COUNTER		".gkmake_conf"
 	#define GKMAKE_INCLUDE			"_bmake.h"
@@ -47,6 +47,14 @@
 
 
 	struct gkmake_st {
+	
+		char 		login[64];
+		char 		node[64];
+		char 		arch[64];
+		char		gim_rel[64];
+		
+		char		gkmake_rel[64];
+			
 		char		prefix[64];
 		char		include_path[256];
 		char		prj_name[128];
@@ -70,6 +78,7 @@
 	void	make_header				( void );
 	char *	get_current_dir_name	( void );
 	int 	gkmake_exist			( char * );
+	void	gkmake_status			( void );
 	void	gkmake_header			( FILE * , char * );
 	void 	gkmake_install			( void );
 	void 	new_prj					( char * );

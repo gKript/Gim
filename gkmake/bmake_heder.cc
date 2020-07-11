@@ -118,6 +118,29 @@ void	make_header( void ) {
 }
 
 
+void gkmake_status ( void ) {
+	puts("\n");
+	printf( "Prefix: 				%s\n" , gkmake.prefix );
+	printf( "Include path:			%s\n" , gkmake.include_path );
+	printf( "Project name:			%s\n" , gkmake.prj_name );
+	printf( "Aothor:				%s\n" , gkmake.author );
+	printf( "Documentation:			%s\n" , gkmake.documentation );
+	printf( "Documentation command:	%s\n" , gkmake.doc_command );
+	printf( "Last build:			%s\n" , gkmake.last_build );
+	printf( "Sudo:					%d\n" , gkmake.sudo );
+	printf( "Parallel:				%d\n" , gkmake.parallel );
+	printf( "Clean:					%d\n" , gkmake.clean );
+	printf( "Header file:			%d\n" , gkmake.header_file );
+	printf( "Header file name:		%s\n" , gkmake.header_file_name );
+	printf( "Editor command:		%s\n" , gkmake.editor_command );
+	printf( "Premake script:		%s\n" , gkmake.premake_script );
+	printf( "Post make script:		%s\n" , gkmake.postmake_script );
+	printf( "Total build:			%d\n" , gkmake.tot_build );
+	printf( "OK build:				%d\n" , gkmake.ok_build );
+	printf( "Core number to use:	%d\n" , gkmake.num_core );
+	puts("\n");
+}
+
 
 char * str_up( char * line , int len ) {
 	static char	* tmp = NULL;

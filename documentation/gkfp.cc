@@ -33,12 +33,24 @@
 
 #include <gim/gim.h>
 
+#define	GKFP_MAJOR			0
+#define GKFP_MINOR			3
+#define	GKFP_SUBMINOR		1
+#define	GKFP_VERSION		"0.3-1"
+
+#define GKFP_DEBUG			__GIM_YES
+#define __GIM_KAOS_TRSHLD	55
+
+#define _LINE				puts("")
+
+
 int main ( int argc , char *argv[] ) {
 	if ( argc < 2 ) {
 		puts( "gkfp creator V0.3 usage :" );
 		puts( "gkfp nome.gkp path [password]\n" );
 		puts( "gkfp coded by AsYntote" );
 		puts( "asyntote@gkript.org" );
+		puts( "esco subito" );
 		exit( -1 );
 	}
 
@@ -52,12 +64,21 @@ int main ( int argc , char *argv[] ) {
 	_gim_string	gkp_file_name( argv[1] );
 	_gim_string	gkp_system( "gimstat " );
 	
+	if ( GKFP_DEBUG == __GIM_YES ) {
+	   	gim->conf->ChangeKeyFlag( "debug", "f_debug" , __GIM_YES );
+		gim->conf->AddKeyComment( "debug", "f_debug" , PRSR_AFTER , "Forced YES by main program" );
+	}
+  	gim->conf->ChangeKey( "crypt", "iterations" , 5 );
+  	gim->conf->Write();
+	puts("finito");
 	if ( gkp_file_name.find( ".gkp" ) == __GIM_NO ) {
+		puts("no");
 		if ( ( argc < 3 ) || ( argc > 4 ) ) {
 			puts( "gkfp creator V0.3 usage :" );
 			puts( "gkfp nome.gkp path [password]\n" );
 			puts( "gkfp coded by AsYntote" );
 			puts( "asyntote@gkript.org" );
+			puts( "esco" );
 			exit( -1 );
 		}
 		puts( "Generating mode" );
@@ -87,6 +108,7 @@ int main ( int argc , char *argv[] ) {
 		}
 	}
 	else {
+		puts("si");
 		if ( ( argc < 2 ) || ( argc > 3 ) ) {
 			puts( "gkfp creator V0.3 usage :" );
 			puts( "gkfp nome.gkp path [password]\n" );
