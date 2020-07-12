@@ -55,7 +55,7 @@ void	gim_home_obj::up( void ) {
 		
 		if ( gim_environ->Read( env_data->environ ) != __GIM_OK ) {
 			gim_environ->Up( env_data->environ , GIM_ENVIRONMENT_TITLE );
-			gim_environ->SetLex( __LEX_B );
+			gim_environ->SetLex( __LEX_C );
 		}
 		if ( strlen( gim_application_name ) == 0 ) {
 			gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "The application have not setted the name for the environment " , __GIM_ERROR );
@@ -150,7 +150,7 @@ void	gim_home_obj::up( void ) {
 			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Other programs env not found... created" , __GIM_ERROR );
 		}
 		if ( env_changed == __GIM_YES ) {
-			gim_environ->SetLex( __LEX_B );
+			gim_environ->SetLex( __LEX_C );
 			gim_environ->Write();
 		}
 		if ( gim_conf->Read( env_data->conf ) != __GIM_OK ) {
@@ -172,9 +172,9 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddKey(		"version" 			, "major"				, GIM_MAJOR );
 			gim_conf->AddKey(		"version" 			, "minor"				, GIM_MINOR );
 			gim_conf->AddKey(		"version" 			, "subminor"			, GIM_SUBMINOR );
-#ifdef GKMAKE_VERSIONING
-			gim_conf->AddKey(		"version" 			, "built"				, GIM_GKMAKE_BUILD );
-#endif
+			#ifdef GKMAKE_VERSIONING
+				gim_conf->AddKey(	"version" 			, "built"				, GIM_GKMAKE_BUILD );
+			#endif
 			gim_conf->AddKey(		"version" 			, "version"				, gim_version_small() );
 			gim_conf->AddKeyFlag(	"system" 			, "sig_trap"			, __GIM_ON );
 			gim_conf->AddKey(		"crypt" 			, "iterations"			, 2 );
@@ -189,9 +189,9 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddKey(		"memory"			, "limit"				, "75%" );
 			gim_conf->AddKeyFlag(	"memory"			, "default_lock"		, __GIM_MEM_LOCK );
 			gim_conf->AddKeyFlag(	"alias"				 , "enable"				, __GIM_YES );
-			gim_conf->AddKeyFlag(	"alias"				, "lex"					, __LEX_A );
+			gim_conf->AddKeyFlag(	"alias"				, "lex"					, __LEX_C );
 			gim_conf->AddKeyFlag(	"compatibility"		, "enable"				, __GIM_NO );
-			gim_conf->AddKeyFlag(	"compatibility"		, "lex"					, __LEX_A );
+			gim_conf->AddKeyFlag(	"compatibility"		, "lex"					, __LEX_C );
 			gim_conf->AddKey(		"key"				, "priv_path"			, env_data->PrivateKeyPath );
 			gim_conf->AddKey(		"key"				, "other_path"			, env_data->OtherKeysPath );
 			gim_conf->AddKey(		"Programs"			, "generic_path"		, env_data->Programs );
@@ -356,7 +356,7 @@ void	gim_home_obj::up( void ) {
 					gim_alias->AddKey( gim_identity->Login , "Login"		, gim_identity->Login );
 				if ( strlen( gim_identity->Real_name ) ) {
 					gim_alias->AddKey( gim_identity->Login , "Real_name"	, gim_identity->Real_name );
-					//gim_alias->AddKeyComment( gim_identity->Login , "Real_name"	, PRSR_INLINE , "This is the real user name" );
+					gim_alias->AddKeyComment( gim_identity->Login , "Real_name"	, PRSR_AFTER , "This is the real user name" );
 				}
 				if ( strlen( gim_identity->System_name ) )
 					gim_alias->AddKey( gim_identity->Login , "System_name"	, gim_identity->System_name );

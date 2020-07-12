@@ -48,11 +48,14 @@
 	#include "gim_custom_type.h"
 	#include "gim_lexical.h"
 	
+	#define	__GIM_RELEASE	1
+	#define	__GIM_DEVELOP	2
+	
 	//~ #ifdef	DEBUG_LEVEL_0
-	#define		GKMAKE_VERSIONING
+//	#define		GKMAKE_VERSIONING
 	//~ #endif
 
-	#include	"gim_gkmake.h"
+//	#include	"gim_gkmake.h"
 
 	/*!	\def	GIM_NAME
 				Is the \a short name of this library
@@ -73,21 +76,24 @@
 	#define GIM_NAME				"Gim"
 	#define GIM_EXTENDED_NAME		"Gim <Generic Information Manager> c++ static library made by gKript.org"
 	#define GIM_LICENSE				"Released under the terms of the GNU General Public License v3"
-	#define GIM_SINCE				"07/12/2003"
+	#define CNC_SINCE				"07/12/2003"
+	#define GIM_SINCE				"10/03/2007"
 	
-	#define GIM_VERSION_STATE	   "dev"  // "rel" for release or "dev" for devel
+	#define GIM_VERSION_STATE	   __GIM_DEVELOP
 
-	#define GIM_VERSION				"2.8-8"		/*!<	The string version of Gim	*/
+	#define GIM_VERSION				"2.8-9"		/*!<	The string version of Gim	*/
 	#define	GIM_MILESTONE			"3.0"
 
 	#define	GIM_MAJOR				2			/*!<	The major version of Gim	*/
 	#define	GIM_MINOR				8			/*!<	The minor version of Gim	*/
 
-	#ifdef		GKMAKE_VERSIONING				/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
+	#if ( GIM_VERSION_STATE == __GIM_DEVELOP )				/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
+		#define	GKMAKE_VERSIONING
+		#include	"gim_gkmake.h"
 		#define GIM_SUBMINOR		GIM_GKMAKE_BUILD
 		#define	GIM_BUILD_LAST		GIM_GKMAKE_LAST_BUILD
-	#else
-		#define GIM_SUBMINOR		8
+	#elif ( GIM_VERSION_STATE == __GIM_RELEASE )
+		#define GIM_SUBMINOR		9
 	#endif
 	
 

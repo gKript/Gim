@@ -688,7 +688,8 @@ int main( int argc , char *argv[] ) {
 				gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "Succesfull Build NOT FOUND!" );
 			if ( writec == __GIM_YES ) {
 				printf( "\n  BUILT SUCCESFULLY ( %d )\n" , gkmake.ok_build );
-				printf( "      Your succesful build rate is: %3d%%\n\n" ,  (_gim_Uint8)( ( (float)((float)gkmake.ok_build / (float)gkmake.tot_build ) * 100 ) ) );
+				printf( "      Your personal succesful build rate is: %3d%%\n"   ,  (_gim_Uint8)( ( (float)((float)gkmake.ok_build / (float)gkmake.tot_build ) * 100 ) ) );
+				printf( "      Total Project succesful build rate is: %3d%%\n\n" ,  (_gim_Uint8)( ( (float)((float)gkmake.prj_sum_ok_build / (float)gkmake.prj_sum_total_build ) * 100 ) ) );
 			}
 			else
 				printf( "\n  BUILT SUCCESFULLY\n" );

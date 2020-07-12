@@ -48,7 +48,7 @@
 	#include "gim_base_header.h"
 	#include "gim_kvalue.h"
 	#include "gim_environment.h"
-	#include "gim_version.h"
+//	#include "gim_version.h"
 
 	
 	#ifdef	__GIM_EXTERNAL_DEBUG

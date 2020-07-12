@@ -183,6 +183,10 @@ _gim_flag	gim_prsr_obj::AddKeyFlag( const char * section_name , const char * key
 			sprintf( tmp , "B" );
 			break;
 		}
+		case __LEX_C : {
+			sprintf( tmp , "C" );
+			break;
+		}
 		case __GIM_ON : {
 			sprintf( tmp , "ON" );
 			break;
@@ -704,6 +708,7 @@ _gim_flag	gim_prsr_obj::GetKeyFLAG( const char * section_name , const char * key
 		else if ( Lexical.str_equal( tmp , "FALSE"   ) == __GIM_YES ) return __GIM_FALSE;
 		else if ( Lexical.str_equal( tmp , "A"   ) == __GIM_YES ) return __LEX_A;
 		else if ( Lexical.str_equal( tmp , "B"   ) == __GIM_YES ) return __LEX_B;
+		else if ( Lexical.str_equal( tmp , "C"   ) == __GIM_YES ) return __LEX_C;
 		else if ( Lexical.str_equal( tmp , "ON"   ) == __GIM_YES ) return __GIM_ON;
 		else if ( Lexical.str_equal( tmp , "OFF"   ) == __GIM_YES ) return __GIM_OFF;
 		else if ( Lexical.str_equal( tmp , "LOCKED"   ) == __GIM_YES ) return __GIM_MEM_LOCK;

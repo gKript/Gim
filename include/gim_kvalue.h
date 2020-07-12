@@ -77,7 +77,7 @@
 //	#define PRSR_B_SEPARATOR		"  >\n\n"
 
 	#define PRSR_C_START_SECTION	"    ( %s ) { "
-	#define PRSR_C_END_SECTION		"    } " //\n    # ------------------------------------"
+	#define PRSR_C_END_SECTION		"    } \n    # ------------------------------------"
 	#define PRSR_C_KEY_INT			"        %-32s = %d"
 	#define PRSR_C_KEY_STR			"        %-32s = %s"
 
