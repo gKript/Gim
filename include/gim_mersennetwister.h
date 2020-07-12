@@ -133,6 +133,7 @@
 
 			_gim_Uint32 randInt( _gim_Uint32 range );           // integer in [0,range-1]
 			_gim_Uint32 randInt();                       		// integer in [0,2^32-1]
+			_gim_flag	stat_distr_over_100_percentage( _gim_Uint8 perc );
 
 			#if ( _GIM_MT_ORIGINAL == __GIM_NO )			
 				_gim_Uint32 randIntMT( const _gim_Uint32 &n );		// integer in [0,n] for n < 2^32

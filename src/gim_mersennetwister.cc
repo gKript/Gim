@@ -87,16 +87,7 @@ _gim_Uint32	MTRand::rand( const _gim_Uint32 &n ) {
 	return _gim_Uint32(randInt()) * n;
 }
 
-/*
-_gim_Uint32	MTRand::randExc() {
-	return _gim_Uint32(randInt()) * (1.0/4294967296.0);
-}
 
-
-_gim_Uint32	 MTRand::randExc( const _gim_Uint32 &n ) {
-	return randExc() * n;
-}
-*/
 
 _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 	return ( this->randInt() % range );
@@ -195,24 +186,6 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 
 #endif
 
-/*
-_gim_Uint32	MTRand::randInt( const _gim_Uint32 &n )
-{
-	_gim_Uint32 used = n;
-	used |= used >> 1;
-	used |= used >> 2;
-	used |= used >> 4;
-	used |= used >> 8;
-	used |= used >> 16;
-	
-	_gim_Uint32 i;
-	do
-		i = randInt() & used;  // toss unused bits to shorten search
-	while ( i > n );
-	return i;
-}
-*/
-
 _gim_Uint32	MTRand::randUInt8() {
 	_gim_Uint8 res = 0;
 	_gim_int32 t = 0;
@@ -274,6 +247,16 @@ _gim_Uint32 MTRand::hash( time_t t, clock_t c ) {
 		h2 += p[j];
 	}
 	return ( h1 + differ++ ) ^ h2;
+}
+
+
+_gim_flag	MTRand::stat_distr_over_100_percentage( _gim_Uint8 perc ) {
+	if ( perc > 100 ) 
+		return __GIM_ERROR;
+	if ( ( randInt( 100 ) + 1 ) <= perc ) 
+		return __GIM_YES;
+	else
+		return __GIM_NO;
 }
 
 

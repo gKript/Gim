@@ -22,6 +22,10 @@
 #include <gcg_main_header.h>
 
 
+#define	TEST	1000000
+#define	PP		54.0
+
+
 void hand_shake( void ) {
   puts  ( "  GimClassGen    -   gKript Gim Class Generator\n" );
   printf( "  Version-   -   -   %s\n" , GCG_VERSION );  
@@ -47,6 +51,10 @@ int main( int argc , char **argv ) {
     head_templ->set_dimension( 1 *  __GIM_KB );
    	gim_getopt_obj * 		opt = new gim_getopt_obj;
    	
+   	_gim_rand mt;
+   	
+   	_gim_flag	v[TEST];
+   	
    	gim->conf->ChangeKeyFlag( "debug", "f_debug" , __GIM_YES );
 	gim->conf->AddKeyComment( "debug", "f_debug" , PRSR_AFTER , "Forced YES by main program" );
 	gim->conf->Write();
@@ -56,6 +64,20 @@ int main( int argc , char **argv ) {
 	_LINE;
 	printf( "  I am %s on %s\n" , gim->identity->login() , gim->identity->node() );
 	_LINE;
+	
+	int s = 0;
+	float  p = 0.0;
+	
+	for( int c = 0 ; c < TEST ; c++ ) {
+		v[c] = mt.stat_distr_over_100_percentage( atoi( argv[1] ) );
+		if ( v[c] == __GIM_YES )
+			s++;
+	}
+	
+	p = (float)( (float)( (float)s / TEST ) * 100.0 );
+	printf( "request: %2.3f%%\n" , (float)atoi( argv[1] ) ); 
+	printf( "perc   : %2.3f%%\n" , p ); 
+	printf( "error  : %2.3f%%\n\n" , (float)abs( atoi( argv[1] ) - p ) ); 
 
 
 	delete opt;

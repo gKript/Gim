@@ -5,13 +5,13 @@
         coder                            = asyntote
         host                             = osboxes
         architecture                     = x86_64
-        gim_rel                          = Gim-2.8-1299-d
+        gim_rel                          = Gim-2.8-1307-d
         gkmake_rel                       = 0.8-5
         multi_threads_enable             = YES
         number_of_threads                = 0
         use_sudo                         = YES
         total_build_number               = 1385
-        succesful_build_number           = 1217
+        succesful_build_number           = 1232
         editor_command                   = pluma
         clean                            = NO
     } 
@@ -39,7 +39,7 @@
         project_name                     = Gim
         author                           = gKript.org
         prefix                           = GIM
-        project_header_generation        = YES
+        project_header_generation        = NO
         header_file_name                 = gim_gkmake.h
         include_path                     = include/
         documentation_path               = documentation/
