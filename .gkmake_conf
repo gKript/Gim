@@ -11,7 +11,7 @@
         number_of_threads                = 0
         use_sudo                         = YES
         total_build_number               = 1385
-        succesful_build_number           = 1232
+        succesful_build_number           = 1240
         editor_command                   = pluma
         clean                            = NO
     } 

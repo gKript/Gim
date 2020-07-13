@@ -21,8 +21,8 @@
 #include <gim/gim.h>
 #include <gcg_main_header.h>
 
-
-#define	TEST	1000000
+#define	ITERS	10000
+#define	TEST	10000
 #define	PP		54.0
 
 
@@ -64,21 +64,45 @@ int main( int argc , char **argv ) {
 	_LINE;
 	printf( "  I am %s on %s\n" , gim->identity->login() , gim->identity->node() );
 	_LINE;
-	
-	int s = 0;
-	float  p = 0.0;
-	
-	for( int c = 0 ; c < TEST ; c++ ) {
-		v[c] = mt.stat_distr_over_100_percentage( atoi( argv[1] ) );
-		if ( v[c] == __GIM_YES )
-			s++;
+	int s = 0, it = 0;
+	float p[ITERS];
+	float pm = 0.0;
+	float em = 0.0;
+	float e[ITERS];	
+	float sume = 0.0;
+	float sump = 0.0;
+	for( int r = 0 ; r < 10 ; r++ ) {
+		s = 0;
+		it = 0;
+		pm = 0.0;
+		em = 0.0;
+		sume = 0.0;
+		sump = 0.0;
+		int rn = mt.randInt( 100 ) + 1;
+		for( it = 0 ; it < ITERS ; it++ ) {	
+			s = 0;
+			for( int c = 0 ; c < TEST ; c++ ) {
+				v[c] = mt.stat_distr_over_100_percentage( rn );
+				if ( v[c] == __GIM_YES )
+					s++;
+			}
+			p[it] = (float)( (float)( (float)s / TEST ) * 100.0 );
+			e[it] = (float)( p[it] - rn ) ;
+//			printf( "it: %d: s: %d - P: %2.3f - E: %2.3f\n" , it , s , p[it] , e[it] );
+		}
+		sume = 0.0;
+		sump = 0.0;
+		for( it = 0 ; it < ITERS ; it++ ) {	
+			sume += e[it];
+			sump += p[it];
+//			printf( "Sume %2.3f - Sump%2.3f\n" , sume , sump );
+		}
+		em = (float)( ( sume / (float)ITERS ) );
+		pm = (float)( ( sump / (float)ITERS ) );
+		printf( "request: %2.3f%%\n" , (float)rn ); 
+		printf( "perc   : %2.3f%%\n" , pm ); 
+		printf( "error  : %2.3f%%\n---------------------\n\n" , em ); 
 	}
-	
-	p = (float)( (float)( (float)s / TEST ) * 100.0 );
-	printf( "request: %2.3f%%\n" , (float)atoi( argv[1] ) ); 
-	printf( "perc   : %2.3f%%\n" , p ); 
-	printf( "error  : %2.3f%%\n\n" , (float)abs( atoi( argv[1] ) - p ) ); 
-
 
 	delete opt;
 	delete src_templ;

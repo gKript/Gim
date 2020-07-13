@@ -60,6 +60,7 @@ void print_help( void ) {
 	puts( "   -i    -   -   -   Install the project." );
 	puts( "   -s    -   -   -   Use SUDO to install." );
 	puts( "   -a    -   -   -   Launch autotools." );
+//	puts( "   -g    -   -   -   Prepare the project to be committed/pushed" );
 	puts( "" );
 	puts( "  Build details:" );
 	puts( "   -o    -   -   -   Print the configuration file for this project." );
