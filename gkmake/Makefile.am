@@ -5,9 +5,9 @@ bin_PROGRAMS =  \
 	gkmake
 
 gkmake_SOURCES =  \
-	bmake_heder.cc \
 	bmake_main.h \
-	main.cc
+	main.cc \
+	bmake_header.cc
 
 gkmake_CXXFLAGS = -O3 \
 	-w \

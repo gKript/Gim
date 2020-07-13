@@ -21,8 +21,8 @@
 #include <gim/gim.h>
 #include <gcg_main_header.h>
 
-#define	ITERS	10000
-#define	TEST	10000
+#define	ITERS	1000
+#define	TEST	100000
 #define	PP		54.0
 
 
