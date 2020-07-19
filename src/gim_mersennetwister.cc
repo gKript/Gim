@@ -75,7 +75,7 @@ MTRand::MTRand() {
 		return _gim_Uint32(randInt()) * (1.0/4294967295.0);
 	}
 
-#else if ( _GIM_MT_ORIGINAL == __GIM_NO )
+#elif ( _GIM_MT_ORIGINAL == __GIM_NO )
 
 	_gim_Uint32	MTRand::rand() {
 		return randInt();
@@ -85,6 +85,16 @@ MTRand::MTRand() {
 
 _gim_Uint32	MTRand::rand( const _gim_Uint32 &n ) {
 	return _gim_Uint32(randInt()) * n;
+}
+
+
+float 		MTRand::randFloat( float range ) {
+	_gim_Uint32 fix = 0;
+	float 		flt = 0.0;
+	_gim_Uint32	dcm = 10000;
+		
+	flt = (float)( (float)randInt( (_gim_Uint32)( range * dcm ) ) / (float)dcm ); 
+	return flt;
 }
 
 
@@ -130,7 +140,7 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 		return y; 
 	}
 
-#else if ( _GIM_MT_ORIGINAL == __GIM_NO )						//	GIM RAND ROUTINE MT BASED
+#elif ( _GIM_MT_ORIGINAL == __GIM_NO )						//	GIM RAND ROUTINE MT BASED
 
 	_gim_Uint32	MTRand::randIntMT() {
 		unsigned long y;
@@ -186,7 +196,7 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 
 #endif
 
-_gim_Uint32	MTRand::randUInt8() {
+_gim_Uint8	MTRand::randUInt8() {
 	_gim_Uint8 res = 0;
 	_gim_int32 t = 0;
 	
@@ -253,10 +263,19 @@ _gim_Uint32 MTRand::hash( time_t t, clock_t c ) {
 _gim_flag	MTRand::stat_distr_over_100_percentage( _gim_Uint8 perc ) {
 	if ( perc > 100 ) 
 		return __GIM_ERROR;
-	if ( ( randInt( 100 ) + 1 ) <= perc ) 
+	if ( ( randInt( 100 ) ) <= perc ) 
 		return __GIM_YES;
 	else
 		return __GIM_NO;
 }
 
+
+_gim_flag	MTRand::stat_distr_over_100_percentage( float perc ) {
+	if ( perc > 100.0 ) 
+		return __GIM_ERROR;
+	if ( ( randFloat( 100.0 ) ) <= perc ) 
+		return __GIM_YES;
+	else
+		return __GIM_NO;
+}
 

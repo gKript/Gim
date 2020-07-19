@@ -17,7 +17,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bmake_main.h"
+#include "gkm_main.h"
 
 _gim_flag				do_system = __GIM_YES;
 _gim_flag				install = __GIM_NO;
@@ -145,6 +145,7 @@ int main( int argc , char *argv[] ) {
 		gkconf->AddKey( gim->identity->login() , "gkmake_rel" , GKMAKE_VERSION );
 	}
 	else {
+		gkconf->SetLex( __LEX_C );
 		strcpy( gkmake.login		, gim->identity->login() );
 		strcpy( gkmake.node			, gim->identity->node() );
 //		strcpy( gkmake.arch			, gim->identity->arch() );
@@ -672,7 +673,7 @@ int main( int argc , char *argv[] ) {
 	if ( do_system == __GIM_YES ) {
 		if ( writec == __GIM_YES ) {
 			IF_EXIST_KEY( gkconf , gkmake.login , "succesful_build_number" )
-				printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , gkmake.tot_build + 1 , command );
+				printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , ++gkmake.tot_build , command );
 			else
 				printf( "  BUILDING THE PROJECT ( %s )...\n\n" , command ); 
 		}

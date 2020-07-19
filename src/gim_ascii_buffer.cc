@@ -57,6 +57,11 @@ _gim_flag  gim_ascii_file_obj::set_dimension( _gim_Uint32 size ) {
 }
 
 
+_gim_Uint32	gim_ascii_file_obj::get_dimension( void ) {
+	return dimension;	
+}
+
+
 _gim_flag	gim_ascii_file_obj::append( char * to_append ) {
 	this->seekf( __GIM_LAST );
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {

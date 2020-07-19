@@ -154,6 +154,7 @@
 	typedef	class	gim_list_obj 			_gim_list;
 	typedef	class	prsr_lexical_class		_gim_lex;
 	typedef class	gim_ascii_file_obj		_gim_ascii_buffer;
+	typedef class	gim_checksum_obj		_gim_checksum;
 	
 	
 	//	WORD_VAL, WORD_BITS, 	PicGIM code based	//

@@ -153,7 +153,7 @@ void * gim_list_obj::get_item( void ) {
 
 void *  gim_list_obj::get_item( _gim_Uint32 index ) {
 	if ( index == 0 ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item" , "index cannot be 0" , __GIM_ERROR );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item" , "index cannot be 0" );
 		return NULL;
 	}
 
@@ -166,14 +166,14 @@ void *  gim_list_obj::get_item( _gim_Uint32 index ) {
 		}
 		tmplist = tmplist->nextitem;
 	}
-	gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::get_item" , "Item NOT FOUND" , __GIM_ERROR );
+	gim_error->Set( GIM_ERROR_CRITICAL , "gim_list_obj::get_item" , "Item NOT FOUND" );
 	return NULL;
 }
 
 
 _gim_flag   gim_list_obj::next_item( void ) {
 	if ( currentlist == NULL ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::next_item" , "Endlist reached" , __GIM_ERROR );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gim_list_obj::next_item" , "Endlist reached" );
 		return __GIM_NOT_OK;
 	}
 	currentlist = currentlist->nextitem;
@@ -195,7 +195,7 @@ _gim_flag	gim_list_obj::rewind( void ) {
 
 _gim_flag  gim_list_obj::seek( _gim_Uint32 index ) {
 	if ( index = 0 ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::seek" , "index cannot be 0" , __GIM_ERROR );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_list_obj::seek" , "index cannot be 0" );
 		return NULL;
 	}
 	currentlist = startlist;

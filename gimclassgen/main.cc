@@ -23,8 +23,6 @@
 
 #define	ITERS	1000
 #define	TEST	100000
-#define	PP		54.0
-
 
 void hand_shake( void ) {
   puts  ( "  GimClassGen    -   gKript Gim Class Generator\n" );
@@ -78,7 +76,7 @@ int main( int argc , char **argv ) {
 		em = 0.0;
 		sume = 0.0;
 		sump = 0.0;
-		int rn = mt.randInt( 100 ) + 1;
+		float rn = mt.randFloat( 100.0 ) + 1.0;
 		for( it = 0 ; it < ITERS ; it++ ) {	
 			s = 0;
 			for( int c = 0 ; c < TEST ; c++ ) {
@@ -88,14 +86,12 @@ int main( int argc , char **argv ) {
 			}
 			p[it] = (float)( (float)( (float)s / TEST ) * 100.0 );
 			e[it] = (float)( p[it] - rn ) ;
-//			printf( "it: %d: s: %d - P: %2.3f - E: %2.3f\n" , it , s , p[it] , e[it] );
 		}
 		sume = 0.0;
 		sump = 0.0;
 		for( it = 0 ; it < ITERS ; it++ ) {	
 			sume += e[it];
 			sump += p[it];
-//			printf( "Sume %2.3f - Sump%2.3f\n" , sume , sump );
 		}
 		em = (float)( ( sume / (float)ITERS ) );
 		pm = (float)( ( sump / (float)ITERS ) );

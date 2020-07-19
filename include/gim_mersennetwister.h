@@ -115,8 +115,8 @@
 		
 
 		protected:
-			_gim_Uint32 mt[MT_N];	/* the array for the state vector  */
-			int mti=MT_N+1;			/* mti==MT_N+1 means mt[MT_N] is not initialized */
+			_gim_Uint32 		mt[ MT_N ];	/* the array for the state vector  */
+			int 				mti = MT_N + 1;			/* mti==MT_N+1 means mt[MT_N] is not initialized */
 
 		//Methods
 		public:
@@ -124,30 +124,29 @@
 			MTRand();  // auto-initialize with /dev/urandom or time() and clock()
 			
 			// Access to 32-bit random numbers
-			_gim_Uint32 rand();									// real number in [0,1]
-			_gim_Uint32 rand( const _gim_Uint32 &n );			// real number in [0,n]
-//			_gim_Uint32 randExc();								// real number in [0,1)
-//			_gim_Uint32 randExc( const _gim_Uint32 &n );		// real number in [0,n)
-//			_gim_Uint32 randDblExc();                    		// real number in (0,1)
-//			_gim_Uint32 randDblExc( const _gim_Uint32 &n  );	// real number in (0,n)
+			_gim_Uint32 		rand();									// real number in [0,1]
+			_gim_Uint32 		rand( const _gim_Uint32 &n );			// real number in [0,n]
 
-			_gim_Uint32 randInt( _gim_Uint32 range );           // integer in [0,range-1]
-			_gim_Uint32 randInt();                       		// integer in [0,2^32-1]
-			_gim_flag	stat_distr_over_100_percentage( _gim_Uint8 perc );
+			float 				randFloat( float range );          		// integer in [0,range-1]
+
+			_gim_Uint32 		randInt( _gim_Uint32 range );           // integer in [0,range-1]
+			_gim_Uint32 		randInt();                       		// integer in [0,2^32-1]
+			_gim_flag			stat_distr_over_100_percentage( _gim_Uint8 perc );
+			_gim_flag			stat_distr_over_100_percentage( float perc );
 
 			#if ( _GIM_MT_ORIGINAL == __GIM_NO )			
-				_gim_Uint32 randIntMT( const _gim_Uint32 &n );		// integer in [0,n] for n < 2^32
+				_gim_Uint32 	randIntMT( const _gim_Uint32 &n );		// integer in [0,n] for n < 2^32
 			#endif
 			
-			_gim_Uint32 randUInt8();
-			_gim_Uint32 operator()() { return rand(); }			// same as rand()
+			_gim_Uint8 		randUInt8();
+			_gim_Uint32 		operator()() { return rand(); }			// same as rand()
 			
 			// Re-seeding functions with same behavior as initializers
-			void seed( const _gim_Uint32 oneSeed );
-			void seed();
+			void 				seed( const _gim_Uint32 oneSeed );
+			void 				seed();
 			
 		protected:
-			static _gim_Uint32 hash( time_t t, clock_t c );
+			static _gim_Uint32	hash( time_t t, clock_t c );
 
 	};
 
