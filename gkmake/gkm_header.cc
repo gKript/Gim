@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-#include "bmake_main.h"
+#include "gkm_main.h"
 
 
 void hand_shake( void ) {
@@ -114,7 +114,8 @@ void	make_header( void ) {
 	header->append( "   #define %s_AUTHOR                       %s\n", gkmake.prefix , gkmake.author );
 	header->append( "   #define %s_GKMAKE_TOTAL_BUILD           %d\n", gkmake.prefix , gkmake.prj_sum_total_build );
 	header->append( "   #define %s_GKMAKE_BUILD                 %d\n", gkmake.prefix , gkmake.prj_sum_ok_build );
-	header->append( "   #define %s_GKMAKE_LAST_BUILD            \"%s\"\n\n", gkmake.prefix , gkmake.last_build );
+	header->append( "   #define %s_GKMAKE_LAST_BUILD            \"%s\"\n", gkmake.prefix , gkmake.last_build );
+	header->append( "   #define %s_GKMAKE_RELEASE               \"%s\"\n\n", gkmake.prefix , GKMAKE_VERSION );
 	header->append( "#endif\n\n" );
 }
 

@@ -99,6 +99,13 @@ _gim_flag	gim_string_obj::find		( char * to_find ) {
 }
 
 
+_gim_flag	gim_string_obj::find		( const char * to_find ) {
+	if ( strstr( data->str , to_find ) != NULL )
+		return __GIM_YES;
+	return __GIM_NO;
+}
+
+
 char *		gim_string_obj::left_find	( char to_find ) {
 	return NULL;
 }

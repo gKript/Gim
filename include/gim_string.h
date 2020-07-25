@@ -65,7 +65,6 @@
 	*/
 	class gim_string_obj {
 		public:
-
 			void		set			( const char * to_set );
 			void		set			( char * to_set );
 			void		clean		( void );
@@ -77,6 +76,7 @@
 			void		cat			( const char * to_cat );
 			void		cat			( char * to_cat );
 			_gim_flag	find		( char * to_find );
+			_gim_flag	find		( const char * to_find );
 			char *		left_find	( char to_find );
 			char *		left_find	( char * to_find );
 			char *		left_find	( gim_string_obj to_find );
@@ -88,7 +88,6 @@
 			
 				
 		private:
-
 			gim_string_data	* data;
 			
 		public:
