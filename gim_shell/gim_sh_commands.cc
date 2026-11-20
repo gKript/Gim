@@ -1,7 +1,7 @@
 //
 // gim_sh_commands.cc
 //
-// Gim Shell  -  a GIM application to work 
+// Gim Shell  -  a GIM application to work
 // Version 0.1-0
 // AsYntote - SkyMatrix
 //
@@ -10,7 +10,7 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002, 2003
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
@@ -32,7 +32,89 @@
 #############################################################################*/
 
 #include "gim_shell.h"
- 
- 
 
+typedef int ( * gim_sh_cmd_fn )( int argc , char ** argv );
 
+struct gim_sh_command {
+	const char *	name;
+	gim_sh_cmd_fn	fn;
+	const char *	help;
+};
+
+static int cmd_help		( int argc , char ** argv );
+static int cmd_exit		( int argc , char ** argv );
+static int cmd_version	( int argc , char ** argv );
+
+// command table: to add a command, write its function and add a row here
+static const gim_sh_command gim_sh_commands[] = {
+	{ "help"	, cmd_help		, "list the available commands" },
+	{ "version"	, cmd_version	, "show the Gim version" },
+	{ "exit"	, cmd_exit		, "leave the shell" },
+	{ "quit"	, cmd_exit		, "same as exit" },
+	{ NULL		, NULL			, NULL }
+};
+
+static int gim_sh_strcasecmp( const char * a , const char * b ) {
+	for ( ; *a && *b ; a++ , b++ ) {
+		char ca = ( *a >= 'A' && *a <= 'Z' ) ? *a + 32 : *a;
+		char cb = ( *b >= 'A' && *b <= 'Z' ) ? *b + 32 : *b;
+		if ( ca != cb )
+			return ca - cb;
+	}
+	return (unsigned char)*a - (unsigned char)*b;
+}
+
+int gim_sh_tokenize( char * line , char ** argv , int max_args ) {
+	int argc = 0;
+	char * p = line;
+
+	while ( *p && argc < max_args ) {
+		while ( *p == ' ' || *p == '\t' )
+			p++;
+		if ( ! *p )
+			break;
+		if ( *p == '"' ) {
+			argv[argc++] = ++p;
+			while ( *p && *p != '"' )
+				p++;
+		} else {
+			argv[argc++] = p;
+			while ( *p && *p != ' ' && *p != '\t' )
+				p++;
+		}
+		if ( *p )
+			*p++ = '\0';
+	}
+	return argc;
+}
+
+int gim_sh_execute( char * line ) {
+	char * argv[GIM_SH_ARGV_MAX];
+	int argc = gim_sh_tokenize( line , argv , GIM_SH_ARGV_MAX );
+
+	if ( argc == 0 )
+		return GIM_SH_CMD_OK;			// empty line
+
+	for ( const gim_sh_command * c = gim_sh_commands ; c->name ; c++ ) {
+		if ( gim_sh_strcasecmp( argv[0] , c->name ) == 0 )
+			return c->fn( argc , argv );
+	}
+	printf( "gimshell: unknown command '%s' (try 'help')\n" , argv[0] );
+	return GIM_SH_CMD_ERROR;
+}
+
+static int cmd_help( int argc , char ** argv ) {
+	puts( "Available commands:" );
+	for ( const gim_sh_command * c = gim_sh_commands ; c->name ; c++ )
+		printf( "  %-10s %s\n" , c->name , c->help );
+	return GIM_SH_CMD_OK;
+}
+
+static int cmd_version( int argc , char ** argv ) {
+	puts( gim_version() );
+	return GIM_SH_CMD_OK;
+}
+
+static int cmd_exit( int argc , char ** argv ) {
+	return GIM_SH_CMD_EXIT;
+}

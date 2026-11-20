@@ -34,41 +34,38 @@
 #include "gim_shell.h"
 
 int gim_sh_mainloop( ) {
-    int exit = 1;
-    char in_line[512];
-    
-    __GIM_CLEAR( in_line , 512 , char );
-    while ( exit ) {
-        printf( "%s" , prompt );
-        fgets( in_line , 512 , stdin ); 
-        if ( strlen( gim_sh_buff2str( in_line , 512 ) ) ) {
-			if ( exit )
-				puts( gim_sh_buff2str( in_line , 512 ) );
-			if ( Lexical.str_equal( gim_sh_buff2str( in_line , 512 ) , "exit" ) == __GIM_YES )
-	            exit = 0;
-        }
-    }
-    
-	return 0;
-}
+	char in_line[GIM_SH_LINE_MAX];
+	int running = 1;
 
-char * gim_sh_buff2str( char * in , int charlen ) {
-	static char * out;
-	_gim_flag found = 0;
-	out = (char *)gim->memory->Alloc( sizeof(char) * charlen );
-	__GIM_CLEAR( out , sizeof( out ) , char );
-	for( int a = 0 ; a <= charlen ; a++ ) {
-		if ( in[a] != '\n' )
-			out[a] = in[a];
-		else {
-			out[a] = '\0';
-			found = 1;
-			a = charlen;
+	while ( running ) {
+		printf( "%s" , prompt );
+		fflush( stdout );
+
+		// EOF (Ctrl+D / Ctrl+Z) or read error: leave the shell
+		if ( fgets( in_line , GIM_SH_LINE_MAX , stdin ) == NULL ) {
+			puts( "" );
+			break;
 		}
+
+		size_t len = strlen( in_line );
+		if ( len && in_line[len-1] == '\n' ) {
+			in_line[--len] = '\0';
+			if ( len && in_line[len-1] == '\r' )
+				in_line[--len] = '\0';
+		} else if ( len == GIM_SH_LINE_MAX - 1 ) {
+			// line too long: discard the rest so it is not run as a new command
+			int ch;
+			while ( ( ch = getchar() ) != '\n' && ch != EOF )
+				;
+			puts( "gimshell: line too long, ignored" );
+			continue;
+		}
+
+		if ( gim_sh_execute( in_line ) == GIM_SH_CMD_EXIT )
+			running = 0;
 	}
-	if ( ! found )
-		out[0] = '\0';
-	return out;
+
+	return 0;
 }
 
 

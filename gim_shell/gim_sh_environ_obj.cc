@@ -39,18 +39,28 @@
 _gim_kvalue			* gsh_conf;
 	
 char prompt[256];
+static int gsh_conf_ready = 0;		// 1 if gsh_conf is a usable parser object
 
 void set_gim_sh_environ( void ) {
 	gsh_conf = new 	_gim_kvalue;
 	char gsh_conf_path[1024];
 	sprintf( gsh_conf_path , "%sgim_shell.conf" , gim_environ->GetKeySTR( "GIMSHELL" , "home" ) );
-	if ( gsh_conf->Read( gsh_conf_path ) == __GIM_NOT_EXIST ) {
+	_gim_flag read_result = gsh_conf->Read( gsh_conf_path );
+	if ( read_result == __GIM_NOT_EXIST ) {
 		gsh_conf->Up( gsh_conf_path , "GimShell_configuration_file" );
 		gsh_conf->SetLex( __LEX_B );
 		gsh_conf->AddSection( "variables" );
-		gsh_conf->AddKey( "variables" , "prompt" , "($l@$n)_$p_$$_" );
+		gsh_conf->AddKey( "variables" , "prompt" , GIM_SH_DEFAULT_PROMPT );
 		gsh_conf->Write();
-	}		
+		gsh_conf_ready = 1;
+	}
+	else if ( read_result == __GIM_OK )
+		gsh_conf_ready = 1;
+	else {
+		// unreadable conf: the shell keeps working with the default prompt
+		gim_error->set( GIM_ERROR_WARNING , "set_gim_sh_environ" , "Cannot read gim_shell.conf, using defaults" , __GIM_NOT_OK );
+		gsh_conf_ready = 0;
+	}
 }
 
 void shut_gim_sh_environ( void ) {
@@ -63,11 +73,18 @@ void set_prompt( void ) {
 	char format[256];
 	char tmp[256];
 	int c, len;
-	strcpy( format , gsh_conf->GetKeySTR( "variables" , "prompt" ) );
+	// GetKeySTR returns NULL if the key is missing (e.g. the conf file was read badly)
+	const char * conf_prompt = gsh_conf_ready ? gsh_conf->GetKeySTR( "variables" , "prompt" ) : NULL;
+	if ( ! conf_prompt || ! *conf_prompt ) {
+		gim_error->set( GIM_ERROR_WARNING , "set_prompt" , "Key variables::prompt not found, using default prompt" , __GIM_NOT_OK );
+		conf_prompt = GIM_SH_DEFAULT_PROMPT;
+	}
+	strncpy( format , conf_prompt , sizeof( format ) - 1 );
+	format[ sizeof( format ) - 1 ] = '\0';
 //	puts( format);
 	__GIM_CLEAR( tmp	, 256 , char );
 	__GIM_CLEAR( prompt , 256 , char );
-	for ( c = 0 , len = strlen( format ) ; c <= len ; c++ ) {
+	for ( c = 0 , len = strlen( format ) ; c < len ; c++ ) {
 		switch ( format[c] ) {
 			case '$' : {
 				switch ( format[++c] ) {

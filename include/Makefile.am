@@ -38,6 +38,7 @@ libgim_include_HEADERS = \
 	gim_md5global.h           \
 	gim_memory.h           \
 	gim_mersennetwister.h           \
+	gim_platform.h           \
 	gim_private_key.h           \
 	gim_prsr.h           \
 	gim_sha1.h           \

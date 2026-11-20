@@ -44,7 +44,22 @@
 	 
 	extern gim_obj * gim;
 	
+	#define GIM_SH_DEFAULT_PROMPT	"($l@$n)_$p_$$_"
+
+	#define GIM_SH_LINE_MAX		512
+	#define GIM_SH_ARGV_MAX		16
+
+	// result codes of a shell command
+	#define GIM_SH_CMD_OK		0
+	#define GIM_SH_CMD_ERROR	1
+	#define GIM_SH_CMD_EXIT		2
+
 	int gim_sh_mainloop( void );
-	char * gim_sh_buff2str( char * in , int charlen );
+
+	// tokenizes 'line' in place (whitespace separated, "double quotes" group words)
+	// returns argc, argv points inside 'line'
+	int gim_sh_tokenize( char * line , char ** argv , int max_args );
+	// executes one command line (modified in place), returns a GIM_SH_CMD_* code
+	int gim_sh_execute( char * line );
 		
 #endif // _GIM_SHELL_H_

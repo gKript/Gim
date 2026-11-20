@@ -78,14 +78,14 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 			return __END;
 		else if	( strlen( line ) == 1 )	
 			return __BLANK;
-		char * tmp = strdup( char_filter( line , ' ' ) );
-		if ( is_in_string ( tmp , "#" ) ) 
+		char * tmp = char_filter( strdup( line ) , ' ' );		// filter a copy: 'line' must keep its spaces
+		if ( is_in_string ( tmp , "#" ) )
 			return __COMMENT;
-		else if	( is_in_string ( tmp , "<" ) ) 
+		else if	( is_in_string ( tmp , "<" ) )
 			return __TITLE_O ;
-		else if ( is_in_string ( tmp , ">" ) ) 
+		else if ( is_in_string ( tmp , ">" ) )
 			return __TITLE_C ;
-		else if ( is_in_string ( tmp , "[" ) ) 
+		else if ( is_in_string ( tmp , "[" ) )
 			return __SECTION_O ;
 		else if ( is_in_string ( tmp , "]" ) ) 
 			return __SECTION_C ;
@@ -101,10 +101,10 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 			return __END;
 		else if	( strlen( line ) == 1 ) 
 			return __BLANK;
-		char * tmp = strdup( char_filter( line , ' ' ) );
-		if	( is_in_string ( tmp , "<" ) ) 
+		char * tmp = char_filter( strdup( line ) , ' ' );		// filter a copy: 'line' must keep its spaces
+		if	( is_in_string ( tmp , "<" ) )
 			return __TITLE_O ;
-		else if ( is_in_string ( tmp , "#" ) ) 
+		else if ( is_in_string ( tmp , "#" ) )
 			return __COMMENT;
 		else if ( is_in_string ( tmp , ">" ) ) 
 			return __TITLE_C ;
@@ -120,14 +120,14 @@ _gim_flag	prsr_lexical_class::scan_line	( char * line ) {
 			return __END;
 		else if	( strlen( line ) < 3 )	
 			return __BLANK;
-		char * tmp = strdup( char_filter( line , ' ' ) );
-		if ( is_in_string ( tmp , "#" ) ) 
+		char * tmp = char_filter( strdup( line ) , ' ' );		// filter a copy: 'line' must keep its spaces
+		if ( is_in_string ( tmp , "#" ) )
 			return __COMMENT;
-		else if	( is_in_string ( tmp , "<" ) ) 
+		else if	( is_in_string ( tmp , "<" ) )
 			return __TITLE_O ;
-		else if ( is_in_string ( tmp , ">" ) ) 
+		else if ( is_in_string ( tmp , ">" ) )
 			return __TITLE_C ;
-		else if ( is_in_string ( tmp , "{" ) ) 
+		else if ( is_in_string ( tmp , "{" ) )
 			return __SECTION_O ;
 		else if ( is_in_string ( tmp , "}" ) ) 
 			return __SECTION_C ;
@@ -744,12 +744,30 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 	_gim_Uint8			l = 0;
 	static unsigned int	i;
 	unsigned int		a , b = 0;
-	_gim_flag			after_equal = __GIM_NO;	/* after "=" a ":" is plain text (e.g. C:path on Windows) */
+	_gim_flag			after_equal = __GIM_NO;	/* after the first "=" the rest of the line is the value: only "#" (comment) ends it */
+	_gim_flag			is_sep;
 
 	i = 0;
 	__GIM_CLEAR( Tok , 1 , Tok );
-	if ( gim_memory->caller != __GIM_MEM_READ_KEY )
-		tmp = strdup( char_filter( line , ' ' ) );
+	if ( gim_memory->caller != __GIM_MEM_READ_KEY ) {
+		/*	"key = value" line: spaces are layout only before the "=" ( key, section, padding ),
+			so they are all removed there; the value keeps its inner spaces and only loses the
+			leading ones ( the trailing ones are trimmed at the end ). Other lines are filtered as before. */
+		const char * eq = is_in_string( '=' , separator ) ? strchr( line , '=' ) : NULL;
+		if ( eq && ! memchr( line , '#' , eq - line ) ) {
+			size_t		p = 0 , o = 0;
+			tmp = (char *)malloc( strlen( line ) + 2 );
+			for ( ; line + p < eq ; p++ )
+				if ( line[p] != ' ' )
+					tmp[o++] = line[p];
+			tmp[o++] = '=';
+			for ( p++ ; line[p] == ' ' || line[p] == '\t' ; p++ )
+				;
+			strcpy( tmp + o , line + p );
+		}
+		else
+			tmp = strdup( char_filter( line , ' ' ) );
+	}
 	else {
 		tmp = strdup( line );
 		gim_memory->caller = __GIM_MEM_OTHER ;
@@ -761,9 +779,11 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 			gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::tokenizer" , "too much token in line" , __GIM_ERROR  );
 			return __SYNTAX_ERROR;
 		}
-		if ( ( tmp[a] == '=' ) && is_in_string( '=' , separator ) )
-			after_equal = __GIM_YES;
-		if ( is_in_string( tmp[a] , separator ) && ! ( after_equal == __GIM_YES && tmp[a] == ':' ) ) {
+		if ( after_equal == __GIM_YES )
+			is_sep = ( tmp[a] == '#' ) ? __GIM_YES : __GIM_NO;	// value: ( ) [ ] < > : % = are plain text
+		else
+			is_sep = is_in_string( tmp[a] , separator );
+		if ( is_sep == __GIM_YES ) {
 			if ( tmp[a] == '#' ) {
 				a = l;
 			}
@@ -772,6 +792,8 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 //				printf( "%d:%s - " , i , Tok[i] );
 				i++;
 				b=0;
+				if ( tmp[a] == '=' )
+					after_equal = __GIM_YES;
 			}
 		}
 		else {
@@ -781,6 +803,11 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 		}
 	}
 //	printf( "\n%d\n\n" , i );
+	if ( after_equal == __GIM_YES && i < 20 ) {		// trim the spaces left at the end of the value
+		size_t k = strlen( Tok[i] );
+		while ( k && ( Tok[i][k-1] == ' ' || Tok[i][k-1] == '\t' || Tok[i][k-1] == '\r' ) )
+			Tok[i][--k] = '\0';
+	}
 	return i;
 }
 
