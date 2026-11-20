@@ -394,6 +394,8 @@
 				header.gim_minor = GIM_MINOR;
 				header.gim_subminor = (_gim_Uint16)GIM_SUBMINOR;
 				hand			= NULL;
+				memset( old_root , 0 , sizeof( old_root ) );
+				memset( new_root , 0 , sizeof( new_root ) );
 				linit();
 				crypt 			= new gim_cryptography_obj;
 			};

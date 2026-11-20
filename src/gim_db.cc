@@ -327,6 +327,7 @@ _gim_flag   gim_db_obj::read_tables( void ) {
 		
 		db->tables->add_item( Ttmp );
 	}
+	return __GIM_OK;
 }
 
 
@@ -1131,6 +1132,7 @@ _gim_flag gim_db_obj::make_set_db( _gim_flag value ) {
 			break;
 	    }
 	}
+	return __GIM_OK;
 }
 
 
@@ -1179,6 +1181,7 @@ _gim_flag gim_db_obj::make_set_table( _gim_flag value ) {
 			}
 		}
 	}
+	return __GIM_OK;
 }
 
 

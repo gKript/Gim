@@ -300,7 +300,7 @@ _gim_flag	gim_memory_obj::Unlock_and_free( void *  to_free ) {
 	if ( result == __GIM_NOT_EXIST ) 
 		return __GIM_NOT_EXIST;
 	Unlock( to_free );
-	Free( to_free );
+	return Free( to_free );
 }
 
 
@@ -460,6 +460,14 @@ _gim_Uint32	gim_memory_obj::Memory( void ) {
 	char	tmp[5][256];
 	_gim_Uint32	free = 0;
 	int		cached = 0;
+#if defined( _WIN32 )
+	{
+		unsigned long long t = 0 , a = 0;
+		if ( gim_win_mem_info( &t , &a ) != 0 )
+			return (_gim_Uint32) -1;
+		return ( a > 0xFFFFFFFFULL ) ? 0xFFFFFFFFu : (_gim_Uint32) a;
+	}
+#endif
     procmem = fopen( "/proc/meminfo" , "rb" );
     if ( procmem == NULL ) {
 		return -1;

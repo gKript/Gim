@@ -1,3 +1,0 @@
-libgim_a-gim_enhanced.o: gim_enhanced.cc /usr/include/stdc-predef.h
-
-/usr/include/stdc-predef.h:

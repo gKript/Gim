@@ -216,6 +216,7 @@ _gim_flag	gim_gkfp_obj::extract_data( _gim_gkp_flist * startlist ) {
 					if ( internal_gim->get_state() == __GIM_TH_STOP ) return __GIM_NOT_OK;
 					gim_file_manager->flush( file , currentlist->buffer , currentlist->size );
 					gim_memory->Unlock_and_free( currentlist->buffer );
+					currentlist->buffer = NULL;	/* already freed: ldestroy() must not free it again */
 				}
 				gim_file_manager->close( file );
 				chmod( TmpFileName , currentlist->stat.st_mode );

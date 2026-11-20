@@ -129,6 +129,26 @@ _gim_processor *		gim_identity_obj::cpu( void ) {
 	_gim_processor	* tmp_proc;
 	_gim_processor	* start_proc;
 	
+#if defined( _WIN32 )
+	{
+		int				n = gim_win_cpu_count() , i;
+		_gim_processor	* first = NULL , * last = NULL;
+		for ( i = 0 ; i < n ; i++ ) {
+			_gim_processor * p = (_gim_processor *)gim_memory->Alloc( sizeof( _gim_processor ) , __GIM_MEM_GETID_CPU , __GIM_HIDE );
+			memset( p , 0 , sizeof( _gim_processor ) );
+			p->proc_number = i;
+			gim_win_cpu_info( i , p->model_name , p->vendor_id , &p->cpu_mhz , &p->family , &p->model , &p->stepping );
+			strcpy( p->processor , p->model_name );
+			p->est_cpu_mhz = p->cpu_mhz;
+			p->bogomips = 0;
+			cpu_strfamily( p );
+			p->next = NULL;
+			if ( first == NULL ) first = p; else last->next = p;
+			last = p;
+		}
+		return first;
+	}
+#endif
     cpuinfo = fopen( "/proc/cpuinfo" , "rb" );
     if ( cpuinfo == NULL )
 		return NULL;
@@ -304,6 +324,24 @@ _gim_memory *	gim_identity_obj::memory(void) {
     char	buffer[128];
 	char 	tmp[5][256];
 
+#if defined( _WIN32 )
+	{
+		unsigned long long total = 0 , avail = 0;
+		if ( gim_win_mem_info( &total , &avail ) != 0 )
+			return NULL;
+		gim_error->set( "gim_identity_obj::memory" , "Getting memory details..." );
+		mi = (_gim_memory *)gim_memory->Alloc( sizeof( _gim_memory ) , __GIM_MEM_GETID_MEM , __GIM_HIDE );
+		/* the fields are 32 bit: clamp to 4 GiB - 1 */
+		if ( total > 0xFFFFFFFFULL ) total = 0xFFFFFFFFULL;
+		if ( avail > total ) avail = total;
+		mi->total  = (_gim_Uint32) total;
+		mi->free   = (_gim_Uint32) avail;
+		mi->cached = 0;
+		mi->used   = mi->total - mi->free;
+		mi->ratio  = 100.0 * ( 1.0 - (float)((float)mi->used / (float)mi->total) );
+		return mi;
+	}
+#endif
     procmem = fopen( "/proc/meminfo" , "rb" );
     if ( procmem == NULL )
 		return NULL;

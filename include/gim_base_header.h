@@ -46,22 +46,10 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <stdarg.h>
-	#include <sys/stat.h>
-	#include <sys/mman.h>
-	#include <sys/types.h>
-	#include <fcntl.h>
-	#include <unistd.h>
-	#include <dirent.h>
-	#include <string.h>
-	#include <pwd.h>
-	#include <sys/utsname.h>
-	#include <sys/statvfs.h>
 	#include <ctype.h>
 	#include <time.h>
-	#include <syscall.h>
 	#include <signal.h>
-	#include <sys/time.h>
-	#include <sys/resource.h>
+	#include "gim_platform.h"
 
 	#include "gim_define.h"
 	#include "gim_custom_type.h"

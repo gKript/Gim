@@ -49,6 +49,7 @@ int gim_sh_mainloop( ) {
         }
     }
     
+	return 0;
 }
 
 char * gim_sh_buff2str( char * in , int charlen ) {

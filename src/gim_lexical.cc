@@ -744,6 +744,7 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 	_gim_Uint8			l = 0;
 	static unsigned int	i;
 	unsigned int		a , b = 0;
+	_gim_flag			after_equal = __GIM_NO;	/* after "=" a ":" is plain text (e.g. C:path on Windows) */
 
 	i = 0;
 	__GIM_CLEAR( Tok , 1 , Tok );
@@ -760,19 +761,22 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 			gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::tokenizer" , "too much token in line" , __GIM_ERROR  );
 			return __SYNTAX_ERROR;
 		}
-		if ( is_in_string( tmp[a] , separator ) ) {
+		if ( ( tmp[a] == '=' ) && is_in_string( '=' , separator ) )
+			after_equal = __GIM_YES;
+		if ( is_in_string( tmp[a] , separator ) && ! ( after_equal == __GIM_YES && tmp[a] == ':' ) ) {
 			if ( tmp[a] == '#' ) {
 				a = l;
 			}
 			else {
-				Tok[i][b] = '\0';
+				Tok[i][ ( b < 63 ) ? b : 63 ] = '\0';
 //				printf( "%d:%s - " , i , Tok[i] );
 				i++;
 				b=0;
 			}
 		}
 		else {
-			Tok[i][b] = tmp[a];
+			if ( b < 63 )
+				Tok[i][b] = tmp[a];
 			b++;
 		}
 	}

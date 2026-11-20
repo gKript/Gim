@@ -187,6 +187,7 @@ _gim_Uint32				gim_directory_obj::make( const char * dir_name ) {
 	}
 	p_make( dir_name , __GIM_ROOT );
 	reset_position();
+	return 0;
 }
 
 

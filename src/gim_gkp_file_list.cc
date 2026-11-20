@@ -41,7 +41,7 @@ void 		gim_gkdp_obj::init( void ) {
 	startlist = NULL;
 	currentlist = NULL;
 	endlist = NULL;
-	sprintf( message , "New gim_gkdp_obj @ 0x%x" , (unsigned long)this );
+	sprintf( message , "New gim_gkdp_obj @ %p" , (void *)this );
 	gim_error->set( "gim_gkdp_obj::init" , message );
 }
 			

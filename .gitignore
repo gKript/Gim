@@ -1,0 +1,24 @@
+# Build output
+build/
+build-*/
+out/
+*.o
+*.obj
+*.a
+*.lib
+*.exe
+*.dll
+.deps/
+.libs/
+# Autotools generated
+Makefile
+config.status
+config.log
+config.h
+stamp-h1
+libtool
+*.bak
+# IDE
+.vs/
+.vscode/
+CMakeUserPresets.json

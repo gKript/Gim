@@ -181,12 +181,12 @@ void	gim_file_manager_obj::open_fp( gim_file_manager_list * item , _gim_flag mod
 
 
 void	gim_file_manager_obj::open_fm( gim_file_manager_list * item ) {
-	item->hand->fd = ::open( item->hand->name , O_RDONLY );
+	item->hand->fd = ::open( item->hand->name , O_RDONLY | O_BINARY );
 	if ( item->hand->fd < 0 )
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::open_fm" , "I cannot open" , __GIM_ERROR );
 	else {
 		item->hand->fm = ( char * ) mmap( NULL , item->st.st_size , PROT_READ , MAP_PRIVATE , item->hand->fd , 0 );
-		if ( item->hand->fm == NULL )
+		if ( item->hand->fm == NULL || item->hand->fm == (char *) MAP_FAILED )
 			gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::open_fm" , "I cannot open" , __GIM_ERROR );
 	}	
 }
@@ -198,15 +198,15 @@ void	gim_file_manager_obj::open_fm( gim_file_manager_list * item ) {
 void		gim_file_manager_obj::open_fd( gim_file_manager_list *	item , _gim_flag mode ) {
 	switch( mode ) {
 		case __GIM_READ : {
-			item->hand->fd = ::open( item->hand->name , O_RDONLY );
+			item->hand->fd = ::open( item->hand->name , O_RDONLY | O_BINARY );
 			break;
 		}
 		case __GIM_WRITE : {
-			item->hand->fd = ::open( item->hand->name , O_WRONLY );
+			item->hand->fd = ::open( item->hand->name , O_WRONLY | O_BINARY );
 			break;
 		}
 		case __GIM_APPEND : {
-			item->hand->fd = ::open( item->hand->name , O_APPEND );
+			item->hand->fd = ::open( item->hand->name , O_APPEND | O_BINARY );
 			break;
 		}
 		default : {
@@ -367,7 +367,7 @@ _gim_handler *	gim_file_manager_obj::open( const char * filename , _gim_flag met
 		case __GIM_FILE_MAPPING : {
 			if ( mode == __GIM_READ ) {
 				open_fm( item );
-				if ( item->hand->fm == NULL ) {
+				if ( item->hand->fm == NULL || item->hand->fm == (char *) MAP_FAILED ) {
 					gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::open" , "Some problem opening file" , __GIM_NOT_OK );
 					del_item( item );
 					return NULL;

@@ -137,12 +137,12 @@ char *		gim_string_obj::right_find	( gim_string_obj to_find ) {
 
 
 _gim_flag	gim_string_obj::equal		( char * to_compare ) {
-	
+	return __GIM_NOT_OK;
 }
 
 
 _gim_flag	gim_string_obj::equal		( gim_string_obj to_compare ) {
-	
+	return __GIM_NOT_OK;
 }
 
 

@@ -12,7 +12,7 @@ void 		gim_gkfp_obj::linit( void ) {
 	startlist = NULL;
 	currentlist = NULL;
 	endlist = NULL;
-	sprintf( message , "New gim_gkfp_file_list_obj @ 0x%x" , (unsigned long)this );
+	sprintf( message , "New gim_gkfp_file_list_obj @ %p" , (void *)this );
 	gim_error->set( "gim_gkfp_file_list_obj::init" , message );
 }
 			
