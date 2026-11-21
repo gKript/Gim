@@ -58,6 +58,7 @@ _gim_flag	gim_list_obj::add_item( void *member ) {
 	temp_item->index = ++item_counter;
 	temp_item->item = member;
 	temp_item->nextitem = NULL;
+	temp_item->previtem = ( startlist == NULL ) ? NULL : endlist;
 	if ( startlist == NULL ) {
 		startlist = temp_item;
 		currentlist = startlist;
@@ -74,7 +75,7 @@ _gim_flag	gim_list_obj::add_item( void *member ) {
 
 
 _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
-	if ( index = 0 ) {
+	if ( index == 0 ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::del_item" , "index cannot be 0" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
@@ -83,18 +84,22 @@ _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 	_gim_list_item *	beforelist = NULL;
 	_gim_list_item *	afterlist = NULL;
 
-	if( index == 0 ) {
-		startlist = startlist->nextitem;
-		currentlist = startlist;
-		gim_error->set( "gim_list_obj::add_item" , "Item deleted" );
-	}
 
 	while ( tmplist != NULL ) {
 		if ( tmplist->index == index ) {
 			beforelist = tmplist->previtem;
 			afterlist = tmplist->nextitem;
-			beforelist->nextitem = afterlist;
-			afterlist->previtem = beforelist;
+			// unlink: the first and the last item have no neighbour on one side
+			if ( beforelist == NULL )
+				startlist = afterlist;
+			else
+				beforelist->nextitem = afterlist;
+			if ( afterlist == NULL )
+				endlist = beforelist;
+			else
+				afterlist->previtem = beforelist;
+			if ( currentlist == tmplist )
+				currentlist = afterlist;
 			gim_memory->Unlock_and_free ( tmplist );
 			item_counter--;
 			gim_error->set( "gim_list_obj::add_item" , "Item found and deleted" );
@@ -194,7 +199,7 @@ _gim_flag	gim_list_obj::rewind( void ) {
 
 
 _gim_flag  gim_list_obj::seek( _gim_Uint32 index ) {
-	if ( index = 0 ) {
+	if ( index == 0 ) {
 		gim_error->Set( GIM_ERROR_CRITICAL , "gim_list_obj::seek" , "index cannot be 0" );
 		return NULL;
 	}
@@ -217,6 +222,8 @@ _gim_Uint32		gim_list_obj::items( void ) {
 
 
 _gim_Uint32		gim_list_obj::get_id( void ) {
+	if ( currentlist == NULL )
+		return 0;
 	return currentlist->index;
 }
 
