@@ -30,6 +30,16 @@ _gim_Uint32				running_time;
 
 gim_ascii_file_obj *	header;
 
+//!< Clean the build tree: cmake target clean (only if configured) or make clean.
+static void gk_clean( bool cmake ) {
+	if ( cmake ) {
+		if ( gkmake_exist( "./build/CMakeCache.txt" ) )
+			system( "cmake --build build --target clean" );
+	}
+	else
+		system( "make clean" );
+}
+
 int main( int argc , char *argv[] ) {
 	int ciclo = 1, feedback = 0 , makedoc = __GIM_NO;
 	time_t	tp;
@@ -72,7 +82,10 @@ int main( int argc , char *argv[] ) {
 	gim_getopt_obj * gkopt = new gim_getopt_obj;
 	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:T:C:E:t:coeshidanz" );
 
-	if ( ( ! gkmake_exist( "./Makefile" ) ) && ( gkopt->search( 'a' ) == __GIM_NO ) ) {
+	// CMake is preferred whenever CMakeLists.txt exists (build tree in ./build)
+		const bool use_cmake = ( gkmake_exist( "./CMakeLists.txt" ) != 0 );
+
+		if ( ( ! use_cmake ) && ( ! gkmake_exist( "./Makefile" ) ) && ( gkopt->search( 'a' ) == __GIM_NO ) ) {
 		if ( ( ( gkmake_exist( "./autogen.sh" ) ) || ( gkmake_exist( "./configure" ) ) ) && ( gkmake_exist( "./Makefile.in" ) ) ) {
 			puts( "  No Makefile found, but...\n" );
 			if ( gkmake_exist( "./autogen.sh" ) )
@@ -495,14 +508,14 @@ int main( int argc , char *argv[] ) {
 			case 'c' : {
 				puts( "  CLEANING NOW...\n");
 				if ( do_system == __GIM_YES )
-					system( "make clean" );
+					gk_clean( use_cmake );
 				puts("");
 				break;
 			}
 			case 'n' : {
 				puts( "  DISTCLEAN FOR THE PROJECT NOW...\n");
 				if ( do_system == __GIM_YES )
-					system( "make distclean" );
+					system( use_cmake ? "cmake -E rm -rf build" : "make distclean" );
 				puts("");
 				do_system = __GIM_NO;
 				writec = __GIM_NO;
@@ -616,9 +629,9 @@ int main( int argc , char *argv[] ) {
 			case 'i' : {
 				install = __GIM_YES;
 				if ( gkmake.sudo == __GIM_YES ) 
-					sprintf( command_t1 , "sudo make install" );
+					sprintf( command_t1 , "sudo %s" , use_cmake ? "cmake --install build" : "make install" );
 				else
-					sprintf( command_t1 , "make install" );
+					sprintf( command_t1 , "%s" , use_cmake ? "cmake --install build" : "make install" );
 				break;
 			}
 		}		
@@ -657,16 +670,21 @@ int main( int argc , char *argv[] ) {
 	if ( do_system == __GIM_YES ) {
 		if ( gkmake.clean == __GIM_YES ) {
 			puts( "  CLEANING NOW...\n");
-			system( "make clean" );
+			gk_clean( use_cmake );
 			puts("");
 		}
 	}
 	
-	sprintf( command , "%s" , GKMAKE_COMMAND );
+	if ( use_cmake && ( do_system == __GIM_YES ) && ( ! gkmake_exist( "./build/CMakeCache.txt" ) ) ) {
+			puts( "  CONFIGURING WITH CMAKE...\n" );
+			if ( system( "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release" ) )
+				do_system = __GIM_NO;
+		}
+		sprintf( command , "%s" , use_cmake ? "cmake --build build" : GKMAKE_COMMAND );
 
 	if ( gkmake.parallel == __GIM_YES ) {
 		char tmp[16];
-		sprintf( tmp , " -j%d" , gkmake.num_core );
+		sprintf( tmp , use_cmake ? " --parallel %d" : " -j%d" , gkmake.num_core );
 		strcat( command , tmp );
 	}
 
@@ -726,7 +744,13 @@ int main( int argc , char *argv[] ) {
 						puts( "\n  ERROR : Some error with the Documentation path...\n\n" );
 					}
 					else {
-						system( gkconf->GetKeySTR( gkmake.prj_name , "documentation_command" ) );
+						const char * doc_cmd = gkconf->GetKeySTR( gkmake.prj_name , "documentation_command" );
+#ifdef _WIN32
+							// make_doc.sh is a shell script: on Windows run make_doc.bat, which does the same steps
+							if ( gkmake_exist( "./make_doc.bat" ) )
+								doc_cmd = ".\\make_doc.bat";
+#endif
+							system( doc_cmd );
 						chdir( cur_path );
 					}
 				}

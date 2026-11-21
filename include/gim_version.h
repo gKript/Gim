@@ -81,11 +81,11 @@
 	
 	#define GIM_VERSION_STATE	   __GIM_DEVELOP
 
-	#define GIM_VERSION				"2.8-9"		/*!<	The string version of Gim	*/
+	#define GIM_VERSION				"2.9-1"		/*!<	The string version of Gim	*/
 	#define	GIM_MILESTONE			"3.0"
 
 	#define	GIM_MAJOR				2			/*!<	The major version of Gim	*/
-	#define	GIM_MINOR				8			/*!<	The minor version of Gim	*/
+	#define	GIM_MINOR				9			/*!<	The minor version of Gim	*/
 
 	#if ( GIM_VERSION_STATE == __GIM_DEVELOP )				/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
 		#define	GKMAKE_VERSIONING
@@ -93,7 +93,7 @@
 		#define GIM_SUBMINOR		GIM_GKMAKE_BUILD
 		#define	GIM_BUILD_LAST		GIM_GKMAKE_LAST_BUILD
 	#elif ( GIM_VERSION_STATE == __GIM_RELEASE )
-		#define GIM_SUBMINOR		9
+		#define GIM_SUBMINOR		1
 	#endif
 	
 

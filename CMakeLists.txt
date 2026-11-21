@@ -19,7 +19,7 @@ set(GIM_SOURCES
 	gim_log.cc gim_md5.cc gim_memory.cc gim_private_key.cc gim_sha1.cc
 	gim_sha256.cc gim_sha512.cc gim_signal.cc gim_string.cc gim_time.cc
 	gim_version.cc gim_list.cc gim_picgim.cc gim_getopt.cc gim_ascii_buffer.cc
-	gim_mersennetwister.cc)
+	gim_mersennetwister.cc gim_ai_train.cc)
 if(WIN32)
 	list(APPEND GIM_SOURCES gim_platform_win32.cc)
 endif()
@@ -67,10 +67,21 @@ if(GIM_BUILD_TOOLS)
 	gim_tool(gimstat     gim_stat/gimstat.cc)
 	gim_tool(gkmake      gkmake/main.cc gkmake/gkm_header.cc)
 	gim_tool(gimclassgen gimclassgen/main.cc)
+	gim_tool(gimaitrain gim_ai_train/main.cc)
+	# Windows: keep a copy of gkmake.exe in a folder of the PATH (default: build-mingw) after each build.
+		# A running gkmake cannot be overwritten, so the old copy is first renamed (allowed on Windows).
+		if(WIN32)
+			set(GIM_GKMAKE_COPY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build-mingw" CACHE PATH "folder that receives a copy of gkmake.exe (Windows only, skipped when missing)")
+			if(EXISTS "${GIM_GKMAKE_COPY_DIR}")
+				add_custom_command(TARGET gkmake POST_BUILD
+					COMMAND ${CMAKE_COMMAND} -DSRC=$<TARGET_FILE:gkmake> -DDST=${GIM_GKMAKE_COPY_DIR}/gkmake.exe -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gkmake_copy.cmake
+					VERBATIM)
+			endif()
+		endif()
 	target_include_directories(gimclassgen PRIVATE gimclassgen)
 	gim_tool(gimshell
 		gim_shell/main.cc gim_shell/gim_sh_callback.cc gim_shell/gim_sh_commands.cc
-		gim_shell/gim_sh_environ_obj.cc gim_shell/gim_sh_mainloop.cc)
+		gim_shell/gim_sh_environ_obj.cc gim_shell/gim_sh_mainloop.cc gim_shell/gim_sh_db.cc gim_shell/gim_sh_table.cc gim_shell/gim_sh_record.cc)
 endif()
 
 # ---------------------------------------------------------------- install
