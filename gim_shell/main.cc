@@ -61,6 +61,7 @@ int main( int argc , char **argv ) {
 	set_gim_sh_environ();
 	set_prompt();
 	gim_sh_mainloop();
+	gim_sh_db_shutdown();
 	shut_gim_sh_environ();
 
 //	delete ndb;			// test puorpose only

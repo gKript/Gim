@@ -51,6 +51,11 @@ static const gim_sh_command gim_sh_commands[] = {
 	{ "version"	, cmd_version	, "show the Gim version" },
 	{ "exit"	, cmd_exit		, "leave the shell" },
 	{ "quit"	, cmd_exit		, "same as exit" },
+	{ "db"		, cmd_db		, "manage databases: db create | list | use" },
+	{ "dblist"	, cmd_dblist	, "list the databases (same as 'db list')" },
+	{ "table"	, cmd_table		, "show tables: table list | show <name>" },
+	{ "insert"	, cmd_insert	, "add a record: insert <table> <field> <value> ..." },
+	{ "select"	, cmd_select	, "list records: select <table> [where ... [and ...]] [order by <f> [desc]] [limit n | last n]" },
 	{ NULL		, NULL			, NULL }
 };
 

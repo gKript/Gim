@@ -41,13 +41,16 @@
 	#include "../include/gim_list.h"
 	#include "gim_sh_environ_obj.h"
 	#include "gim_sh_callback.h"
+	#include "gim_sh_db.h"
+	#include "gim_sh_table.h"
+	#include "gim_sh_record.h"
 	 
 	extern gim_obj * gim;
 	
 	#define GIM_SH_DEFAULT_PROMPT	"($l@$n)_$p_$$_"
 
 	#define GIM_SH_LINE_MAX		512
-	#define GIM_SH_ARGV_MAX		16
+	#define GIM_SH_ARGV_MAX		64
 
 	// result codes of a shell command
 	#define GIM_SH_CMD_OK		0

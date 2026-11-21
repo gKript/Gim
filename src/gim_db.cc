@@ -302,6 +302,7 @@ _gim_flag   gim_db_obj::read_tables( void ) {
 		sprintf( Ttmp->file_name_struct_long	,   "%s/%s" , home , Ttmp->file_name_struct );
 		sprintf( Ttmp->file_name_data_long		,	"%s/%s" , home , Ttmp->file_name_data );
 		Ttmp->Tstruct->Read( Ttmp->file_name_struct_long );
+			Ttmp->Tdata->Read( Ttmp->file_name_data_long );		// the records (missing file = no records yet)
 
 		Ttmp->type  = Ttmp->Tstruct->GetKeyINT( "TABLE"   , "type" );
 		Ttmp->items = Ttmp->Tstruct->GetKeyINT( "TABLE"   , "items" );
@@ -312,13 +313,17 @@ _gim_flag   gim_db_obj::read_tables( void ) {
 		Ttmp->records = new _gim_list;
 
 		if ( Ttmp->fields_number ) {
-			for ( _gim_Uint8 f = 0 ; f < Ttmp->fields_number ; f++ ) {
+			for ( _gim_Uint8 f = 1 ; f <= Ttmp->fields_number ; f++ ) {	// field ids are 1..N (as written by ADD FIELD)
 				char Fname[128];
 				char Ftype[128];
 				sprintf( Fname , "field_%d_name" , f );
 				sprintf( Ftype , "field_%d_type" , f );
 				_gim_db_field * Tfield = (_gim_db_field *)gim_memory->Alloc( sizeof( _gim_db_field ) , __GIM_MEM_DB_MAIN , __GIM_HIDE );
-				strcpy( Tfield->name , Ttmp->Tstruct->GetKeySTR( "field"   , Fname ) ); 
+				if ( Ttmp->Tstruct->GetKeySTR( "field" , Fname ) == NULL ) {
+						gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::read_tables" , "field key %s missing in table %s" , Fname , Ttmp->name );
+						continue;
+					}
+					strcpy( Tfield->name , Ttmp->Tstruct->GetKeySTR( "field" , Fname ) ); 
 				Tfield->type = Ttmp->Tstruct->GetKeyINT( "field"   , Ftype );
 				Ttmp->fields->add_item( Tfield );
 				gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_add_field" , "[id field %d] [type %d] [name %s]" , f , Tfield->type , Tfield->name );
@@ -694,12 +699,23 @@ _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 	}
 	gdbs_close();
 	f = gdbs_execute();
+	if ( f != __GIM_OK ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::init_from_gdbs" , "GDBS script failed: see the previous messages" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
 	gim_error->Set( GIM_ERROR_MESSAGE , "prsr_lexical_class::init_from_gdbs" , "GDBS: all done!" );
 	return __GIM_OK;
 }
 
 
 _gim_int8 gim_db_obj::gdbs_tokenizer( char * line ) {
+	{	// blank lines (spaces, tabs, CR, LF only) are skipped, not syntax errors
+		const char * p = line;
+		while ( *p == ' ' || *p == '\t' || *p == '\r' || *p == '\n' )
+			p++;
+		if ( *p == '\0' )
+			return __SKIPPED;
+	}
 	if ( !strlen( line ) )
 		return __SKIPPED;
 
@@ -828,6 +844,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 	gdbs_script->rewind();
 
 	_gim_gdbs_line   * line = NULL;
+		_gim_flag		result = __GIM_OK;	// first failing command makes the whole script fail
 
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING GDBS ITEMS [%3d]..." , gdbs_script->items() );
 	do {
@@ -842,7 +859,8 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 				}
 				case __GDBS_ADD_FIELD : {
 					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : ADD FIELD..." , line->lline  );
-					make_add_field( line->fvalue , line->svalue , line->tparameter );
+					if ( make_add_field( line->fvalue , line->svalue , line->tparameter ) != __GIM_OK )
+							result = __GIM_ERROR;
 					break;
 				}
 				case __GDBS_CREATE_TABLE : {
@@ -872,12 +890,14 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 				}
 				case __GDBS_SET_FIELD : {
 					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : SET FIELD..." , line->lline  );
-					make_set_field( line->fvalue , line->svalue );
+					if ( make_set_field( line->fvalue , line->svalue ) != __GIM_OK )
+							result = __GIM_ERROR;
 					break;
 				}
 				case __GDBS_SET_TABLE : {
 					gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : SET TABLE..." , line->lline  );
-					make_set_table( line->fvalue );
+					if ( make_set_table( line->fvalue ) != __GIM_OK )
+							result = __GIM_ERROR;
 					break;
 				}
 				case __GDBS_UNPIN_TABLE : {
@@ -1006,7 +1026,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 			gdbs_script->next_item();
 		}
 	} while ( line != NULL );
-	return __GIM_OK;
+	return result;
 }
 
 
@@ -1137,6 +1157,10 @@ _gim_flag gim_db_obj::make_set_db( _gim_flag value ) {
 
 
 _gim_flag gim_db_obj::make_set_table( _gim_flag value ) {
+	if ( db->Ttab == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::make_set_table" , "SET TABLE without a pinned table: use PIN TABLE first" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::create_set_table" , "Executing SET TABLE [%d]..." , value );
 	if ( db->type == GIM_DB_PERMANENT ) {
 		switch ( value ) {
@@ -1186,6 +1210,10 @@ _gim_flag gim_db_obj::make_set_table( _gim_flag value ) {
 
 
 _gim_flag gim_db_obj::make_add_field( _gim_Uint8 value , _gim_flag type , char * name ) {
+	if ( db->Ttab == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::make_add_field" , "ADD FIELD without a pinned table: use PIN TABLE first" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
 	char Fname[128];
 	char Ftype[128];
 
@@ -1211,6 +1239,10 @@ _gim_flag gim_db_obj::make_add_field( _gim_Uint8 value , _gim_flag type , char *
 
 
 _gim_flag gim_db_obj::make_set_field( _gim_Uint8 value , _gim_flag type ) {
+	if ( db->Ttab == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::make_set_field" , "SET FIELD without a pinned table: use PIN TABLE first" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::make_set_field" , "[id field %d] [type %d]" , value , type );
 	switch( type ) {
 /*		case GIM_DB_IS_INDEX : {
@@ -1247,6 +1279,166 @@ _gim_flag	gim_db_obj::gim_db_version	( int maj , int min ) {
 
 
 
+
+
+_gim_Uint8 gim_db_obj::tables_count( void ) {
+	return db->tables->items();
+}
+
+
+// index is 1-based, as the tabN_name keys of the DB configuration
+_gim_db_table * gim_db_obj::table_at( _gim_Uint8 index ) {
+	if ( ( index < 1 ) || ( index > db->tables->items() ) )
+		return NULL;
+	db->tables->rewind();
+	for ( _gim_Uint8 c = 1 ; c < index ; c++ )
+		db->tables->next_item();
+	return (_gim_db_table *)db->tables->get_item();
+}
+
+
+// Adds one record to a table. 'fields' and 'values' are n pairs; every field of the table must be given once.
+// Values are checked against the field types and the KEY field must stay unique.
+_gim_flag gim_db_obj::insert_record( const char * table_name , _gim_Uint8 n , const char ** fields , const char ** values ) {
+	_gim_db_table * t = seek_table( (char *) table_name );
+	if ( t == NULL ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: table not found" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+	if ( ( t->fields == NULL ) || ( t->Tdata == NULL ) || ( t->Tstruct == NULL ) ) {
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: table is not complete" , __GIM_ERROR );
+		return __GIM_ERROR;
+	}
+
+	_gim_Uint8 nf = (_gim_Uint8) t->fields->items();
+	if ( n != nf ) {
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: the table has %d fields, %d given" , nf , n );
+		return __GIM_ERROR;
+	}
+
+	// values in table order, normalised (INT as decimal, BOOL as YES/NO, FLOAT as is)
+	static char norm[ 255 ][ 512 ];
+	const char * vals[ 255 ];
+	const char * keyname = NULL;
+	const char * keyval = NULL;
+	int key = t->Tstruct->GetKeyINT( "STRUCT" , "key_field_number" );
+
+	t->fields->rewind();
+	for ( _gim_Uint8 i = 0 ; i < nf ; i++ ) {
+		_gim_db_field * f = (_gim_db_field *) t->fields->get_item();
+		t->fields->next_item();
+
+		const char * given = NULL;
+		for ( _gim_Uint8 j = 0 ; j < n ; j++ ) {
+			if ( strcmp( fields[ j ] , f->name ) == 0 ) {
+				if ( given != NULL ) {
+					gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: field %s given twice" , f->name );
+					return __GIM_ERROR;
+				}
+				given = values[ j ];
+			}
+		}
+		if ( given == NULL ) {
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: field %s is missing" , f->name );
+			return __GIM_ERROR;
+		}
+
+		char * end = NULL;
+		if ( f->type == GIM_DB_TYPE_INT ) {
+			long v = strtol( given , &end , 10 );
+			if ( ( end == given ) || ( *end != '\0' ) ) {
+				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: field %s wants an INT, got '%s'" , f->name , given );
+				return __GIM_ERROR;
+			}
+			sprintf( norm[ i ] , "%ld" , v );
+		}
+		else if ( f->type == GIM_DB_TYPE_FLOAT ) {
+			strtod( given , &end );
+			if ( ( end == given ) || ( *end != '\0' ) ) {
+				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: field %s wants a FLOAT, got '%s'" , f->name , given );
+				return __GIM_ERROR;
+			}
+			strncpy( norm[ i ] , given , sizeof( norm[ i ] ) - 1 );
+			norm[ i ][ sizeof( norm[ i ] ) - 1 ] = '\0';
+		}
+		else if ( ( f->type == GIM_DB_TYPE_BOOL ) || ( f->type == GIM_DB_TYPE_FLAG ) ) {
+			if ( strcmp( given , "YES" ) == 0 || strcmp( given , "1" ) == 0 )
+				strcpy( norm[ i ] , "YES" );
+			else if ( strcmp( given , "NO" ) == 0 || strcmp( given , "0" ) == 0 )
+				strcpy( norm[ i ] , "NO" );
+			else {
+				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: field %s wants YES/NO, got '%s'" , f->name , given );
+				return __GIM_ERROR;
+			}
+		}
+		else {
+			strncpy( norm[ i ] , given , sizeof( norm[ i ] ) - 1 );
+			norm[ i ][ sizeof( norm[ i ] ) - 1 ] = '\0';
+		}
+		vals[ i ] = norm[ i ];
+
+		if ( ( key >= 1 ) && ( i + 1 == key ) ) {
+			keyname = f->name;
+			keyval = norm[ i ];
+		}
+	}
+
+	// KEY must be unique in the table
+	if ( keyname != NULL && t->Tdata->ParserIsUp() == __GIM_YES ) {
+		int have = t->Tdata->GetHowManySection();
+		for ( int s = 0 ; s < have ; s++ ) {
+			char * sec = t->Tdata->GetSectionName( (_gim_int16) s );
+			char * kv = ( sec != NULL ) ? t->Tdata->GetKeySTR( sec , keyname ) : NULL;
+			if ( ( kv != NULL ) && ( strcmp( kv , keyval ) == 0 ) ) {
+				gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::insert_record" , "INSERT: KEY %s = %s already exists" , keyname , keyval );
+				return __GIM_ERROR;
+			}
+		}
+	}
+
+	// a unique section name for the record (the hash is not reused between sessions)
+	char H[ 256 ];
+	sprintf( H , "%s-%d-%ld-%p" , t->name , t->items , (long) time( NULL ) , (void *) t );
+	char hash[ 64 ];
+	strncpy( hash , cs->md5( H , strlen( H ) ) , sizeof( hash ) - 1 );
+	hash[ sizeof( hash ) - 1 ] = '\0';
+
+	// a table saved with no records has no data parser yet: bring it up as make_create_table does
+	if ( t->Tdata->ParserIsUp() != __GIM_YES ) {
+		char title[ 80 ];
+		sprintf( title , "%s_data" , t->name );
+		t->Tdata->Up( t->file_name_data_long , title );
+		t->Tdata->SetLex( __LEX_A );
+	}
+	t->Tdata->AddSection( hash );
+	t->fields->rewind();
+	for ( _gim_Uint8 i = 0 ; i < nf ; i++ ) {
+		_gim_db_field * f = (_gim_db_field *) t->fields->get_item();
+		t->fields->next_item();
+		if ( f->type == GIM_DB_TYPE_INT )
+			t->Tdata->AddKey( hash , f->name , atoi( vals[ i ] ) );
+		else if ( f->type == GIM_DB_TYPE_FLOAT )
+			t->Tdata->AddKey( hash , f->name , (float) atof( vals[ i ] ) );
+		else if ( ( f->type == GIM_DB_TYPE_BOOL ) || ( f->type == GIM_DB_TYPE_FLAG ) )
+			t->Tdata->AddKeyFlag( hash , f->name , ( strcmp( vals[ i ] , "YES" ) == 0 ) ? __GIM_YES : __GIM_NO );
+		else
+			t->Tdata->AddKey( hash , f->name , vals[ i ] );
+	}
+
+	t->items++;
+	t->Tstruct->ChangeKey( "TABLE" , "items" , t->items );
+	if ( db->type == GIM_DB_PERMANENT ) {
+		t->Tdata->Write();
+		t->Tstruct->Write();
+	}
+	gim_error->Set( GIM_ERROR_MESSAGE , "gim_db_obj::insert_record" , "INSERT: record added to [%s] (items %d)" , t->name , t->items );
+	return __GIM_OK;
+}
+
+
+char * gim_db_obj::get_name( void ) {
+	return name;
+}
 
 
 char * gim_db_obj::db_checksum( char * data ) {

@@ -1,0 +1,28 @@
+# Esempio di script GDBS (Gim DataBase Script): anagrafica clienti.
+# Sintassi verificata con il parser di Gim (init_from_gdbs):
+#   - ogni comando termina con ';'
+#   - '#' inizia un commento (fino a fine riga)
+#   - i token sono separati da spazi, '=' o ';'
+#   - lo script viene letto tutto prima di essere eseguito: un errore di sintassi
+#     blocca l'intero script (init_from_gdbs restituisce -1 e non crea nulla)
+#   - le righe vuote sono ignorate; ADD/SET FIELD vanno sempre dopo PIN TABLE
+#   - gli id dei campi partono da 1 (ADD FIELD 1 ..., ADD FIELD 2 ...)
+# Comandi usati qui:
+#   CREATE DB <nome>                      crea il database
+#   SET DB <VOLATILE|PERMANENT|...>       tipo del database
+#   CREATE TABLE <nome>                   crea una tabella
+#   PIN TABLE <nome>                      seleziona la tabella corrente
+#   ADD FIELD <id> <TIPO> <nome>          aggiunge un campo alla tabella pinnata
+#   SET FIELD <id> <PROPRIETA>            imposta una proprieta del campo (es. KEY)
+#   UNPIN TABLE                           deseleziona la tabella corrente
+# Tipi di campo: INT, FLOAT, PERCENTAGE, BOOL, FLAG, STRING, DATE, TIME, TIMESTAMP
+# Proprieta campo: KEY, NOT_KEY, IS_INDEX, IS_NOT_INDEX, AUTOINCREMENTAL, IS_UNIQUE
+CREATE DB anagrafica;
+SET DB VOLATILE;
+# tabella clienti
+CREATE TABLE clienti;
+PIN TABLE clienti;
+ADD FIELD 1 INT codice;
+SET FIELD 1 KEY;
+ADD FIELD 2 STRING nome;
+UNPIN TABLE;
