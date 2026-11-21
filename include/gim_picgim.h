@@ -59,7 +59,19 @@
 
 		public:
 
-			/*!gim_picgim_obj constructor
+			/*!	\brief	CRC-8 used by SSP (SYNC/COMM_CONTRACT.md, sez. 1).
+					Dallas/Maxim: poly 0x8C (0x31 reflected), init 0x00, reflected, no xorout.
+					Check: crc8("123456789") == 0xA1.
+				*/
+				_gim_Uint8	crc8_ssp	( const _gim_Uint8 * data , _gim_Uint32 length );
+
+				/*!	\brief	CRC-32 IEEE 802.3 used by GCP (SYNC/COMM_CONTRACT.md, sez. 2.4).
+					Poly 0xEDB88320 reflected, init and xorout 0xFFFFFFFF.
+					Check: crc32("123456789") == 0xCBF43926. On the wire the 4 bytes go LSB first.
+				*/
+				_gim_Uint32	crc32_gcp	( const _gim_Uint8 * data , _gim_Uint32 length );
+
+				/*!gim_picgim_obj constructor
 		    */
 		    inline gim_picgim_obj() {
 				gim_error->set( "gim_picgim_obj::gim_picgim_obj()" , "A new Picgim infrastructure allocated" );

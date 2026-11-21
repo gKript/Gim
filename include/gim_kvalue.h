@@ -10,7 +10,7 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002, 2003
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
@@ -36,11 +36,12 @@
 
 /*!	\file		gim_kvalue.h
 	\version	1.0-0
-	\brief		Copyright (C) 2002, 2003<BR>
+	\brief		Key/value configuration files: reading, writing and editing of sections and keys.
+				Copyright (C) 2002, 2003<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
 				Released under the terms of the GNU General Public License v2<BR>
 				[ http://www.gkript.org/gkript-gpl.html ]
-*/ 		
+*/
 
 #ifndef _GIM_PRSR_KVALUE_H_
 #define _GIM_PRSR_KVALUE_H_
@@ -49,76 +50,78 @@
 	#include "gim_prsr.h"
 	#include "gim_lexical.h"
 
-	
-	#ifndef __GIM_LOG_TYPE 
+
+	#ifndef __GIM_LOG_TYPE
+		/*! Type of a log file. */
 		enum log_file_type {
-			__GIM_LOG_TEXT = 41,
-			__GIM_LOG_HTML,
+			__GIM_LOG_TEXT = 41,	/*!< plain text log */
+			__GIM_LOG_HTML,			/*!< HTML log */
 		};
 		#define __GIM_LOG_TYPE
 	#endif
 
-	
-	#define	PRSR_GIM_INT			0	
-	#define PRSR_GIM_STR			1
 
-	#define PRSR_START_FILE			"< %s"
-	#define PRSR_END_FILE			">"
+	#define	PRSR_GIM_INT			0	/*!< the value of a key is an integer */
+	#define PRSR_GIM_STR			1	/*!< the value of a key is a string */
 
-	#define PRSR_START_SECTION		"    [ %s"
-	#define PRSR_END_SECTION		"    ]"
+	#define PRSR_START_FILE			"< %s"			/*!< format of the title line (Lex A) */
+	#define PRSR_END_FILE			">"				/*!< end of the title (Lex A) */
 
-	#define PRSR_A_KEY_INT			"        %s = %d"
-	#define PRSR_A_KEY_STR			"        %s = %s"
+	#define PRSR_START_SECTION		"    [ %s"		/*!< format of a section opening (Lex A) */
+	#define PRSR_END_SECTION		"    ]"			/*!< format of a section closing (Lex A) */
 
-	#define PRSR_B_START_SECTION	"    %s"
-	#define PRSR_B_KEY_INT			"        %s::%s = %d"
-	#define PRSR_B_KEY_STR			"        %s::%s = %s"
+	#define PRSR_A_KEY_INT			"        %s = %d"	/*!< format of an integer key (Lex A) */
+	#define PRSR_A_KEY_STR			"        %s = %s"	/*!< format of a string key (Lex A) */
+
+	#define PRSR_B_START_SECTION	"    %s"			/*!< format of a section (Lex B) */
+	#define PRSR_B_KEY_INT			"        %s::%s = %d"	/*!< format of an integer key (Lex B) */
+	#define PRSR_B_KEY_STR			"        %s::%s = %s"	/*!< format of a string key (Lex B) */
 //	#define PRSR_B_SEPARATOR		"  >\n\n"
 
-	#define PRSR_C_START_SECTION	"    ( %s ) { "
-	#define PRSR_C_END_SECTION		"    } \n    # ------------------------------------"
-	#define PRSR_C_KEY_INT			"        %-32s = %d"
-	#define PRSR_C_KEY_STR			"        %-32s = %s"
+	#define PRSR_C_START_SECTION	"    ( %s ) { "	/*!< format of a section opening (Lex C) */
+	#define PRSR_C_END_SECTION		"    } \n    # ------------------------------------"	/*!< format of a section closing (Lex C) */
+	#define PRSR_C_KEY_INT			"        %-32s = %d"	/*!< format of an integer key (Lex C) */
+	#define PRSR_C_KEY_STR			"        %-32s = %s"	/*!< format of a string key (Lex C) */
 
-	
+
+	/*! Position of a comment with respect to the item it refers to. */
 	enum	gim_prsr_comment_position {
-		PRSR_NONE	= -1,
-		PRSR_BEFORE	= 1,
-		PRSR_INLINE,
-		PRSR_AFTER
+		PRSR_NONE	= -1,		/*!< no comment */
+		PRSR_BEFORE	= 1,		/*!< the comment is written before the item */
+		PRSR_INLINE,			/*!< the comment is written on the same line */
+		PRSR_AFTER				/*!< the comment is written after the item */
 	};
 
-	#define	__NO_FLUSH			0
-	#define	__FLUSH				1
+	#define	__NO_FLUSH			0	/*!< Close(): do not write the changes to disk */
+	#define	__FLUSH				1	/*!< Close(): write the changes to disk */
 
 	/*!	\def	IF_EXIST_SECTION_IN_CONF( section )
 		\brief	Use this macro to verify the existence of a section in gim_conf prsr obj
 	*/
-	#define IF_EXIST_SECTION_IN_CONF( section )		if ( gim_conf->ExistSection( section ) == __GIM_EXIST ) 
+	#define IF_EXIST_SECTION_IN_CONF( section )		if ( gim_conf->ExistSection( section ) == __GIM_EXIST )
 
 	/*!	\def	IF_EXIST_KEY_IN_CONF( section , key )
 		\brief	Use this macro to verify the existence of a key in a section in gim_conf prsr obj
 	*/
 	#define IF_EXIST_KEY_IN_CONF( section , key )	if ( gim_conf->ExistSection( section ) == __GIM_EXIST ) if ( gim_conf->ExistKey( section , key ) == __GIM_EXIST )
 
-	/*!	\def	IF_EXIST_SECTION( section )
-		\brief	Use this macro to verify the existence of a section in gim_conf prsr obj
+	/*!	\def	IF_EXIST_SECTION( obj_prsr , section )
+		\brief	Use this macro to verify the existence of a section in a prsr obj
 	*/
-	#define IF_EXIST_SECTION( obj_prsr , section )		if ( obj_prsr->ExistSection( section ) == __GIM_EXIST ) 
+	#define IF_EXIST_SECTION( obj_prsr , section )		if ( obj_prsr->ExistSection( section ) == __GIM_EXIST )
 
-	/*!	\def	IF_EXIST_KEY_IN_CONF( section , key )
-		\brief	Use this macro to verify the existence of a key in a section in gim_conf prsr obj
+	/*!	\def	IF_EXIST_KEY( obj_prsr , section , key )
+		\brief	Use this macro to verify the existence of a key in a section in a prsr obj
 	*/
 	#define IF_EXIST_KEY( obj_prsr , section , key )	if ( obj_prsr->ExistSection( section ) == __GIM_EXIST ) if ( obj_prsr->ExistKey( section , key ) == __GIM_EXIST )
 
-	/*!	\def	IF_NOT_EXIST_SECTION( section )
-		\brief	Use this macro to verify the not existence of a section in gim_conf prsr obj
+	/*!	\def	IF_NOT_EXIST_SECTION( obj_prsr , section )
+		\brief	Use this macro to verify the not existence of a section in a prsr obj
 	*/
-	#define IF_NOT_EXIST_SECTION( obj_prsr , section )		if ( obj_prsr->ExistSection( section ) == __GIM_NOT_EXIST ) 
+	#define IF_NOT_EXIST_SECTION( obj_prsr , section )		if ( obj_prsr->ExistSection( section ) == __GIM_NOT_EXIST )
 
-	/*!	\def	IF_NOT_EXIST_KEY( section , key )
-		\brief	Use this macro to verify the not existence of a key in a section in gim_conf prsr obj
+	/*!	\def	IF_NOT_EXIST_KEY( obj_prsr , section , key )
+		\brief	Use this macro to verify the not existence of a key in a section in a prsr obj
 	*/
 	#define IF_NOT_EXIST_KEY( obj_prsr , section , key )	if ( obj_prsr->ExistSection( section ) == __GIM_EXIST ) if ( obj_prsr->ExistKey( section , key ) == __GIM_NOT_EXIST )
 
@@ -140,7 +143,7 @@
 									\a title > 0
 			*/
 			void 	Up( const char * filename , const char * title );
-		
+
 			/*!	\fn		_gim_flag	AddComment( const char * comment )
 				\brief	This function is used to put a comment on the file
 				\param	comment		The comment to add
@@ -156,8 +159,8 @@
 						\a __NOT_OK if not
 			*/
 			_gim_flag	Down( void );
-		
-			/*!	\fn		_gim_flag	Read( const char * filename )S
+
+			/*!	\fn		_gim_flag	Read( const char * filename )
 				\brief	This function is used in order to read an existing configuration file
 				\param	filename	The name of the file you want to read\n
 									\a filename != NULL
@@ -166,44 +169,43 @@
 						\a __NOT_EXIST if file not found
 			*/
 			_gim_flag	Read( const char * filename );
-			
+
 			/*!	\fn		_gim_flag	Write( void )
 				\brief	This function is used in order to write a configuration file to disk
 				\return \a __OK if everything it's ok\n
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	Write( void );
-			
+
 			/*!	\fn		_gim_buffer	WriteOnBuffer( void )
 				\brief	This function is used in order to get a buffer filled with a configuration file
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return	the buffer with the file content
 			*/
 			_gim_buffer	WriteOnBuffer( void );
-			
+
 			/*!	\fn		_gim_flag	List( void )
 				\brief	This function is used in order to print on \a stdout a configuration file
 				\return \a __OK if everything it's ok\n
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	List( void );
-			
+
 			/*!	\fn		void	SetLex( _gim_flag Lex )
-				\brief	This function is used in order to write a configuration file
+				\brief	This function is used in order to choose the lexical of a configuration file
 				\param	Lex	You can choose two kind of lexical for your ini file.\n
-							Default is \a __LEX_UNKNOW \n 
+							Default is \a __LEX_UNKNOW \n
 							( ( \a Lex == \a __LEX_A ) || ( \a Lex == \a __LEX_B ) )
 			*/
 			void	SetLex( _gim_flag Lex );
-			
+
 			/*!	\fn		_gim_flag	GetLex( void )
 				\brief	Use this function if you want to get the lexical used in a configuration file
 				\return	\a __LEX_UNKNOW	if the lexical is not yet defined \n
-						\a __LEX_A 		if the lexical if ( strlen( filenameis defined as \a __LEX_A \n 
+						\a __LEX_A 		if the lexical is defined as \a __LEX_A \n
 						\a __LEX_B		if the lexical is defined as \a __LEX_B
 			*/
 			_gim_flag	GetLex( void );
-			
+
 			/*!	\fn		_gim_flag	AddSection( const char * section_name )
 				\brief	To add a new section to the ini file
 				\param	section_name	The name of the new section you want to add\n
@@ -212,9 +214,17 @@
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	AddSection( const char * section_name );
-		
+
+			/*!	\fn		_gim_flag	AddSectionComment( const char * section_name , _gim_flag position , char * comment )
+				\brief	Adds a comment to a section.
+				\param	section_name	The section the comment refers to
+				\param	position		PRSR_BEFORE, PRSR_INLINE or PRSR_AFTER
+				\param	comment			The text of the comment
+				\return \a __OK if everything it's ok\n
+						\a __NOT_OK if some error occurred
+			*/
 			_gim_flag	AddSectionComment( const char * section_name , _gim_flag position , char * comment );
-			
+
 			/*!	\fn		_gim_flag	DelSection( const char * section_name )
 				\brief	To delete an existing section from a ini file
 				\param	section_name	The name of the section you want to delete\n
@@ -223,24 +233,24 @@
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	DelSection( const char * section_name );
-			
+
 			/*!	\fn		_gim_flag	CopySection( gim_prsr_obj * from , const char * section_name )
 				\brief	To copy an existing section from a configuration file to another one
-				\paran	from			A pointer to the class of the source configuration file
-				\param	section_name	The name of the section you want to delete\n
+				\param	from			A pointer to the class of the source configuration file
+				\param	section_name	The name of the section you want to copy\n
 										\a section_name != NULL
 				\return \a __OK		if everything it's ok\n
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	CopySection( gim_prsr_obj * from , const char * section_name );
-			
+
 			/*!	\fn		_gim_int16	GetHowManySection( void )
 				\brief	To know how many section are present in a ini file
 				\return \a The number of section present\n
 						\a __ERROR if some error occurred
 			*/
 			_gim_int16	GetHowManySection( void );
-			
+
 			/*! \fn		char *  GetSectionName( _gim_int16 secindex )
 				\brief	To get the name of a specific section number
 				\param	secindex	The section number you want to knwo the name\n
@@ -249,24 +259,24 @@
 						\a __ERROR if an error occurred
 			*/
 			char *  GetSectionName( _gim_int16 secindex );
-			
-			/*!	\fn		_gim_int16 GetHowManyKey( const char * section_name )
-				\brief	To know how many section are present in a ini file
+
+			/*!	\fn		_gim_int8 GetHowManyKey( const char * section_name )
+				\brief	To know how many keys are present inside a section of a ini file
+				\param	section_name	The section to check\n
+										\a section_name != NULL
 				\return \a The number of Keys present inside a section \n
 						\a __ERROR if some error occurred
-			 	\todo	Near in the future ( inside 2.5 milestone )
 			*/
 			_gim_int8	GetHowManyKey( const char * section_name );
-			
+
 			/*! \fn		char * GetKeyName( const char * section_name , _gim_int16 kindex )
-				\brief	To get the name of a specific section number
-				\param	section_name	The name of section wich you want to get haow many Key are inside \n
-									\a section_name != NULL
+				\brief	To get the name of a key of a section, given its position
+				\param	section_name	The section that contains the key \n
+										\a section_name != NULL
 				\param	kindex			The index of the key you want to know the name \n
-									\a kindex > 0
+										\a kindex >= 0
 				\return \a The name of the Key\n
 						\a __ERROR if an error occurred
-			 	\todo	Near in the future ( inside 2.5 milestone )
 			*/
 			char *  GetKeyName( const char * section_name , _gim_int16 kindex );
 
@@ -276,7 +286,7 @@
 										\a section_name != NULL
 				\param	key				The name of the new key you want to add\n
 										\a key != NULL
-				\param	value			The value of the new key 
+				\param	value			The value of the new key
 				\return \a __OK		if everything it's ok\n
 						\a __NOT_OK if some error occurred
 			*/
@@ -301,12 +311,12 @@
 										\a section_name != NULL
 				\param	key				The name of the new key you want to add\n
 										\a key != NULL
-				\param	value			The value of the new key 
+				\param	value			The value of the new key
 				\return \a __OK		if everything it's ok\n
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKey( const char * section_name , const char * key , float value );
-			
+
 			/*!	\fn		_gim_flag	AddKeyFlag( const char * section_name , const char * key , _gim_flag flag )
 				\brief	To add a new key in a existing section to a ini file ( \a value must be a \a flag)
 				\param	section_name	The name of the section you want to add a new key\n
@@ -318,8 +328,17 @@
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKeyFlag( const char * section_name , const char * key , _gim_flag flag );
-		
-		
+
+
+			/*!	\fn		_gim_flag	AddKeyComment( const char * section_name , const char * key , _gim_flag position , const char * comment )
+				\brief	Adds a comment to a key.
+				\param	section_name	The section that contains the key
+				\param	key				The key the comment refers to
+				\param	position		PRSR_BEFORE, PRSR_INLINE or PRSR_AFTER
+				\param	comment			The text of the comment
+				\return \a __OK if everything it's ok\n
+						\a __NOT_OK if some error occurred
+			*/
 			_gim_flag	AddKeyComment( const char * section_name , const char * key , _gim_flag	position , const char * comment );
 
 			/*! \fn		_gim_flag	ChangeKey( const char * section_name , const char * key , const char * string )
@@ -347,6 +366,14 @@
 			*/
 			_gim_flag	ChangeKey( const char * section_name , const char * key , int value );
 
+			/*!	\fn		_gim_flag	ChangeKeyFlag( const char * section_name , const char * key , _gim_flag flag )
+				\brief	To change the value of an existing key to a flag (__GIM_YES or __GIM_NO)
+				\param	section_name	The section that contains the key
+				\param	key				The key to change
+				\param	flag			The new value
+				\return \a __OK if everything it's ok\n
+						\a __NOT_OK if some error occurred
+			*/
 			_gim_flag	ChangeKeyFlag( const char * section_name , const char * key , _gim_flag flag );
 
 			/*!	\fn		_gim_flag	DelKey( const char * section_name , const char * key )
@@ -359,8 +386,8 @@
 						\a __NOT_OK if some error occurred
 			*/
 			_gim_flag	DelKey( const char * section_name , const char * key );
-			
-			/*!	\fn		_gim_flag	RenameTitle( const char * new_title )S
+
+			/*!	\fn		_gim_flag	RenameTitle( const char * new_title )
 				\brief	To rename the title of a ini file
 				\param	new_title	The new title\n
 									\a new_title != NULL
@@ -381,7 +408,7 @@
 			_gim_flag	RenameSection( const char * old_section , const char * new_section );
 
 			/*!	\fn		_gim_flag	RenameKey( const char * section , const char * old_key , const char * new_key )
-				\brief	To rename an existing section of a ini file
+				\brief	To rename an existing key of a ini file
 				\param	section		The section that contains the key \n
 									\a section != NULL
 				\param	old_key		The key you want to rename\n
@@ -411,7 +438,7 @@
 				\param	key				The name of the key\n
 										\a key != NULL
 				\return \a The value \n
-						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class 
+						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class
 			*/
 			int	GetKeyINT( const char * section_name , const char * key );
 
@@ -422,10 +449,10 @@
 				\param	key				The name of the key\n
 										\a key != NULL
 				\return \a The value \n
-						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class 
+						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class
 			*/
 			float	GetKeyFLT( const char * section_name , const char * key );
-			
+
 			/*!	\fn		_gim_flag	GetKeyFLAG( const char * section_name , const char * key )
 				\brief	In order to obtain the value of one key ( \a flag )
 				\param	section_name	The section that contains the key \n
@@ -433,7 +460,7 @@
 				\param	key				The name of the key\n
 										\a key != NULL
 				\return \a The flag \n
-						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class 
+						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class
 			*/
 			_gim_flag	GetKeyFLAG( const char * section_name , const char * key );
 
@@ -452,25 +479,30 @@
 										\a section_name != NULL
 				\param	key				The name of the key to check\n
 										\a key != NULL
-				\return \a __EXIST		if the section exist \n
+				\return \a __EXIST		if the key exist \n
 						\a __NOT_EXIST	if don't
 			*/
 			_gim_flag	ExistKey( const char * section_name , const char * key );
 
-			/*!	\fn		_gim_flag	Exist( const char * filename )S
-				\brief	This function is used in order to read an existing configuration file
-				\param	filename	The name of the file you want to read\n
+			/*!	\fn		_gim_flag	Exist( const char * filename )
+				\brief	This function is used in order to check if a configuration file exists
+				\param	filename	The name of the file to check\n
 									\a filename != NULL
 				\return \a __NOT_OK if the file exist but some error occurred\n
 						\a __NOT_EXIST if file not found
 			*/
 			_gim_flag	Exist( const char * filename );
-			
 
+			/*! \brief	Tells whether the parser has been initialized.
+				\return	__GIM_YES or __GIM_NO
+			*/
 			_gim_flag   ParserIsUp( void );
 
+			/*! \brief	Tells whether the file has at least one section.
+				\return	__GIM_YES or __GIM_NO
+			*/
 			_gim_flag   ThereIsASection( void );
-	
+
 			/*!
 				\brief	The constructor
 			*/
@@ -480,24 +512,45 @@
 			}
 
 		private:
-			friend		class prsr_lexical_class;
-			friend		class gim_home_obj;
-			friend		class gim_log_obj;
-				
+	friend		class prsr_lexical_class;
+	friend		class gim_home_obj;
+	friend		class gim_log_obj;
+
+			/*! \brief	The parser that holds the data of the file. */
 			prsr		* prsr_obj;
-			
+
+			/*! \brief	Lexical of the file (__LEX_UNKNOWN, __LEX_A, __LEX_B or __LEX_C). */
 			_gim_flag	Lex;
 
-			void					DelSection		( prsr_kvalue_section * section );			
+			/*! \brief	Deletes a section given its structure.
+				\param	section	the section to delete
+			*/
+			void					DelSection		( prsr_kvalue_section * section );
+			/*! \brief	Opens the file of the parser.
+				\param	mode	the open mode ("r", "w", ...)
+				\return	__GIM_OK on success
+			*/
 			_gim_flag				Open			( const char * mode );
+			/*! \brief	Closes the file of the parser.
+				\param	flush	__FLUSH to write the changes, __NO_FLUSH to discard them
+				\return	__GIM_OK on success
+			*/
 			_gim_flag				Close			(  _gim_flag flush );
+			/*! \brief	Finds a section by name.
+				\param	section_name	the name of the section
+				\return	the section, or NULL when it does not exist
+			*/
 			prsr_kvalue_section	*	SearchSection	( const char * section_name );
 	};
-	
-	
+
+
+	/*! Global configuration of Gim (~/.gim/gim.conf). */
 	extern gim_prsr_obj	* gim_conf;
+	/*! Global compatibility file of Gim. */
 	extern gim_prsr_obj	* gim_compatibility;
+	/*! Global alias file of Gim. */
 	extern gim_prsr_obj	* gim_alias;
+	/*! Global environment file of Gim. */
 	extern gim_prsr_obj	* gim_environ;
-	
+
 #endif /* _GIM_PRSR_KVALUE_H_ */

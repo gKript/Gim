@@ -1,0 +1,9 @@
+/* Gim documentation: extra rules on top of doxygen-awesome.css */
+
+/* The dependency and collaboration graphs are often wider than the page column:
+   let their container scroll sideways instead of cutting the right side. */
+.dyncontent,
+.dyncontent .center {
+	overflow-x: auto;
+	max-width: 100%;
+}

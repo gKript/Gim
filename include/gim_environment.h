@@ -10,7 +10,7 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002, 2003
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
@@ -36,11 +36,11 @@
 
 /*!	\file		gim_environment.h
 	\version	1.0-0
-	\brief		Copyright (C) 2002, 2003 \n 
+	\brief		Copyright (C) 2002, 2003 \n
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix) \n
 				Released under the terms of the GNU General Public License v2 \n
 				[ http://www.gkript.org/gkript-gpl.html ]
-*/ 		
+*/
 
 /*!	\class	gim_home_obj
 	\brief		gim_home_obj manage automatically the Gim's environment. \n
@@ -88,79 +88,97 @@
 	#include <sys/types.h>
 	#include <sys/stat.h>
 
-	#define	GIM_ENVIRON_NAME				".gim"
-	#define	GIM_CONFIGURATION_FILE_NAME		"gim.conf"
-	#define	GIM_COMPATIBILITY_FILE_NAME		"compatibility.conf"
-	#define	GIM_ALIAS_FILE_NAME				"alias.conf"
-	#define	GIM_ENVIRON_FILE_NAME			"environment.conf"
-	#define	GIM_DEBUG_FILE_NAME				"gim_main.log"
-	#define	GIM_DEBUG_MEMORY_FILE_NAME		"gim_memory.log"
+	#define	GIM_ENVIRON_NAME				".gim"				/*!< name of the Gim folder in the home */
+	#define	GIM_CONFIGURATION_FILE_NAME		"gim.conf"			/*!< name of the configuration file */
+	#define	GIM_COMPATIBILITY_FILE_NAME		"compatibility.conf"	/*!< name of the compatibility file */
+	#define	GIM_ALIAS_FILE_NAME				"alias.conf"		/*!< name of the alias file */
+	#define	GIM_ENVIRON_FILE_NAME			"environment.conf"	/*!< name of the environment file */
+	#define	GIM_DEBUG_FILE_NAME				"gim_main.log"		/*!< name of the debug log */
+	#define	GIM_DEBUG_MEMORY_FILE_NAME		"gim_memory.log"	/*!< name of the memory log */
 
-	#define GIM_PRIVATE_KEY_DIR_NAME		"PrivateKey"
-	#define	GIM_KEY_FILE_EXTENSION			".gkk"
-	#define GIM_OTHER_KEYS_DIR_NAME			"OtherKeys"
+	#define GIM_PRIVATE_KEY_DIR_NAME		"PrivateKey"		/*!< folder of your private key */
+	#define	GIM_KEY_FILE_EXTENSION			".gkk"				/*!< extension of the key files */
+	#define GIM_OTHER_KEYS_DIR_NAME			"OtherKeys"			/*!< folder of the keys of other people */
 
-	#define	GIM_PROGRAMS_DIR_NAME			"Programs"
+	#define	GIM_PROGRAMS_DIR_NAME			"Programs"			/*!< folder of the programs that use Gim */
 
-	#define	GIM_CONFIGURATION_TITLE			"gim_configuration"
-	#define	GIM_ALIAS_TITLE					"alias_configuration_file"
-	#define	GIM_ENVIRONMENT_TITLE			"environment_configuration_file"
+	#define	GIM_CONFIGURATION_TITLE			"gim_configuration"	/*!< title of the configuration file */
+	#define	GIM_ALIAS_TITLE					"alias_configuration_file"	/*!< title of the alias file */
+	#define	GIM_ENVIRONMENT_TITLE			"environment_configuration_file"	/*!< title of the environment file */
 
+	/*! \class	gim_home_obj
+		\brief	Manages the Gim environment: folders and configuration files in the user home.
+	*/
 	class gim_home_obj {
 		public:
 			/*!	\fn		char *	get_generic_programs_env( void )
-   				\brief	To get a generic environment for saving your file and share with other programs use Gim
+				\brief	To get a generic environment for saving your file and share with other programs use Gim
 				\return The path of the environment for program
- 			*/
+			*/
 			char *	get_generic_programs_env( void );
 
 			/*!	\fn		char *	get_programs_env( void )
-   				\brief	To get the environment for your program
+				\brief	To get the environment for your program
 				\return The path of the environment for program
- 			*/
+			*/
 			char *	get_programs_env( void );
-		
+
 			/*!	\fn		char *	get_other_keys_path( void )
-   				\brief	To get the path where Gim store the personal key of your friends
+				\brief	To get the path where Gim store the personal key of your friends
 				\return The others personal keys path
- 			*/
+			*/
 			char *	get_other_keys_path( void );
-		
+
+			/*! \brief	Adds the default comments to the configuration file. */
 			void	add_default_comment( void );
-			
+
 		private:
 	friend	class	gim_obj;
 	friend	class	gim_gkl_obj;
 
+			/*! \brief	Creates or reads the environment: folders, environment, configuration, alias. */
 			void	up( void );
+			/*! \brief	Closes the environment files. */
 			void	down( void );
 
+			/*! \brief	__GIM_YES when the environment is up. */
 			volatile _gim_flag	initialized;
 
 		public:
-		
+
+			/*! Builds the object, with the environment not yet up. */
 			inline gim_home_obj() {
 				initialized = __GIM_NO;
 			};
 	};
 
+	/*! \struct	gim_conf_data
+		\internal
+		\brief	Paths of the Gim environment (see gim_home_obj).
+	*/
 	struct gim_conf_data {
-		char	general_home	[1024];
-		char	home			[1024];
-		char	conf			[1024];
-		char	comp			[1024];
-		char	alias			[1024];
-		char	environ			[1024];
-		char	PrivateKeyPath	[1024];
-		char	OtherKeysPath	[1024];
-		char	Programs		[1024];
+		char	general_home	[1024];		/*!< the Gim folder in the home */
+		char	home			[1024];		/*!< the folder of the application */
+		char	conf			[1024];		/*!< the configuration file */
+		char	comp			[1024];		/*!< the compatibility file */
+		char	alias			[1024];		/*!< the alias file */
+		char	environ			[1024];		/*!< the environment file */
+		char	PrivateKeyPath	[1024];		/*!< the folder of the private key */
+		char	OtherKeysPath	[1024];		/*!< the folder of the keys of other people */
+		char	Programs		[1024];		/*!< the folder of the programs */
 	};
 
 
+	/*! The global environment object of Gim. */
 	extern gim_home_obj		* gim_home;
+	/*! The global paths of the environment. */
 	extern gim_conf_data	* env_data;
+	/*! Name of the application (set with gim_set_application_name). */
 	extern char				gim_application_name[256];
-	
+
+	/*! Sets the name of the application: its environment is then kept in a folder of its own.
+		\param	app_name	the name of the application
+	*/
 	void					gim_set_application_name( const char * app_name );
-	
+
 #endif /* _GIM_ENVIRONMENT_H_ */

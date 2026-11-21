@@ -22,3 +22,7 @@ libtool
 .vs/
 .vscode/
 CMakeUserPresets.json
+
+# generated documentation and python cache
+documentation/html/
+__pycache__/

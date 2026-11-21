@@ -10,7 +10,7 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002, 2003
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
@@ -33,11 +33,13 @@
 
 /*!	\file		gim.h
 	\version	2.5-x
-	\brief		Copyright (C) 2002, 2003<BR>
+	\brief		Main header of the Gim library: it includes all the modules and defines the
+				gim_obj base object, the GKFP and GKDP file classes.
+				Copyright (C) 2002, 2003<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
 				Released under the terms of the GNU General Public License v2<BR>
 				[ http://gkript.org/gk_gpl_v2.php ]
-*/ 		
+*/
 
 #ifndef	__cplusplus
 	#error	"Gim nedd a C++ compiler. G++ GNU c++ compiler should be better"
@@ -46,6 +48,7 @@
 #ifndef _GIM_H
 #define _GIM_H
 
+	/*! Architecture of the target. */
 	#define ARCHITECTURE		X86
 
 	#include <stdio.h>
@@ -87,7 +90,7 @@
 	#include "gim_cnc.h"
  	#include "gim_db.h"
 	#include "gim_directory.h"
- 
+
 	#include "gim_gkp_header.h"
 	#include "gim_gkp_file_list.h"
 	#include "gim_gkp_file_data.h"
@@ -106,7 +109,7 @@
 				\brief	This method say to Gim to unload every allocated memory and classes before to delete.
 				\param	code	The exit code.
 			*/
-	virtual void 					down				( _gim_flag code );	
+	virtual void 					down				( _gim_flag code );
 
 			/*! \fn		void stop_operation ( void )
 				\brief	This method say to Gim to stop the current operation if possible.
@@ -132,7 +135,7 @@
 			gim_error_obj			* error;
 
 			/*!
-				\brief	Using this class, insted the standard malloc end free, you are sure to hold trace of all the operations 
+				\brief	Using this class, insted the standard malloc end free, you are sure to hold trace of all the operations
 						in memory and being able to verify if exist any problems.\n\n
 						See the methods of gim_memory_obj.
 			*/
@@ -157,7 +160,7 @@
 			gim_prsr_obj			* alias;
 
 			/*!
-				\brief	With this class you can manage the alias file of Gim [~/.gim/alias.conf].\n\n
+				\brief	With this class you can manage the environment file of Gim.\n\n
 						See the methods of gim_prsr_obj.
 			*/
 			gim_prsr_obj			* environ;
@@ -169,7 +172,7 @@
 			gim_identity_obj		* identity;
 
 			/*!
-				\brief	
+				\brief	Interface of the application: window and console facilities.
 			*/
 			gim_interface_obj		* interface;
 
@@ -180,7 +183,7 @@
 			gim_home_obj			* home;
 
 			/*!
-				\brief	To use this class, instead the standard open/close or fopen/fclose, is useful to hold trace 
+				\brief	To use this class, instead the standard open/close or fopen/fclose, is useful to hold trace
 						of operation on the files or knowing if problems exist.\n\n
 						See the methods of gim_file_manager_obj.
 			*/
@@ -216,35 +219,44 @@
 
 	friend	void	abort( int sig );
 
+			/*! \brief	Initializes the Gim environment (called by the constructor). */
 			void 	gim_init( void );
+			/*! \brief	Releases the Gim environment (called by the destructor). */
 			void 	gim_release( void );
+			/*! \brief	Tests the Mersenne Twister random generator. */
 			void 	mt_test( void );
+			/*! \brief	Checks the results of mt_test(). */
 			void 	mt_test_check( void );
 
+			/*! \brief	Configuration data of the environment. */
 			gim_conf_data	* environment;
 
+			/*! \brief	Debug flag. */
 			_gim_flag		debug;
+			/*! \brief	Current state of Gim (see GimThState). */
 			_gim_th_state	gim_state;
 
 		public:
 			/*!
-				gim_obj constructor	
+				gim_obj constructor
 			*/
 			inline gim_obj() {
 				gim_interface = NULL;
-				gim_init();	
+				gim_init();
 			};
-			
+
 			/*!
-				gim_obj destructor	
+				gim_obj destructor
 			*/
 			inline virtual ~gim_obj() {
 				gim_release();
 			};
 	};
 
+	/*! Alias of gim_obj. */
 	typedef class gim_obj	gim_base_obj;
 
+	/*! The global Gim object of the application. */
 	extern gim_obj	* internal_gim;
 
 	/*!	\enum	gim_gkp_mode
@@ -270,7 +282,7 @@
 	/*! \class 		gim_gkfp_obj
 		\brief		Generic Information Manager Documentation gkfp object\n\n
 					<b>GKP</b> - GKript Package\n
-					With this class you can create, open and use <b>only GKFP file</b> and 
+					With this class you can create, open and use <b>only GKFP file</b> and
 					you are not able to manage GKDP files\n
 					<b>GKDP</b> - GKript Data Packaged\n
 					<b>GKFP</b> - GKript File Packaged\n
@@ -281,36 +293,72 @@
 	*/
 	class gim_gkfp_obj {
 		public:
+			/*! \brief	Sets the name and the version of the program that creates the GKFP.
+				\param	prg_name	The name of the program
+				\param	major		Major version
+				\param	minor		Minor version
+				\param	subminor	Subminor version
+			*/
 			void		Set_prg		( const char * prg_name , _gim_Uint8 major , _gim_Uint8 minor , _gim_Uint8 subminor );
+			/*! \brief	Creates a new GKFP file.
+				\param	filename	The name of the new GKFP file
+				\param	recursion	__GIM_YES to add the sub directories too
+				\param	crypt		__GIM_YES to crypt the data
+				\param	compress	__GIM_YES to compress the data
+				\param	hash		__GIM_YES to store a hash of each file
+			*/
 			void		New			( const char * filename , _gim_flag recursion , _gim_flag crypt , _gim_flag compress , _gim_flag hash );
+			/*! \brief	Adds a path to the file list.
+				\param	path_in	The path to add
+				\return	The number of files added
+			*/
 			_gim_Ulong	New_path	( const char * path_in );
+			/*! \brief	Sets the root path of the file list.
+				\param	path_in	The root path
+			*/
 			void		New_root	( const char * path_in );
+			/*! \brief	Writes the GKFP file on disk.
+				\return	__GIM_OK on success
+			*/
 			_gim_flag	Write		( void );
+			/*! \brief	Opens an existing GKFP file.
+				\param	filename	The GKFP file to open
+				\return	The mapping of the file, or NULL on error
+			*/
 			_gim_map	Open		( const char * filename );
+			/*! \brief	Extracts the files of a GKFP file.
+				\param	filename	The GKFP file to extract
+			*/
 			void 		Extract		( const char * filename );
-		
+
 			/*! \fn		void		set_password( char * passwd )
 				\brief	With this method you can set a password in a \a GKDP file.
 				\param	passwd		The \a password to set
 			*/
 			void		set_password( const char * passwd );
-			
+
 			/*! \fn	void write( _gim_handler * out , _gim_gkp_flist * startlist )
 				\brief	Use this to write the content of the files present in the file list into a new gkp file
 				\param	out			The pointer to the \a ::_gim_handler of the file you want to write
 				\param	startlist	The pointer to the start of the file list
+				\return	__GIM_OK on success
 			*/
 			_gim_flag	write_data( _gim_handler * out , _gim_gkp_flist * startlist );
-		
+
 			/*! \fn	void read( _gim_map map , _gim_gkp_flist * startlist )
 				\brief	Use this to read the content of the files present in the file list into an existing gkp file
-				\param	map		The \a ::_gim_map of the file you want to read previously opened in file mapping. 
+				\param	map		The \a ::_gim_map of the file you want to read previously opened in file mapping.
 				\param	startlist	The pointer to the start of the file list
+				\return	__GIM_OK on success
 			*/
 			_gim_flag	read_data( _gim_map map , _gim_gkp_flist * startlist );
-		
+
+			/*! \brief	Extracts the files of the file list on disk.
+				\param	startlist	The pointer to the start of the file list
+				\return	__GIM_OK on success
+			*/
 			_gim_flag	extract_data( _gim_gkp_flist * startlist );
-			
+
 			/*! \fn		void clear( void )
 				\brief	Use this method to clear the file list
 			*/
@@ -325,8 +373,7 @@
 			/*! \fn		_gim_Uint32 make( char * dir_name , _gim_flag recursive , _gim_flag hashing )
 				\brief	With this method you can create automatically the file list for a new Gkp file
 				\param	dir_name	The name of the directory contain the file to put into a Gkp file
-				\param	recursive	The flag to know if you want a recursion or not
-				\param	hashing		A flag that describe if you want to hash the file or not
+				\param	level		The recursion level
 				\return The number of files stored into the file list
 			*/
 			_gim_Uint32			lmake( const char * dir_name , _gim_Uint16 level );
@@ -355,9 +402,12 @@
 			*/
 			_gim_gkp_flist *	lnext( _gim_gkp_flist * tmplist );
 
+			/*! \brief	Cryptography object of the file. */
 			gim_cryptography_obj	* crypt;
-			
+
+			/*! \brief	Header of the GKFP file. */
 			gim_file_header_struct	header;
+			/*! \brief	Verification data of the GKFP file. */
 			gim_file_header_verify	verify;
 
 		private:
@@ -365,28 +415,51 @@
 	friend	class gim_gkfp_file_list_obj;
 	friend	class gim_gkfp_file_data_obj;
 
+			/*! \brief	Name of the GKFP file. */
 			char				file_name[256];
-			_gim_handler *		hand;	
+			/*! \brief	Handler of the GKFP file. */
+			_gim_handler *		hand;
 
+			/*! \brief	Initializes the file list. */
 			void 				linit( void );
+			/*! \brief	Releases the file list. */
 			void 				lrelease( void );
+			/*! \brief	Adds an item to the file list.
+				\return	The new item
+			*/
 			_gim_gkp_flist *	ladd( void );
+			/*! \brief	Destroys the file list. */
 			void				ldestroy( void );
-			
+
+			/*! \brief	Root path before the change. */
 			char				old_root[2048];
+			/*! \brief	Root path after the change. */
 			char				new_root[2048];
-			
+
+			/*! \brief	First item of the file list. */
 			_gim_gkp_flist *	startlist;
+			/*! \brief	Current item of the file list. */
 			_gim_gkp_flist *	currentlist;
+			/*! \brief	Last item of the file list. */
 			_gim_gkp_flist *	endlist;
 
+			/*! \brief	Reads the header of the GKFP file.
+				\param	map	The mapping of the file
+				\return	The header read
+			*/
 			char *				hread	( _gim_map map );
+			/*! \brief	Writes the header of the GKFP file.
+				\param	out	The handler of the output file
+				\return	__GIM_OK on success
+			*/
 			_gim_flag			hwrite	( _gim_handler * out );
 
+			/*! \brief	Name of the program that created the file. */
 			char				prog[32];
 
 		public:
-			
+
+			/*! gim_gkfp_obj constructor */
 			inline gim_gkfp_obj() {
 				__GIM_CLEAR( file_name , 256  , char );
 				__GIM_CLEAR( &header  , 1   , gim_file_header_struct );
@@ -400,6 +473,7 @@
 				crypt 			= new gim_cryptography_obj;
 			};
 
+			/*! gim_gkfp_obj destructor */
 			inline ~gim_gkfp_obj() {
 				delete	crypt;
 				lrelease();
@@ -409,7 +483,7 @@
 	/*! \class 		gim_gkdp_obj
 		\brief		Generic Information Manager Documentation gkfp object\n\n
 					<b>GKP</b> - GKript Package\n
-					With this class you can create, open and use <b>only GKDP file</b> and 
+					With this class you can create, open and use <b>only GKDP file</b> and
 					you are not able to manage GKFP files\n
 					<b>GKDP</b> - GKript Data Packaged\n
 					<b>GKFP</b> - GKript File Packaged\n
@@ -418,15 +492,15 @@
 		\date		2003-2008	*/
 	class gim_gkdp_obj {
 		public:
-		
+
 			/*! \fn		void		set_password( char * passwd )
 				\brief	With this method you can set a password in a \a GKDP file.
 				\param	passwd		The \a password to set
 			*/
 			void		set_password( const char * passwd );
-	
+
 			/*! \fn		void gkp_set_prg( char * prg_name , _gim_Uint8 major , _gim_Uint8 minor , _gim_Uint8 subminor )
-				\brief	With this method you can insert in a \a GKDP the application name and version. 
+				\brief	With this method you can insert in a \a GKDP the application name and version.
 				\param	prg_name	The application name that create a new \a GKDP
 				\param	major		The \a major number of the application version
 				\param	minor		The \a minor number of the application version
@@ -465,20 +539,20 @@
 				\brief	With this method you can close an opened \a GKDP.
 			*/
 			void 		close( void );
-			
+
 			/*! \fn		_gim_gkdp *	gkdp_take( char * name )
 				\brief	With this method you can \a take an item (file) inside a \a GKDP.
 				\param	name	The \a item name you want to take from the \a GKDP file.
 				\return	A \a _gim_gkdp obj or \a NULL if fail.
 			*/
 			_gim_gkdp *	take( const char * name );
-			
+
 			/*! \fn		void		gkdp_leave( _gim_gkdp * gkdp )
 				\brief	With this method you can \a leave an item (file) taken earlier.
 				\param	gkdp	The \a _gim_gkdp obj you want to leave.
 			*/
 			void		leave( _gim_gkdp * gkdp );
-			
+
 			/*! \fn		_gim_flag	tmp_extract( _gim_gkdp * to_extract , char * path )
 				\brief	With this method you can \a extract an item (file) physically on the disk at the specified \a path.
 				\param	to_extract	The \a _gim_gkdp obj you want to extract.
@@ -487,16 +561,25 @@
 			*/
 			_gim_flag	tmp_extract( _gim_gkdp * to_extract , const char * path );
 
-		private:	
-			
+		private:
+
+			/*! \brief	Reads the header of the GKDP file.
+				\param	map	The mapping of the file
+				\return	The header read
+			*/
 			char *		hread( _gim_map map );
+			/*! \brief	Writes the header of the GKDP file.
+				\param	out	The handler of the output file
+				\return	__GIM_OK on success
+			*/
 			_gim_flag	hwrite( _gim_handler * out );
-		
+
+			/*! \brief	Name of the program that created the file. */
 			char		prog[32];
 
-		
+
 			/*! \fn		void set_manual( void )
-				\brief	Use this method in order to inform Gim that the file list will be created manually 
+				\brief	Use this method in order to inform Gim that the file list will be created manually
 			*/
 			void				set_manual( void );
 
@@ -525,7 +608,7 @@
 				\return The number of files stored into the file list
 			*/
 			_gim_Uint32			make_gkdp( const char * dir_name );
-			
+
 			/*! \fn		_gim_map lread( _gim_map map )
 				\brief	With this method you can create automatically the file list for a new Gkp file
 				\param	map		The \a ::_gim_map of the file you want to read previously opened in file mapping.
@@ -549,40 +632,54 @@
 				\see	get( void )
 			*/
 			_gim_gkp_flist *	next( _gim_gkp_flist * tmplist );
-		
+
 			/*! \fn	void	write_gkdp( _gim_handler * out )
 				\brief	Use this to write the content of the files present in the file list into a new gkp file
 				\param	out			The pointer to the \a ::_gim_handler of the file you want to write
 			*/
 			void	write_gkdp( _gim_handler * out );
-		
+
 			/*! \fn	void	read_gkdp( _gim_map map )
 				\brief	Use this to read the content of the files present in the file list into an existing gkp file
-				\param	map		The \a ::_gim_map of the file you want to read previously opened in file mapping. 
+				\param	map		The \a ::_gim_map of the file you want to read previously opened in file mapping.
 			*/
 			void	read_gkdp( _gim_map map );
-			
+
+			/*! \brief	Cryptography object of the file. */
 			gim_cryptography_obj	* crypt;
-		
+
 		private:
+			/*! \brief	Name of the GKDP file. */
 			char				file_name[256];
+			/*! \brief	Handler of the GKDP file. */
 			_gim_handler		* hand;
+			/*! \brief	Initializes the file list. */
 			void 				init( void );
+			/*! \brief	Releases the file list. */
 			void 				release( void );
+			/*! \brief	Adds an item to the file list.
+				\return	The new item
+			*/
 			_gim_gkp_flist *	add( void );
+			/*! \brief	Destroys the file list. */
 			void				destroy( void );
 
+			/*! \brief	Header of the GKDP file. */
 			gim_file_header_struct	header;
+			/*! \brief	Verification data of the GKDP file. */
 			gim_file_header_verify	verify;
-		
+
+			/*! \brief	First item of the file list. */
 			_gim_gkp_flist 		*startlist;
+			/*! \brief	Current item of the file list. */
 			_gim_gkp_flist 		*currentlist;
+			/*! \brief	Last item of the file list. */
 			_gim_gkp_flist 		*endlist;
 
 		public:
 
 			/*!
-				gim_gkdp_obj constructor	
+				gim_gkdp_obj constructor
 			*/
 			inline gim_gkdp_obj() {
 				crypt		= new gim_cryptography_obj;
@@ -597,7 +694,7 @@
 			};
 
 			/*!
-				gim_gkdp_obj destructor	
+				gim_gkdp_obj destructor
 			*/
 			inline virtual ~gim_gkdp_obj() {
 				delete crypt;
