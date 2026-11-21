@@ -37,6 +37,8 @@
 #include "../include/gim.h" 
 
 
+gim_gkfp_progress_fn gim_gkfp_progress = NULL;
+
 _gim_flag	gim_gkfp_obj::write_data( _gim_handler * out , _gim_gkp_flist * startlist ) {
 	char			path[1024];
 	char			message[256];
@@ -44,10 +46,17 @@ _gim_flag	gim_gkfp_obj::write_data( _gim_handler * out , _gim_gkp_flist * startl
 	_gim_handler	* in = NULL;
 	char	 		* file = NULL , tname[1024];
 	_gim_gkp_chunk	chunk;
+	int total = 0 , done = 0;
+	for ( currentlist = startlist->link ; currentlist != NULL ; currentlist = currentlist->link )
+		if ( currentlist->type == REGFILE )
+			total++;
 	//gim_interface->clear();
 	for( currentlist = startlist->link ; currentlist != NULL ; currentlist = currentlist->link ) {
 		if ( internal_gim->get_state() == __GIM_TH_STOP ) return __GIM_NOT_OK;
 		if ( currentlist->type == REGFILE ) {
+			done++;
+			if ( gim_gkfp_progress != NULL )
+				gim_gkfp_progress( done , total , currentlist->name );
 			gim_interface->data->dst_ratio = (float)( (float)currentlist->id / (float)endlist->id );
 			sprintf( message , "Cur id : %d  |  end id : %d  |  dst_ratio %f" , currentlist->id , endlist->id , gim_interface->data->dst_ratio );
 			gim_error->set( "gim_gkfp_file_data_obj::write" , message );
@@ -72,7 +81,7 @@ _gim_flag	gim_gkfp_obj::write_data( _gim_handler * out , _gim_gkp_flist * startl
 				crypt->set_secondary( currentlist->name );
 				sprintf( gim_interface->data->item_dst_name , "%s" , currentlist->name );
 				strcpy( gim_interface->data->item_dna_name , "Crypting" );
-				crypt->advanced_password( file , in->size );
+				crypt->advanced_password_nonce( file , in->size , chunk.id );
 				if ( internal_gim->get_state() == __GIM_TH_STOP ) return __GIM_NOT_OK;
 				sprintf( gim_interface->data->item_dst_name , "%s" , currentlist->name );
 				strcpy( gim_interface->data->item_dna_name , "Hashing" );
@@ -125,6 +134,7 @@ _gim_flag	gim_gkfp_obj::read_data( _gim_map map , _gim_gkp_flist * startlist ) {
 			memcpy( &chunk , map , sizeof( chunk ) );
 			map += sizeof( chunk );
 			currentlist->handle = map;
+			strcpy( currentlist->nonce , chunk.id );
 			data = (_gim_buffer)gim_memory->Alloc( currentlist->size , __GIM_MEM_FILE_DATA_R , __GIM_HIDE );
 			memcpy( data , map , currentlist->size );
 			map += currentlist->size;
@@ -209,7 +219,7 @@ _gim_flag	gim_gkfp_obj::extract_data( _gim_gkp_flist * startlist ) {
 					crypt->set_secondary( currentlist->name );
 					sprintf( gim_interface->data->item_dst_name , "%s" , currentlist->name );
 					sprintf( gim_interface->data->item_dna_name , "Crypting" );
-					crypt->advanced_password( currentlist->buffer , currentlist->size );
+					crypt->advanced_password_nonce( currentlist->buffer , currentlist->size , currentlist->nonce );
 					if ( internal_gim->get_state() == __GIM_TH_STOP ) return __GIM_NOT_OK;
 					sprintf( gim_interface->data->item_dst_name , "%s" , currentlist->name );
 					sprintf( gim_interface->data->item_dna_name , "Flushing" );

@@ -279,6 +279,10 @@
 		_gim_Uint32	size;		/*!<	The size of the bufer	*/
 	};
 
+	/*! Progress hook of gkfp: called before each regular file is packed (done counts from 1). NULL = no hook. */
+	typedef void (*gim_gkfp_progress_fn)( int done , int total , const char * name );
+	extern gim_gkfp_progress_fn gim_gkfp_progress;
+
 	/*! \class 		gim_gkfp_obj
 		\brief		Generic Information Manager Documentation gkfp object\n\n
 					<b>GKP</b> - GKript Package\n

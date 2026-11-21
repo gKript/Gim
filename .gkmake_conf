@@ -58,4 +58,15 @@
     # ------------------------------------
 
 
+    ( DANILO ) { 
+        coder                            = Danilo
+        host                             = Proxima
+        gkmake_rel                       = 0.8-5
+        total_build_number               = 49
+        succesful_build_number           = 46
+        clean                            = YES
+    } 
+    # ------------------------------------
+
+
 >

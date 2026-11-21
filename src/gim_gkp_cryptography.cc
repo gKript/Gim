@@ -70,51 +70,71 @@ _gim_buffer gim_cryptography_obj::simple_password( _gim_buffer buffer , _gim_Ulo
 
 
 
+/* key stream of the gkp encryption: SHA-512 in counter mode.
+   The key is derived from the password with KDF_ROUNDS rounds of sha512 (the Mersenne Twister is
+   not used: it is not a cryptographic generator). Block = sha512( key || pass || counter ), 64 bytes. */
+#define GIM_CRYPT_KDF_ROUNDS	4096
+
+static void gim_crypt_key( const char * password , unsigned char key[ 64 ] ) {
+	gim_sha512_obj	sha;
+	SHA512_ctx		c;
+	unsigned char	buf[ 64 + 256 ];
+	int				r;
+	size_t			len = strlen( password );
+	sha.SHA512_init( &c );
+	sha.SHA512_update( &c , (const void *) password , len );
+	sha.SHA512_final( &c );
+	sha.SHA512_digest( &c , key );
+	for ( r = 0 ; r < GIM_CRYPT_KDF_ROUNDS ; r++ ) {
+		memcpy( buf , key , 64 );
+		memcpy( buf + 64 , password , len );
+		sha.SHA512_init( &c );
+		sha.SHA512_update( &c , (const void *) buf , 64 + len );
+		sha.SHA512_final( &c );
+		sha.SHA512_digest( &c , key );
+	}
+}
+
+static void gim_crypt_block( const unsigned char key[ 64 ] , const char * nonce , unsigned int pass , unsigned long long counter , unsigned char out[ 64 ] ) {
+	gim_sha512_obj	sha;
+	SHA512_ctx		c;
+	unsigned char	in[ 64 + 256 + 4 + 8 ];
+	int				k;
+	size_t			nlen = strlen( nonce );
+	memcpy( in , key , 64 );
+	memcpy( in + 64 , nonce , nlen );
+	for ( k = 0 ; k < 4 ; k++ )
+		in[ 64 + nlen + k ] = (unsigned char) ( pass >> ( 24 - 8 * k ) );
+	for ( k = 0 ; k < 8 ; k++ )
+		in[ 68 + nlen + k ] = (unsigned char) ( counter >> ( 56 - 8 * k ) );
+	sha.SHA512_init( &c );
+	sha.SHA512_update( &c , (const void *) in , 64 + nlen + 12 );
+	sha.SHA512_final( &c );
+	sha.SHA512_digest( &c , out );
+}
+
 _gim_buffer gim_cryptography_obj::advanced_password( _gim_buffer buffer , _gim_Ulong size ) {
+	return advanced_password_nonce( buffer , size , "" );
+}
+
+_gim_buffer gim_cryptography_obj::advanced_password_nonce( _gim_buffer buffer , _gim_Ulong size , const char * nonce ) {
 	internal_gim->set_state( __GIM_TH_CRYPT );
-	_gim_Ulong	y = 0 , j = 0;
-	_gim_rand	mt;
-	int	rnd[4];
-	char message[64];
+	_gim_Ulong		j = 0 , blk = 0;
+	unsigned int	pass , passes = iter + 1;
+	unsigned char	key[ 64 ] , ks[ 64 ];
 	calc();
-	sprintf( gim_interface->data->item_sou_name , "Step 1/%d" , iter+1 );
-	mt.seed( seed_main );
-	gim_interface->data->sou_size = size;
-	for ( j = 0 ; j < size ; j++ ) {
-//		if ( internal_gim->get_state() != __GIM_TH_STOP ) {
-			rnd[0] =  mt.randInt( GIM_SHA1_SIZE		- 1 );
-			rnd[1] =  mt.randInt( GIM_MD5_SIZE		- 1 );
-			rnd[2] =  mt.randInt( GIM_SHA256_SIZE	- 1 );
-			rnd[3] =  mt.randInt( GIM_SHA512_SIZE	- 1 );
-			*(buffer + j) ^= password_sha1  [ rnd[0] ];
-			*(buffer + j) ^= password_md5   [ rnd[1] ];
-			*(buffer + j) ^= password_sha256[ rnd[2] ];
-			*(buffer + j) ^= password_sha512[ rnd[3] ];
-			*(buffer + j) ^= mt.randInt( 255 );
-			*(buffer + j) ^= mt.randInt( 255 );
+	gim_crypt_key( password , key );
+	for ( pass = 0 ; pass < passes ; pass++ ) {
+		sprintf( gim_interface->data->item_sou_name , "Step %u/%u" , pass + 1 , passes );
+		gim_interface->data->sou_size = size;
+		for ( j = 0 , blk = 0 ; j < size ; blk++ ) {
+			int k;
+			gim_crypt_block( key , nonce , pass , (unsigned long long) blk , ks );
+			for ( k = 0 ; k < 64 && j < size ; k++ , j++ )
+				*( buffer + j ) ^= ks[ k ];
 			gim_interface->data->sou_ratio = (float)( (float)j / (float)size );
 			gim_interface->data->sou_position = j;
-/*		}
-		else {
-			gim_error->set( "gim_cryptography_obj::advanced_password" , "Stopped by user" );
-			internal_gim->set_state( __GIM_TH_STOPPED );
-			return NULL;
 		}
-*/	}
-	for ( y = 0 ; y < iter ; y++ ) {
-		sprintf( gim_interface->data->item_sou_name , "Step %d/%d" , y+2 , iter+1 );
-		for ( j = 0 ; j < size ; j++ ) {
-//			if ( internal_gim->get_state() != __GIM_TH_STOP ) {
-				*(buffer + j) ^= mt.randInt( 255 );
-				gim_interface->data->sou_ratio = (float)( (float)j / (float)size );
-				gim_interface->data->sou_position = j;
-/*			}
-			else {
-				gim_error->set( "gim_cryptography_obj::advanced_password" , "Stopped by user" );
-				internal_gim->set_state( __GIM_TH_STOPPED );
-				return NULL;
-			}
-*/		}
 	}
 	gim_error->set( "gim_cryptography_obj::advanced_password" , "Done" );
 	internal_gim->set_state( __GIM_TH_IDLE );

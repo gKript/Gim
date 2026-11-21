@@ -84,7 +84,9 @@
 	#include <time.h>
 	
 	
-	#define	_GIM_MT_ORIGINAL	__GIM_NO	//	__GIM_YES means the original MT algo; __GIM_NO means the modified MT algo
+	#define GIM_MT_ORIGINAL_ALGO	1	//	the original Mersenne Twister
+	#define GIM_MT_MODIFIED_ALGO	0	//	the Gim modified Mersenne Twister (randInt mixes 4 outputs)
+	#define _GIM_MT_ORIGINAL	GIM_MT_MODIFIED_ALGO	// the Gim modified algo (randInt hashes 4 outputs with sha512)
 	
 
 	/* Period parameters */  
@@ -124,7 +126,7 @@
 			MTRand();  // auto-initialize with /dev/urandom or time() and clock()
 			
 			// Access to 32-bit random numbers
-			_gim_Uint32 		rand();									// real number in [0,1]
+			float 		rand();									// real number in [0,1]
 			_gim_Uint32 		rand( const _gim_Uint32 &n );			// real number in [0,n]
 
 			float 				randFloat( float range );          		// integer in [0,range-1]
@@ -134,12 +136,12 @@
 			_gim_flag			stat_distr_over_100_percentage( _gim_Uint8 perc );
 			_gim_flag			stat_distr_over_100_percentage( float perc );
 
-			#if ( _GIM_MT_ORIGINAL == __GIM_NO )			
-				_gim_Uint32 	randIntMT( const _gim_Uint32 &n );		// integer in [0,n] for n < 2^32
+			#if ( _GIM_MT_ORIGINAL == GIM_MT_MODIFIED_ALGO )			
+				_gim_Uint32	randIntMT();		// integer in [0,n] for n < 2^32
 			#endif
 			
 			_gim_Uint8 		randUInt8();
-			_gim_Uint32 		operator()() { return rand(); }			// same as rand()
+			float 		operator()() { return rand(); }			// same as rand()
 			
 			// Re-seeding functions with same behavior as initializers
 			void 				seed( const _gim_Uint32 oneSeed );

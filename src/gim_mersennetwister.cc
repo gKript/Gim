@@ -69,16 +69,16 @@ MTRand::MTRand() {
 
 
 
-#if ( _GIM_MT_ORIGINAL == __GIM_YES )
+#if ( _GIM_MT_ORIGINAL == GIM_MT_ORIGINAL_ALGO )
 
-	_gim_Uint32	MTRand::rand() {
-		return _gim_Uint32(randInt()) * (1.0/4294967295.0);
+	float	MTRand::rand() {
+		return (float)randInt() * (1.0f/4294967295.0f);
 	}
 
-#elif ( _GIM_MT_ORIGINAL == __GIM_NO )
+#elif ( _GIM_MT_ORIGINAL == GIM_MT_MODIFIED_ALGO )
 
-	_gim_Uint32	MTRand::rand() {
-		return randInt();
+	float	MTRand::rand() {
+		return (float)randInt() * (1.0f/4294967295.0f);
 	}
 
 #endif
@@ -100,11 +100,13 @@ float 		MTRand::randFloat( float range ) {
 
 
 _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
+	if ( range == 0 )		// an empty range has no values: avoid the division by zero
+		return 0;
 	return ( this->randInt() % range );
 }
 
 
-#if ( _GIM_MT_ORIGINAL == __GIM_YES )
+#if ( _GIM_MT_ORIGINAL == GIM_MT_ORIGINAL_ALGO )
 
 	_gim_Uint32	MTRand::randInt() {
 		unsigned long y;
@@ -115,7 +117,7 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 			int kk;
 
 			if (mti == MT_N+1)   /* if sgenrand() has not been called, */
-			    randInt(4357); /* a default initial seed is used   */
+			    seed(4357); /* a default initial seed is used   */
 
 			for (kk=0;kk<MT_N-MT_M;kk++) {
 			    y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
@@ -140,7 +142,7 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 		return y; 
 	}
 
-#elif ( _GIM_MT_ORIGINAL == __GIM_NO )						//	GIM RAND ROUTINE MT BASED
+#elif ( _GIM_MT_ORIGINAL == GIM_MT_MODIFIED_ALGO )						//	GIM RAND ROUTINE MT BASED
 
 	_gim_Uint32	MTRand::randIntMT() {
 		unsigned long y;
@@ -151,7 +153,7 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 			int kk;
 
 			if (mti == MT_N+1)   /* if sgenrand() has not been called, */
-			    randInt(4357); /* a default initial seed is used   */
+			    seed(4357); /* a default initial seed is used   */
 
 			for (kk=0;kk<MT_N-MT_M;kk++) {
 			    y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
@@ -178,20 +180,23 @@ _gim_Uint32	MTRand::randInt( _gim_Uint32 range ) {
 
 
 	_gim_Uint32	MTRand::randInt() {
-	
-		_gim_Uint32		LB = this->randIntMT();
-		_gim_Uint32		HB = this->randIntMT();
-		_gim_Uint32		UB = this->randIntMT();
-		_gim_Uint32		MB = this->randIntMT();
+		/* the four outputs of the MT are mixed by a hash: the first 32 bits of the sha512
+		   digest of their 16 bytes are the result (uniform, without the MT linearity) */
+		_gim_Uint32		w[ 4 ];
+		w[ 0 ] = this->randIntMT();
+		w[ 1 ] = this->randIntMT();
+		w[ 2 ] = this->randIntMT();
+		w[ 3 ] = this->randIntMT();
 
-		_gim_Uint32_VAL	ret;
-		
-		ret.LB = gim_checksum->chsum8( gim_checksum->sha512( &LB , 4 * sizeof( _gim_Uint8 ) ) ); 
-		ret.HB = gim_checksum->chsum8( gim_checksum->sha512( &HB , 4 * sizeof( _gim_Uint8 ) ) );
-		ret.UB = gim_checksum->chsum8( gim_checksum->sha512( &UB , 4 * sizeof( _gim_Uint8 ) ) );
-		ret.MB = gim_checksum->chsum8( gim_checksum->sha512( &MB , 4 * sizeof( _gim_Uint8 ) ) );
-
-		return ret.VAL; 
+		/* raw digest bytes (no hex text): the first 4 bytes of the sha512 are the result */
+		gim_sha512_obj	sha;
+		SHA512_ctx	c;
+		unsigned char	digest[ 64 ];
+		sha.SHA512_init( &c );
+		sha.SHA512_update( &c , (const void *) w , sizeof( w ) );
+		sha.SHA512_final( &c );
+		sha.SHA512_digest( &c , digest );
+		return ( (_gim_Uint32) digest[ 0 ] << 24 ) | ( (_gim_Uint32) digest[ 1 ] << 16 ) | ( (_gim_Uint32) digest[ 2 ] << 8 ) | (_gim_Uint32) digest[ 3 ];
 	}
 
 #endif

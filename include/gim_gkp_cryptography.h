@@ -78,6 +78,9 @@
 			*/
 			_gim_buffer	advanced_password( _gim_buffer buffer , _gim_Ulong size );
 
+			/*!	advanced_password with a nonce (the chunk id of the file): every file gets its own key stream */
+			_gim_buffer	advanced_password_nonce( _gim_buffer buffer , _gim_Ulong size , const char * nonce );
+
 			/*!	\fn		_gim_buffer	dna( _gim_buffer buffer , _gim_Ulong size , char * dna_file_name )
 				\brief	An very good method to encrypt or decrypt a buffer \n
 						It use an external file as key, so an other file is needed.

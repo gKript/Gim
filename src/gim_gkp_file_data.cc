@@ -61,7 +61,7 @@ void	gim_gkdp_obj::write_gkdp( _gim_handler * out ) {
 					gim_error->set( GIM_ERROR_FATAL , "gim_file_data_obj::data" , "I cannot load file" , __GIM_NOT_OK );
 				strcpy( chunk.id , gim_checksum->md5( file , in->size ) ) ;
 				crypt->set_secondary( currentlist->name );
-				crypt->advanced_password( file , in->size );
+				crypt->advanced_password_nonce( file , in->size , chunk.id );
 				strcpy( chunk.xhash , gim_checksum->md5( file , in->size ) );
 			}
 			else {
@@ -90,7 +90,7 @@ void	gim_gkdp_obj::write_gkdp( _gim_handler * out ) {
 			strcpy( chunk.id , gim_checksum->md5( currentlist->handle , currentlist->size ) ) ;
 			if ( header.crypt == __GIM_YES ) {
 				crypt->set_secondary( currentlist->name );
-				crypt->advanced_password( currentlist->handle , currentlist->size );
+				crypt->advanced_password_nonce( currentlist->handle , currentlist->size , chunk.id );
 				strcpy( chunk.xhash , gim_checksum->md5( currentlist->handle , currentlist->size ) );
 			}
 			char message[1024];

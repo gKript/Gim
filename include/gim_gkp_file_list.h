@@ -91,6 +91,7 @@
 		
 		_gim_buffer	buffer;					/*!<	The buffer contains the file data before flush in write. The buffer contains file data when you ::take a file in read	*/
 		_gim_map	handle;					/*!<	The ::_gim_map will be the index of a file in file mapping  */
+		char		nonce[GIM_MD5_SIZE];			/*!<	The chunk id of the file: the nonce of its key stream (read from the chunk, used in extract) */
 
 
 		gim_file_list_struct * link;		/*!<	To find the next member in memory or \a NULL if is reached the end of the file list  */

@@ -92,7 +92,7 @@ Esito: `PG_OK` se coincide, altrimenti `PG_GCP_ERROR_CRC_FAILED`.
 - `pg_gcp_engage`/`pg_gcp_rx_engage` definite due volte: **RISOLTO (2026-11-20)**, attiva quella a riga ~740; la copia a riga ~2480 e' in un commento `/* */` (2474-2538).
 - `pg_gcp_flag_set/get` usano il tipo `_pg_Uin8` (refuso).
 
-## 4. Normalizzazione degli ingressi (PROPOSTA, non ancora implementata)
+## 4. Normalizzazione degli ingressi (in implementazione: Gim genera la tabella dei canali; PicGIM non ancora compilato con C18)
 Scopo: portare N sensori di tipi diversi in un unico vettore di ingresso comparabile per la rete.
 Tre livelli separati: (1) driver di acquisizione per tipo di sensore, basati sui moduli PicGIM
 (`pgim_adc`, `pgim_i2c`, `pgim_spi`, `pgim_3wire`, `pgim_sensor`, `pgim_amg88xx`, `pgim_encoder`);
@@ -119,7 +119,7 @@ Valore di fallback per guasto e flag di errore per canale. Tabella in ROM accant
 - Conversione PIC: `diff = raw - in_min` (raw gia' saturato), `out = ((diff * scale) >> shift) - OUT_MAX`.
 - Esempio di controllo (8 bit, in 0..1023): scale 16272, shift 16 -> raw 0 => -127, raw 512 => 0, raw 1023 => 127.
 
-### 4.4 Generazione del modello lato Gim (PROPOSTA, da implementare su Gim)
+### 4.4 Generazione del modello lato Gim (IMPLEMENTATA in Gim: `gim_ai_train.cc`, tool `gimaitrain`; verificata sul prototipo, mancano dataset reale e smoke test CI)
 Obiettivo: da un dataset etichettato, Gim addestra la rete e produce un unico header `pgim_ai_model.h`
 che il progetto PIC include. Il PIC non deve sapere nulla di addestramento: riceve solo costanti.
 
@@ -171,9 +171,15 @@ che il progetto PIC include. Il PIC non deve sapere nulla di addestramento: rice
 - Classe = indice dell'uscita piu' alta dell'ultimo layer; a parita' vince l'indice piu' basso.
 - Pesi int8 (8 bit) o int16 (16 bit), simmetrici (`|w| <= OUT_MAX`). Bias gia' in scala dell'accumulatore.
 - Gim deve verificare per ogni neurone `sum_i |w[o][i]| * OUT_MAX + |b[o]| < 2^31` e rifiutare il modello se non vale.
-- Tabelle (canali, pesi, bias, layer, vettori di test) in ROM con qualificatore `rom`. Il tipo `pg_ai_out_t` e' `signed char` esplicito (C18: `char` e' senza segno).
+- Tabelle (canali, pesi, bias, layer, vettori di test) in ROM come `static const` (header generato da Gim, nessun `rom`: e' C18). Puntatori a ROM: `const __rom` (XC8). Il tipo `pg_ai_out_t` e' `signed char` esplicito (C18: `char` e' senza segno).
 - Vettori di test: `PG_AI_TEST_RAW` (grezzi), `PG_AI_TEST_OK`, `PG_AI_TEST_X` (normalizzati), `PG_AI_TEST_SCORES`, `PG_AI_TEST_CLASS`. Il firmware deve riprodurli bit per bit.
 - Da verificare su hardware: shift aritmetico di C18 su valori negativi.
+
+### 4.7 Dataset di riferimento e test end-to-end (2026-11-21)
+- Dataset: `SYNC/ai_dataset/pgim_ai_dataset_v1.csv`, 900 campioni, 8 canali, 3 classi, formato sez. 4.4 (`label,ch0,ch0_ok,...`). SHA-256 `e0b18c59daa896af22dba647ba9d520224b621593f20fd477085f89f2c1dc5c9`.
+- Addestramento (Gim): `gimaitrain --dataset <csv> --out <h> --report <txt> --out-bits 8 --hidden 8 --seed 1` → ACCETTATO (test: float 95.6%, intero 94.7%).
+- Verifica (PicGIM): l'header generato compila con XC8 V4.00 per PIC18F4620 senza modifiche a mano; simulazione gpsim 0.32.1 di 6 milioni di passi: 16/16 vettori, `pg_test_errors` = 0, `pg_test_done` = 1.
+- Criterio di accettazione: `pg_test_errors` = 0 e `pg_test_done` = 1, con gli indirizzi dalla mappa del linker (`-Wl,-Map`).
 
 ### 4.6 Ripartizione dei compiti (2026-11-21)
 - **PicGIM**: solo inferenza intera (`pgim_ai_input`, `pgim_ai_net`). Riceve `pgim_ai_model.h` e non sa nulla di addestramento.

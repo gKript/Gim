@@ -311,7 +311,7 @@ std::string build_header( const Options & opt , const std::string & digest , con
 	  << "\t#define PG_AI_NUM_TESTS\t\t" << tests.size() << "\n"
 	  << "\t#define PG_AI_RAM_BYTES\t\t(2 * PG_AI_MAX_WIDTH * sizeof(pg_ai_out_t))\n\n"
 	  << "\t//---[ Channel configuration ]---\n"
-	  << "\trom const pg_ai_channel_cfg PG_AI_CHANNELS[ PG_AI_NUM_INPUTS ] = {\n";
+	  << "\tstatic const pg_ai_channel_cfg PG_AI_CHANNELS[ PG_AI_NUM_INPUTS ] = {\n";
 	for ( int c = 0 ; c < n_in ; c++ ) {
 		const ChCfg & k = cfg[ c ];
 		h << "\t\t{ " << k.in_min << ", " << k.in_max << ", " << k.scale << ", " << k.shift << ", "
@@ -323,10 +323,10 @@ std::string build_header( const Options & opt , const std::string & digest , con
 		std::vector< int64_t > flat;
 		for ( const auto & row : il.W ) flat.insert( flat.end() , row.begin() , row.end() );
 		h << "\t//---[ Layer " << l << " ]---\n"
-		  << "\trom const pg_ai_w_t PG_AI_L" << l << "_W[ " << flat.size() << " ] = { " << join_ints( flat ) << " };\n"
-		  << "\trom const _pg_int32 PG_AI_L" << l << "_B[ " << il.n_out << " ] = { " << join_ints( il.B ) << " };\n";
+		  << "\tstatic const pg_ai_w_t PG_AI_L" << l << "_W[ " << flat.size() << " ] = { " << join_ints( flat ) << " };\n"
+		  << "\tstatic const _pg_int32 PG_AI_L" << l << "_B[ " << il.n_out << " ] = { " << join_ints( il.B ) << " };\n";
 	}
-	h << "\n\trom const pg_ai_layer PG_AI_LAYERS[ PG_AI_NUM_LAYERS ] = {\n";
+	h << "\n\tstatic const pg_ai_layer PG_AI_LAYERS[ PG_AI_NUM_LAYERS ] = {\n";
 	for ( size_t l = 0 ; l < layers.size() ; l++ ) {
 		const ILayer & il = layers[ l ];
 		h << "\t\t{ " << il.n_in << ", " << il.n_out << ", PG_AI_L" << l << "_W, PG_AI_L" << l << "_B, "
@@ -336,7 +336,7 @@ std::string build_header( const Options & opt , const std::string & digest , con
 	h << "\t};\n\n"
 	  << "\t//---[ Test vectors: raw input -> normalized input -> expected output ]---\n";
 	auto emit_rows = [ & ]( const char * decl , const char * type , const char * field , int cols ) {
-		h << "\t" << "rom const " << type << " " << decl << "[ PG_AI_NUM_TESTS ][ " << cols << " ] = {\n";
+		h << "\t" << "static const " << type << " " << decl << "[ PG_AI_NUM_TESTS ][ " << cols << " ] = {\n";
 		for ( size_t t = 0 ; t < tests.size() ; t++ ) {
 			const std::vector< int64_t > & v = std::string( field ) == "raw" ? tests[ t ].raw
 											 : std::string( field ) == "ok"  ? tests[ t ].ok
@@ -349,7 +349,7 @@ std::string build_header( const Options & opt , const std::string & digest , con
 	emit_rows( "PG_AI_TEST_OK" , "_pg_Uint8" , "ok" , n_in );
 	emit_rows( "PG_AI_TEST_X" , "pg_ai_out_t" , "x" , n_in );
 	emit_rows( "PG_AI_TEST_SCORES" , "pg_ai_out_t" , "scores" , n_cls );
-	h << "\trom const _pg_Uint8 PG_AI_TEST_CLASS[ PG_AI_NUM_TESTS ] = { ";
+	h << "\tstatic const _pg_Uint8 PG_AI_TEST_CLASS[ PG_AI_NUM_TESTS ] = { ";
 	for ( size_t t = 0 ; t < tests.size() ; t++ )
 		h << tests[ t ].cls << ( t + 1 < tests.size() ? ", " : " };\n" );
 	h << "\n#endif\n";

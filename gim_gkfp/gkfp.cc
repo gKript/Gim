@@ -36,12 +36,32 @@
 #define	GKFP_MAJOR			0
 #define GKFP_MINOR			3
 #define	GKFP_SUBMINOR		1
-#define	GKFP_VERSION		"0.3-1"
+#define	GKFP_VERSION		"0.3-1"\r
 
 #define GKFP_DEBUG			__GIM_YES
 #define __GIM_KAOS_TRSHLD	55
 
 #define _LINE				puts("")
+
+/* progress bar of the packing: one line, updated for each file, with percentage and estimated time left */
+static void show_progress( int done , int total , const char * name ) {
+	static clock_t t0 = 0;
+	char bar[31] , eta[16] = "--:--";
+	int filled = ( total > 0 ) ? ( done * 30 / total ) : 30 , pct = ( total > 0 ) ? ( done * 100 / total ) : 100 , i;
+	if ( done <= 1 )
+		t0 = clock();
+	if ( done > 0 && done < total ) {
+		double elapsed = (double) ( clock() - t0 ) / CLOCKS_PER_SEC;
+		long left = (long) ( elapsed / done * ( total - done ) + 0.5 );
+		sprintf( eta , "%02ld:%02ld" , left / 60 , left % 60 );
+	}
+	for ( i = 0 ; i < 30 ; i++ )
+		bar[ i ] = ( i < filled ) ? '#' : '-';
+	bar[ 30 ] = 0;
+	printf( "\r[%s] %3d%%  %4d/%-4d  eta %s  %-30.30s" , bar , pct , done , total , eta , name );
+	if ( done >= total ) puts( "" );
+	fflush( stdout );
+}
 
 
 int main ( int argc , char *argv[] ) {
@@ -96,7 +116,9 @@ int main ( int argc , char *argv[] ) {
 		fflush( stdout );
 		gkp->Set_prg( "Gkfp_creator" , 0 , 1 , 0 );
 		gkp->New_path( argv[2] );
+		gim_gkfp_progress = show_progress;
 		gkp->Write();
+		gim_gkfp_progress = NULL;
 		puts( "Done!");
 		gkp_system.cat( gkp_file_name.c_str() );
 		stat = system( gkp_system.c_str() );
