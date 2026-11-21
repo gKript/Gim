@@ -143,6 +143,7 @@
 	int		gim_win_cpu_count( void );
 	int		gim_win_cpu_info( int index , char * name , char * vendor , float * mhz , int * family , int * model , int * stepping );
 	int		gim_win_mem_info( unsigned long long * total , unsigned long long * avail );
+	int		gim_win_cache_kb( void );
 	char *	strcasestr( const char * haystack , const char * needle );
 
 	/* ---- getopt (short options, GNU-like argument permutation) ----------- */

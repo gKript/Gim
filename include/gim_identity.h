@@ -77,10 +77,10 @@
 		\brief		This struct contain all informations collected about the host's memory. Defined as type ::_gim_memory
 	*/
 	struct gim_memory_struct {
-		_gim_Uint32	total;		/*!<	The total mamory installed on the host	*/
-		_gim_Uint32	used;		/*!<	The memory used in this moment	*/
-		_gim_Uint32	free;		/*!<	It is the memory available for Gim	*/
-		_gim_Uint32	cached;		/*!<	The memory cached	*/
+		_gim_ULlong	total;		/*!<	The total mamory installed on the host, in bytes (64 bit: more than 4 GB are possible)	*/
+		_gim_ULlong	used;		/*!<	The memory used in this moment, in bytes	*/
+		_gim_ULlong	free;		/*!<	It is the memory available for Gim, in bytes	*/
+		_gim_ULlong	cached;		/*!<	The memory cached, in bytes	*/
 		float		ratio;		/*!<	used/free expressed	*/
 	};	
 	

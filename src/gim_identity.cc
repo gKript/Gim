@@ -27,6 +27,13 @@
 
 gim_identity_obj	* gim_identity;
 
+// BogoMips is a Linux measure: Windows does not compute it, so it is not shown there
+#if defined( _WIN32 )
+	#define GIM_BOGOMIPS_SHOWN	0
+#else
+	#define GIM_BOGOMIPS_SHOWN	1
+#endif
+
 void	gim_identity_obj::init( void ) {
 	__GIM_CLEAR( Login			, 256 , char );
 	__GIM_CLEAR( Real_name		, 256 , char );
@@ -96,7 +103,7 @@ void	gim_identity_obj::get( void ) {
 		sprintf( message , "User detected  : %s@%s on %s" , gim_identity->Login , gim_identity->Node_name , gim_identity->Release );
 		gim_error->set( "gim_identity_obj::get" , message );
 		for( tmp_prc = processor ; tmp_prc != NULL ; tmp_prc = tmp_prc->next ) {
-			if ( tmp_prc->bogomips != 0 )
+			if ( GIM_BOGOMIPS_SHOWN && ( tmp_prc->bogomips != 0 ) )
 				sprintf( message , "Cpu  #%-2d  : %s @ %6.2fMHz (%6.3f) - Arch %s" , tmp_prc->proc_number , tmp_prc->model_name , tmp_prc->cpu_mhz , tmp_prc->bogomips , my_system.machine );
 			else
 				sprintf( message , "Cpu  #%-2d  : %s @ %6.2fMHz - Arch %s" , tmp_prc->proc_number , tmp_prc->model_name , tmp_prc->cpu_mhz ,my_system.machine );
@@ -104,7 +111,7 @@ void	gim_identity_obj::get( void ) {
 			n_processors = tmp_prc->proc_number + 1;
 			tot_bogomips += tmp_prc->bogomips;
 		}
-		if ( n_processors > 1 ) {
+		if ( GIM_BOGOMIPS_SHOWN && ( n_processors > 1 ) ) {
 			sprintf( message , "Cpu       : Total Bogomips [ %6.3f ]" , tot_bogomips );
 			gim_error->set( "gim_identity_obj::get" , message );
 		}
@@ -140,6 +147,7 @@ _gim_processor *		gim_identity_obj::cpu( void ) {
 			gim_win_cpu_info( i , p->model_name , p->vendor_id , &p->cpu_mhz , &p->family , &p->model , &p->stepping );
 			strcpy( p->processor , p->model_name );
 			p->est_cpu_mhz = p->cpu_mhz;
+			p->cache_size = gim_win_cache_kb();
 			p->bogomips = 0;
 			cpu_strfamily( p );
 			p->next = NULL;
@@ -331,11 +339,9 @@ _gim_memory *	gim_identity_obj::memory(void) {
 			return NULL;
 		gim_error->set( "gim_identity_obj::memory" , "Getting memory details..." );
 		mi = (_gim_memory *)gim_memory->Alloc( sizeof( _gim_memory ) , __GIM_MEM_GETID_MEM , __GIM_HIDE );
-		/* the fields are 32 bit: clamp to 4 GiB - 1 */
-		if ( total > 0xFFFFFFFFULL ) total = 0xFFFFFFFFULL;
-		if ( avail > total ) avail = total;
-		mi->total  = (_gim_Uint32) total;
-		mi->free   = (_gim_Uint32) avail;
+						if ( avail > total ) avail = total;
+		mi->total  = total;
+		mi->free   = avail;
 		mi->cached = 0;
 		mi->used   = mi->total - mi->free;
 		mi->ratio  = 100.0 * ( 1.0 - (float)((float)mi->used / (float)mi->total) );

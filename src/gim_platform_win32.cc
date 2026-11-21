@@ -82,6 +82,10 @@ extern "C" struct passwd * getpwuid( uid_t uid ) {
 	if ( home == NULL )
 		home = getenv( "HOMEPATH" );
 	strncpy( pw.pw_dir , ( home != NULL ) ? home : "." , sizeof( pw.pw_dir ) - 1 );
+	/* Gim builds its paths with '/': use '/' in the home too (C:/Users/... instead of C:\Users\...) */
+	for ( char * c = pw.pw_dir ; *c != '\0' ; c++ )
+		if ( *c == '\\' )
+			*c = '/';
 	return &pw;
 }
 
@@ -359,7 +363,7 @@ extern "C" int gim_win_cpu_info( int index , char * name , char * vendor , float
 
 	name[0] = vendor[0] = '\0';
 	*mhz = 0; *family = *model = *stepping = 0;
-	snprintf( key , sizeof( key ) , "HARDWARE\DESCRIPTION\System\CentralProcessor\%d" , index );
+	snprintf( key , sizeof( key ) , "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\%d" , index );
 	if ( RegOpenKeyExA( HKEY_LOCAL_MACHINE , key , 0 , KEY_READ , &hk ) != ERROR_SUCCESS )
 		return -1;
 	len = 255; type = REG_SZ;
@@ -395,6 +399,27 @@ extern "C" int gim_win_mem_info( unsigned long long * total , unsigned long long
 	*total = ms.ullTotalPhys;
 	*avail = ms.ullAvailPhys;
 	return 0;
+}
+
+/* size in KB of the largest processor cache (usually L3, else L2): the Linux "cache size" */
+extern "C" int gim_win_cache_kb( void ) {
+	DWORD	len = 0;
+	int		best = 0;
+	GetLogicalProcessorInformation( NULL , &len );
+	if ( len == 0 )
+		return 0;
+	SYSTEM_LOGICAL_PROCESSOR_INFORMATION * buf = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION *) malloc( len );
+	if ( buf == NULL )
+		return 0;
+	if ( GetLogicalProcessorInformation( buf , &len ) ) {
+		DWORD n = len / sizeof( SYSTEM_LOGICAL_PROCESSOR_INFORMATION );
+		for ( DWORD i = 0 ; i < n ; i++ ) {
+			if ( buf[ i ].Relationship == RelationCache && (int)( buf[ i ].Cache.Size / 1024 ) > best )
+				best = (int)( buf[ i ].Cache.Size / 1024 );
+		}
+	}
+	free( buf );
+	return best;
 }
 
 #endif /* _WIN32 */

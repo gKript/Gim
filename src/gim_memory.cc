@@ -197,9 +197,9 @@ void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden 
 	if ( virt_mem == __GIM_OFF ) {
 		if ( gim_interface != NULL )
 			gim_interface->data->mem_max_allocable = max_allocation;
-		if ( size > (size_t)abs( (int)max_allocation - allocated ) ) {
+		if ( size > (size_t)llabs( (long long)max_allocation - (long long)allocated ) ) {
 			if ( max_allocation > 0 ) {
-				gim_error->Set( GIM_ERROR_FATAL , "gim_memory_obj::Alloc" , "The demand for memory exceeds the max_allocation [ %s / %d ]" , metric_converter( size ) , ( max_allocation - allocated ) );
+				gim_error->Set( GIM_ERROR_FATAL , "gim_memory_obj::Alloc" , "The demand for memory exceeds the max_allocation [ %s / %lld ]" , metric_converter( size ) , (long long)( max_allocation - allocated ) );
 				return NULL;
 			}
 		}
@@ -242,7 +242,7 @@ void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden 
 		else
 			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Alloc" , "Allocated [%s] index[%p] , Allocation id : %s" , metric_converter( size ) , endlist->data , code_to_id( caller )  );
 		if ( virt_mem == __GIM_OFF )
-			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::alloc" , "Total memory allocated [%d] | Free memory for the application [%d]" , allocated , ( max_allocation - allocated )  );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::alloc" , "Total memory allocated [%d] | Free memory for the application [%lld]" , allocated , (long long)( max_allocation - allocated )  );
 	}
 	caller = __GIM_MEM_OTHER;
 	return tmplist->data;
@@ -330,7 +330,7 @@ _gim_flag	gim_memory_obj::Free	( void *  to_free ) {
 				allocated -= currentlist->size;
 				if ( ( currentlist->hide != __GIM_HIDE ) || ( Hide == __GIM_NO ) ) {
 					if ( virt_mem == __GIM_OFF )
-						gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Free" , "Total memory allocated [%d] | Free memory for the application [%d]" , allocated , (_gim_Uint32)( max_allocation - allocated ) );
+						gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Free" , "Total memory allocated [%d] | Free memory for the application [%lld]" , allocated , (long long)( max_allocation - allocated ) );
 				}
 				if ( gim_interface != NULL ) {
 					if ( gim_interface->data != NULL ) {
@@ -491,7 +491,7 @@ void gim_memory_obj::Memory_update( void ) {
 	if ( Alloc_limit == __GIM_YES ) {
 		gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Memory_update", "Memory allocation limit activated");
 		if ( ( Limit >= 0 ) && ( Limit <= 100 ) ) 
-			max_allocation = (_gim_Uint32)( ( (float)gim_identity->mi->free * (float)Limit ) / 100.00 );
+			max_allocation = (_gim_ULlong)( ( (double)gim_identity->mi->free * (double)Limit ) / 100.00 );
 			gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Memory_update" , "Allocation limit setted to %d%% (%s)" , Limit , metric_converter( max_allocation ) );
 	}
 	else {
@@ -523,11 +523,11 @@ void	gim_memory_obj::Vmem( _gim_flag flag ) {
 }
 
 
-char *	gim_memory_obj::metric_converter( _gim_Ulong size ) {
+char *	gim_memory_obj::metric_converter( _gim_ULlong size ) {
 	static char message[128];
 	__GIM_CLEAR( message , 128 , char );
 	if ( ( size / __GIM_MB ) >= 1 ) {
-		sprintf( message , "%5ld MBytes" , ( size / __GIM_MB ) );
+		sprintf( message , "%5llu MBytes" , (unsigned long long)( size / __GIM_MB ) );
 		return message;
 	}
 	//~ if ( ( ( size / __GIM_MB ) >= 1 ) && ( ( size / __GIM_GB ) < 1 ) ) {
@@ -535,18 +535,18 @@ char *	gim_memory_obj::metric_converter( _gim_Ulong size ) {
 		//~ return message;
 	//~ }
 	if ( ( ( size / __GIM_KB ) >= 1 ) && ( ( size / __GIM_MB ) < 1 ) ) {
-		sprintf( message , "%5ld KBytes" , ( size / __GIM_KB ) );
+		sprintf( message , "%5llu KBytes" , (unsigned long long)( size / __GIM_KB ) );
 		return message;
 	}
 	if ( ( size / __GIM_KB ) < 1 ) {
-		sprintf( message , "%5ld Bytes" , size );
+		sprintf( message , "%5llu Bytes" , (unsigned long long)size );
 		return message;
 	}
 	return NULL;
 }
 
 
-_gim_Uint32	gim_memory_obj::Max_allocable		( void ) {
+_gim_ULlong	gim_memory_obj::Max_allocable		( void ) {
 	return max_allocation;
 }
 
