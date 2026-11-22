@@ -19,7 +19,7 @@ set(GIM_SOURCES
 	gim_log.cc gim_md5.cc gim_memory.cc gim_private_key.cc gim_sha1.cc
 	gim_sha256.cc gim_sha512.cc gim_signal.cc gim_string.cc gim_time.cc
 	gim_version.cc gim_list.cc gim_picgim.cc gim_getopt.cc gim_ascii_buffer.cc
-	gim_mersennetwister.cc gim_ai_train.cc gim_serial.cc gim_rpi_gpio.cc)
+	gim_mersennetwister.cc gim_ai_train.cc gim_serial.cc gim_rpi_gpio.cc gim_thread.cc)
 if(WIN32)
 	list(APPEND GIM_SOURCES gim_platform_win32.cc)
 endif()
@@ -27,6 +27,10 @@ list(TRANSFORM GIM_SOURCES PREPEND "src/")
 
 add_library(gim STATIC ${GIM_SOURCES})
 add_library(gim::gim ALIAS gim)
+
+# gim_thread uses std::thread: link the thread library (pthread on Linux, winpthreads on MinGW)
+find_package(Threads REQUIRED)
+target_link_libraries(gim PUBLIC Threads::Threads)
 
 # the tools include <gim/gim.h> (installed layout): stage the headers that way
 file(GLOB GIM_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")

@@ -97,6 +97,7 @@ struct gim_memory_id memory_id_command [] = {
 	
 
 void	gim_memory_obj::up		( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( startlist == NULL ) {
 		gim_mem_list * L_init;
 		L_init = ( gim_mem_list * ) malloc ( sizeof ( gim_mem_list ) );
@@ -116,6 +117,7 @@ void	gim_memory_obj::up		( void ) {
 }
 
 void	gim_memory_obj::down( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::down" , "Memory allocation system goes down..." );
 	if ( startlist != NULL ) 
 		release_memory_list();
@@ -128,6 +130,7 @@ void	gim_memory_obj::down( void ) {
 
 
 void *	gim_memory_obj::Duplicate( void * to_dup ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	void *	duplicated;
 	_gim_flag	found = __GIM_NO;
 	gim_mem_list *	before = startlist;
@@ -155,6 +158,7 @@ void *	gim_memory_obj::Duplicate( void * to_dup ) {
 
 
 void *	gim_memory_obj::Relloc( void * pntr , size_t size , char * id ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_flag	found = __GIM_NO;
 	gim_mem_list *	before = startlist;
 	if ( pntr == NULL ) 
@@ -194,6 +198,7 @@ void *	gim_memory_obj::Relloc( void * pntr , size_t size , char * id ) {
 
 
 void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( virt_mem == __GIM_OFF ) {
 		if ( gim_interface != NULL )
 			gim_interface->data->mem_max_allocable = max_allocation;
@@ -250,6 +255,7 @@ void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 id , _gim_flag hidden 
 
 
 void * 	gim_memory_obj::Alloc_unlocked	( size_t size ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	void * tmp;
 	tmp = Alloc( size );
 	if ( Get_lock_status( tmp ) == __GIM_MEM_LOCK ) 
@@ -259,6 +265,7 @@ void * 	gim_memory_obj::Alloc_unlocked	( size_t size ) {
 
 
 void * 	gim_memory_obj::Alloc_locked	( size_t size ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	void * tmp;
 	tmp = Alloc( size );
 	if ( Get_lock_status( tmp ) == __GIM_MEM_UNLOCK ) 
@@ -269,6 +276,7 @@ void * 	gim_memory_obj::Alloc_locked	( size_t size ) {
 
 
 void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 code ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( code != __GIM_MEM_OTHER ) {
 		caller = code;
 	}
@@ -277,6 +285,7 @@ void * 	gim_memory_obj::Alloc	( size_t size , _gim_Uint32 code ) {
 
 
 void * 	gim_memory_obj::Alloc	( size_t size , char * id ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_Uint32	code;
 	code = id_to_code( id );
 	if ( code != __ID_COMMAND_ERROR ) {
@@ -291,11 +300,13 @@ void * 	gim_memory_obj::Alloc	( size_t size , char * id ) {
 
 
 void * 	gim_memory_obj::Alloc	( size_t size ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	return Alloc( size , __GIM_MEM_OTHER , __GIM_NOT_HIDE );
 }
 
 
 _gim_flag	gim_memory_obj::Unlock_and_free( void *  to_free ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_flag result = Check( to_free );
 	if ( result == __GIM_NOT_EXIST ) 
 		return __GIM_NOT_EXIST;
@@ -305,6 +316,7 @@ _gim_flag	gim_memory_obj::Unlock_and_free( void *  to_free ) {
 
 
 _gim_flag	gim_memory_obj::Free	( void *  to_free ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_flag	found = __GIM_NO;
 	gim_mem_list *	before = startlist;
 	if ( to_free == NULL ) 
@@ -358,6 +370,7 @@ _gim_flag	gim_memory_obj::Free	( void *  to_free ) {
 
 
 _gim_flag	gim_memory_obj::Check( void * to_check ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
 		if ( (_gim_address)to_check == (_gim_address)currentlist->data )
 			return __GIM_EXIST;
@@ -366,6 +379,7 @@ _gim_flag	gim_memory_obj::Check( void * to_check ) {
 }
 
 _gim_Uint32	gim_memory_obj::release_memory_list( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_mem_list *	Next;
 	_gim_Uint32	total = 0 , not_empty = 0 , total_size = 0 ;
 	gim_error->set( "gim_memory_obj::release_memory_list" , 16 );
@@ -409,6 +423,7 @@ _gim_Uint32	gim_memory_obj::release_memory_list( void ) {
 
 
 _gim_Uint32	gim_memory_obj::id_to_code( const char * id ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_Uint8 c;
 	for( c = 0 ; memory_id_gim[c].code != 0xffffffff ; c++ ) {
 		if ( ! ( strcmp( id , memory_id_gim[c].id ) ) )
@@ -427,6 +442,7 @@ _gim_Uint32	gim_memory_obj::id_to_code( const char * id ) {
 
 
 char *		gim_memory_obj::code_to_id( _gim_Uint32 code ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	static char message[256];
 	_gim_Uint8 c;
 	for( c = 0 ; memory_id_gim[c].code != 0xffffffff ; c++ ) {
@@ -447,6 +463,7 @@ char *		gim_memory_obj::code_to_id( _gim_Uint32 code ) {
 
 
 void		gim_memory_obj::hide( _gim_flag flag ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( flag == __GIM_YES ) 
 		Hide = __GIM_YES;
 	if ( flag == __GIM_NO ) 
@@ -455,6 +472,7 @@ void		gim_memory_obj::hide( _gim_flag flag ) {
 
 
 _gim_Uint32	gim_memory_obj::Memory( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
     FILE	* procmem;
     char	buffer[128];
 	char	tmp[5][256];
@@ -488,6 +506,7 @@ _gim_Uint32	gim_memory_obj::Memory( void ) {
 
 
 void gim_memory_obj::Memory_update( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( Alloc_limit == __GIM_YES ) {
 		gim_error->Set( GIM_ERROR_WARNING , "gim_memory_obj::Memory_update", "Memory allocation limit activated");
 		if ( ( Limit >= 0 ) && ( Limit <= 100 ) ) 
@@ -503,16 +522,19 @@ void gim_memory_obj::Memory_update( void ) {
 
 
 void	gim_memory_obj::mem_alloc_limit( _gim_flag flag , _gim_Uint8 mlimit ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	Alloc_limit = flag;
 	Limit = mlimit;
 	Memory_update();
 }
 
 void		gim_memory_obj::set_default_lock( _gim_flag deflock ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	this->lock = deflock; 
 }
 
 void	gim_memory_obj::Vmem( _gim_flag flag ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	virt_mem = flag;
 	if ( virt_mem == __GIM_ON )
 		gim_error->Set( GIM_ERROR_MESSAGE , "gim_memory_obj::Vmem" , "Virtual memory enabled" );
@@ -524,6 +546,7 @@ void	gim_memory_obj::Vmem( _gim_flag flag ) {
 
 
 char *	gim_memory_obj::metric_converter( _gim_ULlong size ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	static char message[128];
 	__GIM_CLEAR( message , 128 , char );
 	if ( ( size / __GIM_MB ) >= 1 ) {
@@ -547,36 +570,43 @@ char *	gim_memory_obj::metric_converter( _gim_ULlong size ) {
 
 
 _gim_ULlong	gim_memory_obj::Max_allocable		( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	return max_allocation;
 }
 
 
 _gim_Uint32	gim_memory_obj::Allocated			( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	return allocated;
 }
 
 
 _gim_Uint32	gim_memory_obj::Allocated_peek		( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	return allocated_peek;
 }
 
 
 _gim_flag	gim_memory_obj::Virtual_memory		( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	return virt_mem;
 }
 
 
 _gim_flag	gim_memory_obj::Allocation_limit	( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	return Alloc_limit;
 }
 
 
 void		gim_memory_obj::peek_reset			( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	allocated_peek = 0;
 }
 
 
 _gim_flag	gim_memory_obj::Unlock( void * to_unlock ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
 		if ( (_gim_address)to_unlock == (_gim_address)currentlist->data ) {
 			if ( currentlist->lock == __GIM_MEM_UNLOCK ) {
@@ -594,6 +624,7 @@ _gim_flag	gim_memory_obj::Unlock( void * to_unlock ) {
 
 
 _gim_flag	gim_memory_obj::Lock( void * to_lock ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
 		if ( (_gim_address)to_lock == (_gim_address)currentlist->data ) {
 			if ( currentlist->lock == __GIM_MEM_LOCK ) {
@@ -611,6 +642,7 @@ _gim_flag	gim_memory_obj::Lock( void * to_lock ) {
 
 
 _gim_flag	gim_memory_obj::Get_lock_status( void * to_check ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	for ( currentlist = startlist ; currentlist != NULL ; currentlist = currentlist->next ) {
 		if ( (_gim_address)to_check == (_gim_address)currentlist->data ) {
 			return currentlist->lock;

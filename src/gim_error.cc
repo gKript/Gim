@@ -84,6 +84,7 @@ gim_error_list_str	gim_error_list [] = {
 
 
 void	gim_error_obj::set	( const char * type , const char * function , const char * message , int value ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	char mess[512];
 	strcpy	( this->type , type );
 	sprintf	( this->function , "%s()" , function );
@@ -115,6 +116,7 @@ void	gim_error_obj::set	( const char * type , const char * function , const char
 
 
 void	gim_error_obj::set	( pid_t cur_pid , const char * type , const char * function , const char * message , int value ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	strcpy	( this->type , type );
 	sprintf	( this->function , "%s()" , function );
 	strcpy	( this->message	, message );
@@ -142,11 +144,13 @@ void	gim_error_obj::set	( pid_t cur_pid , const char * type , const char * funct
 
 
 void	gim_error_obj::set	( const char * function , const char * message ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	set( GIM_ERROR_MESSAGE , function , char_filter( message , '\n' ) , 0 );
 }
 
 /*
 void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	char	message[1024];
 	va_list	VAList;
 	va_start( VAList , format );
@@ -157,6 +161,7 @@ void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
 */
 
 void	gim_error_obj::Set	( const char * type , const char * function , const char * format , ... ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	char	message[1024];
 	char	message_t[1024];
 	if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
@@ -187,6 +192,7 @@ void	gim_error_obj::Set	( const char * type , const char * function , const char
 
 
 void	gim_error_obj::set	( const char * function , int index ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_flag fatal = __GIM_NO;
 	if  ( ! ( strcmp ( type , GIM_ERROR_FATAL ) ) )
 		fatal = __GIM_YES;
@@ -221,6 +227,7 @@ void	gim_error_obj::set	( const char * function , int index ) {
 }
 
 void	gim_error_obj::get	( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( value || always_verbose ) {
 		if ( ( ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )  &&  ( verbose_on_critical == __GIM_YES ) ) ) {
 			fprintf ( stderr , "[%s] %s%-40s:#%2d: | %s \n" , error_time.process() , type , function , value , message );
@@ -236,6 +243,7 @@ void	gim_error_obj::get	( void ) {
 }
 
 void	gim_error_obj::set( _gim_int8 cmd , _gim_flag val ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	switch(cmd) {
 		case GIM_ON_FATAL_EXIT : {
 			on_fatal_exit = val;
@@ -262,6 +270,7 @@ void	gim_error_obj::set( _gim_int8 cmd , _gim_flag val ) {
 
 
 _gim_flag	gim_error_obj::get( _gim_int8 cmd ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	switch(cmd) {
 		case GIM_ON_FATAL_EXIT :		return ( on_fatal_exit );
 		case GIM_ON_FATAL_VERBOSE :		return ( on_fatal_verbose );
@@ -274,6 +283,7 @@ _gim_flag	gim_error_obj::get( _gim_int8 cmd ) {
 
 
 _gim_flag	gim_error_obj::ladd( const char * type , const char * function , const char * message , int value ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_error_message * new_message;
 	new_message = (gim_error_message *)malloc( sizeof( gim_error_message ) );
 	if ( new_message == NULL )
@@ -296,6 +306,7 @@ _gim_flag	gim_error_obj::ladd( const char * type , const char * function , const
 
 
 void		gim_error_obj::lflush( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	int cnt = 0;
 	char message[256];
 	gim_error_message * cursor = first_in;;
@@ -318,6 +329,7 @@ void		gim_error_obj::lflush( void ) {
 
 
 const char *		gim_error_obj::char_filter( const char * from , char to_filter ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	_gim_Uint32	a = 0 , b = 0, l =0;
 	static char * tmp;
 	tmp = NULL;		

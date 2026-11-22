@@ -91,6 +91,7 @@
 		double		old_cpu_system;				/*!<	This field contain the lsat readed user load */
 		double		old_cpu_idle;				/*!<	This field contain the lsat readed user load */
 		double		old_cpu_total;
+		float		cpu_busy_perc;				/*!<	Busy percentage of the whole CPU (0-100), computed by sample() from two readings. */
 	};
 	
 	/*! \class 		gim_interface_obj
@@ -156,6 +157,18 @@
 			double				get_lavg_ftm	( void );
 
 			void				init_perc_cpu_load( void );
+
+			/*! \fn		void sample ( void )
+				rief	Updates the system load and the memory fields of the interface. It is thread-safe.
+						Gim does not start any thread: call it yourself, for example from a gim_thread_obj.
+			*/
+			void				sample			( void );
+
+			/*! \fn		void snapshot ( gim_interface_data * out )
+				rief	Copies the whole interface into  out. It is thread-safe: a reader thread should use this instead of get().
+				param	out		Your personal interface where the copy is stored.
+			*/
+			void				snapshot		( gim_interface_data * out );
 			
 		private:
 	friend	class	gim_memory_obj;

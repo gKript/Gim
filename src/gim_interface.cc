@@ -32,12 +32,51 @@
 #############################################################################*/
 
 #include "../include/gim_interface.h"
+#include "../include/gim_error.h"
+#include "../include/gim_memory.h"
+#include <mutex>
 
 gim_interface_obj	* gim_interface;
+
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
+/* Reads the cumulative CPU counters of the whole system: idle time and total time.
+   Returns 1 on success, 0 if the counters cannot be read. */
+static int gim_read_cpu_counters( double * idle , double * total ) {
+#ifdef _WIN32
+	FILETIME		idle_ft , kern_ft , user_ft;
+	ULARGE_INTEGER	i , k , u;
+	if ( !GetSystemTimes( &idle_ft , &kern_ft , &user_ft ) )
+		return 0;
+	i.LowPart = idle_ft.dwLowDateTime;	i.HighPart = idle_ft.dwHighDateTime;
+	k.LowPart = kern_ft.dwLowDateTime;	k.HighPart = kern_ft.dwHighDateTime;
+	u.LowPart = user_ft.dwLowDateTime;	u.HighPart = user_ft.dwHighDateTime;
+	*idle  = (double) i.QuadPart;
+	*total = (double) ( k.QuadPart + u.QuadPart );	/* kernel time already includes idle time */
+	return 1;
+#else
+	FILE * f = fopen( "/proc/stat" , "rb" );
+	unsigned long long user = 0 , nice = 0 , system = 0 , idle_v = 0 , iowait = 0 , irq = 0 , softirq = 0 , steal = 0;
+	int n;
+	if ( f == NULL )
+		return 0;
+	n = fscanf( f , "cpu %llu %llu %llu %llu %llu %llu %llu %llu" , &user , &nice , &system , &idle_v , &iowait , &irq , &softirq , &steal );
+	fclose( f );
+	if ( n < 4 )
+		return 0;
+	*idle  = (double) ( idle_v + iowait );
+	*total = (double) ( user + nice + system + idle_v + iowait + irq + softirq + steal );
+	return 1;
+#endif
+}
 
 gim_interface_obj::gim_interface_obj() {
 	data	= new gim_interface_data;
 	backup	= new gim_interface_data;
+	memset( data , 0 , sizeof( gim_interface_data ) );
+	memset( backup , 0 , sizeof( gim_interface_data ) );
 	if ( data->old_cpu_total == 0 ) {
 		
 	}
@@ -117,11 +156,43 @@ double		gim_interface_obj::get_lavg_ftm	( void ) {
 }
 
 void		gim_interface_obj::init_perc_cpu_load( void ) {
-	FILE *stat;
-	stat = fopen( "/proc/stat" , "rb" );
-	if ( stat ) {
-		
+	double idle , total;
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	if ( gim_read_cpu_counters( &idle , &total ) ) {
+		data->cpu_idle = data->old_cpu_idle = idle;
+		data->cpu_total = data->old_cpu_total = total;
 	}
-	
 }
 
+
+void		gim_interface_obj::sample( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	update_load_avg();
+	double idle , total;
+	if ( gim_read_cpu_counters( &idle , &total ) ) {
+		data->old_cpu_idle	= data->cpu_idle;
+		data->old_cpu_total	= data->cpu_total;
+		data->cpu_idle		= idle;
+		data->cpu_total		= total;
+		double d_total = data->cpu_total - data->old_cpu_total;
+		double d_idle  = data->cpu_idle - data->old_cpu_idle;
+		if ( data->old_cpu_total > 0 && d_total > 0 ) {
+			double busy = 100.0 * ( 1.0 - d_idle / d_total );
+			if ( busy < 0.0 )	busy = 0.0;
+			if ( busy > 100.0 )	busy = 100.0;
+			data->cpu_busy_perc = (float) busy;
+		}
+	}
+	if ( gim_memory != NULL ) {
+		data->mem_allocated			= gim_memory->Allocated();
+		data->mem_allocated_peek	= gim_memory->Allocated_peek();
+		data->mem_max_allocable		= (_gim_Uint32) gim_memory->Max_allocable();
+	}
+}
+
+void		gim_interface_obj::snapshot( gim_interface_data * out ) {
+	if ( out == NULL )
+		return;
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	memcpy( out , data , sizeof( gim_interface_data ) );
+}

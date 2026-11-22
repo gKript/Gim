@@ -106,6 +106,13 @@
 	/*! \class		gim_error_obj
 		\brief		Gim error object: sets, prints and stores the errors of the library.
 	*/
+	#include <mutex>
+	// One lock for the error log and the memory allocator: they call each other, so one lock avoids deadlocks.
+	inline std::recursive_mutex & gim_global_lock( void ) {
+		static std::recursive_mutex m;
+		return m;
+	}
+
 	class gim_error_obj {
 		public:
 
