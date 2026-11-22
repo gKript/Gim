@@ -181,7 +181,7 @@ void gim_obj::gim_release( void ) {
 
 void gim_obj::down( _gim_flag code ) {
 	set_state( __GIM_TH_EXIT );
-	error->set( GIM_ERROR_CRITICAL , "gim_base_obj::down" , "Gim shutdown. Serious!!!" , __GIM_ERROR );
+	error->set( GIM_ERROR_MESSAGE , "gim_base_obj::down" , "Gim shutdown." , __GIM_OK );
 	error->set( "gim_base_obj::down" , 18 );
 	gim_file_manager->release();
 	gim_identity->release();

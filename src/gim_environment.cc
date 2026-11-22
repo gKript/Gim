@@ -275,7 +275,7 @@ void	gim_home_obj::up( void ) {
 			}
 			IF_EXIST_KEY_IN_CONF( "memory" , "log_in_file" ) {
 				if ( gim_conf->GetKeyFLAG( "memory" , "log_in_file" ) == __GIM_ON ) {
-					//attivare il memory log
+					//enable the memory log
 				}
 			}
 			else {

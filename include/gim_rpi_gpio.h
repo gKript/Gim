@@ -36,7 +36,7 @@
 			/*! Exports a pin and sets its direction.
 				\param	pin		the GPIO number
 				\param	output	__GIM_YES for an output pin, __GIM_NO for an input pin
-				\return	__GIM_OK on success, __GIM_NOT_OK otherwise (the reason is printed)
+				\return	__GIM_OK on success, __GIM_NOT_OK otherwise (the reason is written to gim_error)
 			*/
 			_gim_flag	export_pin( int pin , _gim_flag output );
 

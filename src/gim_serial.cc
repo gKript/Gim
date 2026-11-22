@@ -21,6 +21,7 @@
 #############################################################################*/
 
 #include "../include/gim_serial.h"
+#include "../include/gim_error.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -48,7 +49,7 @@
 		sprintf( name , "\\\\.\\%s" , port );
 		h = CreateFileA( name , GENERIC_READ | GENERIC_WRITE , 0 , NULL , OPEN_EXISTING , 0 , NULL );
 		if ( h == INVALID_HANDLE_VALUE ) {
-			printf( "gim_serial: cannot open %s (error %lu)\n" , port , (unsigned long) GetLastError() );
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_serial_obj::open" , "cannot open %s (error %lu)" , port , (unsigned long) GetLastError() );
 			return __GIM_NOT_OK;
 		}
 		memset( &dcb , 0 , sizeof( dcb ) );
@@ -162,12 +163,12 @@
 		close();
 		sp = gim_serial_speed( baud , &ok );
 		if ( ! ok ) {
-			printf( "gim_serial: speed %u not supported\n" , (unsigned int) baud );
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_serial_obj::open" , "speed %u not supported" , (unsigned int) baud );
 			return __GIM_NOT_OK;
 		}
 		fd = ::open( port , O_RDWR | O_NOCTTY );
 		if ( fd < 0 ) {
-			printf( "gim_serial: cannot open %s (%s)\n" , port , strerror( errno ) );
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_serial_obj::open" , "cannot open %s (%s)" , port , strerror( errno ) );
 			return __GIM_NOT_OK;
 		}
 		if ( tcgetattr( fd , &t ) != 0 ) {

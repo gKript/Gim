@@ -196,7 +196,7 @@ _gim_Uint32	gim_checksum_obj::chsum( char * digest ) {
 	_gim_Uint32 prodotto = 0;
 	_gim_Uint32	dlen = 0;
 	if ( digest == NULL ) {
-		gim_error->set( GIM_ERROR_MESSAGE , "gim_checksum_obj::chsum" , "You cannot pass NULL as Digest" , __GIM_NOT_OK );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_checksum_obj::chsum" , "You cannot pass NULL as Digest" , __GIM_NOT_OK );
 		return 0;
 	}
 	dlen = strlen( digest );
@@ -218,7 +218,7 @@ _gim_Uint8	gim_checksum_obj::chsum8( char * digest ) {
 	_gim_Uint32 prodotto = 0;
 	_gim_Uint32	dlen = 0;
 	if ( digest == NULL ) {
-		gim_error->set( GIM_ERROR_MESSAGE , "gim_checksum_obj::chsum" , "You cannot pass NULL as Digest" , __GIM_NOT_OK );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_checksum_obj::chsum" , "You cannot pass NULL as Digest" , __GIM_NOT_OK );
 		return 0;
 	}
 	dlen = strlen( digest );

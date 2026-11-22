@@ -81,7 +81,7 @@
 	
 	#define GIM_VERSION_STATE	   __GIM_DEVELOP
 
-	#define GIM_VERSION				"2.9-1"		/*!<	The string version of Gim	*/
+	#define GIM_VERSION				"2.9-2"		/*!<	The string version of Gim	*/
 	#define	GIM_MILESTONE			"3.0"
 
 	#define	GIM_MAJOR				2			/*!<	The major version of Gim	*/

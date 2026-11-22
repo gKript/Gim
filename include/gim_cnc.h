@@ -74,8 +74,8 @@
 	*/
 	struct cnc_Kernel_data_struct {
 		
-		_gim_Uint32			coding_base;			//Parametro fondamentale per Encoding/Decoding
-		_gim_Uint32			coding_digit;			//Parametro fondamentale per Encoding/Decoding
+		_gim_Uint32			coding_base;			//Key parameter for encoding/decoding
+		_gim_Uint32			coding_digit;			//Key parameter for encoding/decoding
 		
 		gim_password_obj	password;
 

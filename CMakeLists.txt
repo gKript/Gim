@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(gim VERSION 2.8.8 LANGUAGES C CXX)
+project(gim VERSION 2.9.2 LANGUAGES C CXX)
 
 option(GIM_BUILD_TOOLS "Build gim command line tools (gkdp, gkfp, gimshell, ...)" ON)
 

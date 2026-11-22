@@ -83,8 +83,25 @@ gim_error_list_str	gim_error_list [] = {
 };
 
 
+/* Rank of a message type, used by set_min_type(): a higher rank is more serious. */
+static int gim_error_type_rank( const char * type ) {
+	if ( ! ( strcmp ( type , GIM_ERROR_DEBUG ) ) )		return 0;
+	if ( ! ( strcmp ( type , GIM_ERROR_WARNING ) ) )	return 2;
+	if ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )	return 3;
+	if ( ! ( strcmp ( type , GIM_ERROR_UNKNOWN ) ) )	return 3;
+	if ( ! ( strcmp ( type , GIM_ERROR_FATAL ) ) )		return 4;
+	return 1;
+}
+
+void	gim_error_obj::set_min_type	( const char * type ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	min_rank = gim_error_type_rank( type );
+}
+
 void	gim_error_obj::set	( const char * type , const char * function , const char * message , int value ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	if ( gim_error_type_rank( type ) < min_rank )
+		return;
 	char mess[512];
 	strcpy	( this->type , type );
 	sprintf	( this->function , "%s()" , function );
@@ -164,7 +181,9 @@ void	gim_error_obj::Set	( const char * type , const char * function , const char
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	char	message[1024];
 	char	message_t[1024];
-	if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
+	if ( ! ( strcmp ( type , GIM_ERROR_DEBUG ) ) )
+		value = __GIM_OK;
+	else if ( ! ( strcmp ( type , GIM_ERROR_MESSAGE ) ) )
 		value = __GIM_OK;
 	else if ( ! ( strcmp ( type , GIM_ERROR_PRG_MESSAGE ) ) )
 		value = __GIM_OK;

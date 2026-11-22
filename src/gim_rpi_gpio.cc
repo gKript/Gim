@@ -21,6 +21,7 @@
 #############################################################################*/
 
 #include "../include/gim_rpi_gpio.h"
+#include "../include/gim_error.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -28,7 +29,7 @@
 
 	_gim_flag	gim_rpi_gpio_obj::export_pin( int pin , _gim_flag output ) {
 		(void) pin; (void) output;
-		printf( "gim_rpi_gpio: GPIO is not available on Windows\n" );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_rpi_gpio_obj::export_pin" , "GPIO is not available on Windows" );
 		return __GIM_NOT_OK;
 	}
 
@@ -86,16 +87,16 @@
 		sprintf( path , GIM_RPI_GPIO_SYSFS "/gpio%d/direction" , pin );
 		if ( access( path , F_OK ) != 0 ) {
 			if ( gim_rpi_gpio_write_file( GIM_RPI_GPIO_SYSFS "/export" , text ) != 0 ) {
-				printf( "gim_rpi_gpio: cannot export GPIO %d (%s): run as root or add the user to the gpio group\n" , pin , strerror( errno ) );
+				gim_error->Set( GIM_ERROR_CRITICAL , "gim_rpi_gpio_obj::export_pin" , "cannot export GPIO %d (%s): run as root or add the user to the gpio group" , pin , strerror( errno ) );
 				return __GIM_NOT_OK;
 			}
 			if ( gim_rpi_gpio_wait( path ) != 0 ) {
-				printf( "gim_rpi_gpio: GPIO %d did not appear after export\n" , pin );
+				gim_error->Set( GIM_ERROR_CRITICAL , "gim_rpi_gpio_obj::export_pin" , "GPIO %d did not appear after export" , pin );
 				return __GIM_NOT_OK;
 			}
 		}
 		if ( gim_rpi_gpio_write_file( path , output == __GIM_YES ? "out" : "in" ) != 0 ) {
-			printf( "gim_rpi_gpio: cannot set the direction of GPIO %d\n" , pin );
+			gim_error->Set( GIM_ERROR_CRITICAL , "gim_rpi_gpio_obj::export_pin" , "cannot set the direction of GPIO %d" , pin );
 			return __GIM_NOT_OK;
 		}
 		return __GIM_OK;

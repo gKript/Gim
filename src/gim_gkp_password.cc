@@ -173,12 +173,12 @@ void	gim_password_obj::calc( void ) {
 		seed_secondary = 0;
 		seed_main	= 1 ;
 	//	init - Digest
-//		puts("Copio i digest nella struttura");
+//		puts("Copy the digests into the structure");
 		strncpy(password_md5    , gim_checksum->md5   ( password			, (unsigned long)t - 1 ) , sizeof(password_md5) );
 		strncpy(password_sha1   , gim_checksum->sha1  ( password_md5		, (unsigned long)strlen( password_md5	 ) - 1 ) , sizeof(password_sha1) );
 		strncpy(password_sha256 , gim_checksum->sha256( password_sha1	, (unsigned long)strlen( password_sha1   ) - 1 ) , sizeof(password_sha256) );
 		strncpy(password_sha512 , gim_checksum->sha512( password_sha256	, (unsigned long)strlen( password_sha256 ) - 1 ) , sizeof(password_sha512) );
-//		puts("Fatto... mi occupo della secondary");
+//		puts("Done... now the secondary");
 		if ( strlen( secondary ) )
 			strcpy(secondary_sha512 , gim_checksum->sha512( secondary	, (unsigned long)strlen( secondary ) ) );
 	//	init - Sha1		Seed
@@ -234,7 +234,7 @@ void	gim_password_obj::recalc( void ) {
 	seed_secondary = 0;
 	seed_main	= 0;
 	password_already_calc = __GIM_NO;
-//	puts("Chiamo la calc");
+//	puts("Calling calc");
 	calc();
 }
 

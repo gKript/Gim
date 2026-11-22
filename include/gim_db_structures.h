@@ -184,7 +184,7 @@
 		char			file_name_data_long[512];	/*!< full path of the data file */
 		_gim_flag		type;							//  Permanent, volatile or virtual
 		_gim_int32		items;							//  numero di records presenti
-		_gim_Uint8		fields_number;					//  numero di campi per record
+		_gim_Uint8		fields_number;					//  number of fields per record
 		_gim_int16		key_field_number;				//  numero del campo KEY
 		_gim_int16		autoincrementl_field_number;	//  numero del campo KEY
 		_gim_int16		unique_field_number;			//  numero del campo KEY

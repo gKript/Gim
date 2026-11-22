@@ -78,6 +78,7 @@
 
 	#define	GIM_ERROR_PRG_MESSAGE	"--->"		/*!< prefix of the messages written by the program */
 	#define	GIM_ERROR_PRG_TAB		"    "		/*!< indentation of the messages written by the program */
+	#define	GIM_ERROR_DEBUG		" d  "		/*!< type: debug detail, written only when the minimum type is GIM_ERROR_DEBUG */
 
 
 	/*!	\enum	variable_set
@@ -116,6 +117,13 @@
 	class gim_error_obj {
 		public:
 
+			/*! \fn		void set_min_type( const char * type )
+			\brief	Messages with a type lower than \a type are not written. The default is GIM_ERROR_MESSAGE.<BR>
+					Order: GIM_ERROR_DEBUG < GIM_ERROR_MESSAGE < GIM_ERROR_WARNING < GIM_ERROR_CRITICAL < GIM_ERROR_FATAL.
+			\param	type	the lowest type to write
+			*/
+			void		set_min_type( const char * type );
+
 			/*! \fn		void get( void )
 				\brief	Gim has one inner management of the errors<BR>
 						With this function it is possible to interrogate, anytime, Gim on the last error setted
@@ -141,7 +149,7 @@
 
 			/*! \fn		void set( char * function , char * message )
 				\brief	With this method you can set an error in Gim style from your program.\n
-						\a Type is per dafault \a GIM_ERROR_MESSAGE and value is per default \a 0
+						\a Type is by default \a GIM_ERROR_MESSAGE and value is by default \a 0
 				\param	function	It is the name of the function generate the error.
 				\param	message	The message of the error.
 			*/
@@ -194,6 +202,7 @@
 				verbose_on_critical = __GIM_YES;
 				autoget				= __GIM_YES;
 				log_enable			= __GIM_YES;
+				min_rank			= 1;
 				first_in			= NULL;
 				last_in				= NULL;
 			};
@@ -217,10 +226,11 @@
 			/*! \brief	Last item of the list of the errors not yet written to the log. */
 			gim_error_message	* last_in;
 
-			_gim_flag	on_fatal_exit;		//Se ON esce se GIM incontra un errore fatale - ON o OFF
-			_gim_flag	on_fatal_verbose;	//Se ON scrive un messaggio di errore - ON o OFF
-			_gim_flag	always_verbose;		//Se ON scrive qualsiasi messaggio - ON o OFF
-			_gim_flag	autoget;			//Se ON fa la Get subito dopo la Set in maniera automatica - ON o OFF
+			_gim_flag	on_fatal_exit;		//If ON, exit when GIM meets a fatal error - ON or OFF
+			_gim_flag	on_fatal_verbose;	//If ON, write a fatal error message - ON or OFF
+			_gim_flag	always_verbose;		//If ON, write any message - ON or OFF
+			_gim_flag	autoget;			//If ON, call Get automatically right after Set - ON or OFF
+			int		min_rank;			/*!< rank of the lowest type written to the log (see set_min_type) */
 			_gim_flag   log_enable;			/*!< __GIM_YES when the errors are written to the log */
 			_gim_flag   verbose_on_critical;	/*!< __GIM_YES when the critical errors are printed */
 
