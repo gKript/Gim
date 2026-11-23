@@ -233,6 +233,12 @@ extern "C" char * strsignal( int sig ) {
 	}
 }
 
+static const DWORD gim_main_thread_id = GetCurrentThreadId();
+
+extern "C" int gim_is_main_thread( void ) {
+	return ( GetCurrentThreadId() == gim_main_thread_id ) ? 1 : 0;
+}
+
 extern "C" long gim_gettid( void ) {
 	return (long) GetCurrentThreadId();
 }

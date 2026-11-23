@@ -69,6 +69,13 @@
 			/*!	Waits for the thread to finish, then releases it. Does nothing if no thread was started. */
 			void			join			( void );
 
+			/*!	Starts the thread only if the configuration allows the class (section [thread], key = class_name).
+				\param	class_name	the key in the [thread] section, e.g. "gim_serial"
+				\param	body		the function run by the thread, as in start()
+				\return	__GIM_OK if started, __GIM_NOT_OK if denied by the configuration or already running
+			*/
+			_gim_flag		start_if_allowed( const char * class_name , std::function< void( gim_thread_obj & ) > body );
+
 		private:
 			std::thread			* th;
 			std::atomic<bool>	stop_flag;
@@ -77,5 +84,24 @@
 			gim_thread_obj( const gim_thread_obj & );
 			gim_thread_obj & operator=( const gim_thread_obj & );
 	};
+
+	/*!	Tells whether the configuration allows a class to run a thread.
+		Reads [thread] class_name in gim.conf. If the key is missing it is added with the default YES and the file is saved.
+		Every call writes the resulting state to the log.
+		\param	class_name	the key, e.g. "gim_interface"
+		\return	__GIM_YES or __GIM_NO
+	*/
+	_gim_flag	gim_thread_allowed( const char * class_name );
+
+	/*!	Writes to the log the thread permission of every class that uses or plans a thread.
+		Call it once at program startup.
+	*/
+	void		gim_thread_report_config( void );
+
+		/*!	Adds to gim.conf, section [thread], the key of every known class that is missing (default YES).
+			Called at startup by the environment, with the other missing keys: the file is written once.
+			\return	__GIM_YES if a key or the section was added, __GIM_NO otherwise
+		*/
+		_gim_flag	gim_thread_add_missing_config( void );
 
 #endif	//_GIM_THREAD_OBJ_H_

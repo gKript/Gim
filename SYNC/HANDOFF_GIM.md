@@ -1,7 +1,7 @@
 # Handoff per la sessione Gim
 
-Sei la sessione che lavora su **Gim** (`i:\GitHub Asy\Gim`, C++, lato PC).
-Il progetto gemello **PicGIM** (`i:\GitHub Asy\PicGim`, C18, lato PIC18F) ha il firmware seriale in gran parte pronto e la classe di inferenza AI; Gim deve fornire il lato PC e l'addestramento.
+Sei la sessione che lavora su **Gim** (`E:\GitHub Asy\Gim`, C++, lato PC).
+Il progetto gemello **PicGIM** (`E:\GitHub Asy\PicGim`, XC8 per PIC18F, lato PIC18F) ha il firmware seriale in gran parte pronto e la classe di inferenza AI; Gim deve fornire il lato PC e l'addestramento.
 Obiettivi: (a) far comunicare Gim con PicGIM via seriale; (b) generare il modello AI per il PIC. Tenere i due progetti allineati.
 
 ## Cosa leggere per primo

@@ -351,7 +351,7 @@
 					gim_error->set( "gim_db_obj::gim_db_obj" , "DB : Constructor end" );
 				}
 				else
-					gim_error->set( GIM_ERROR_FATAL , "gim_db_obj::gim_db_obj" , "DB : initialization error : use of db is not allowed without the application name" , __GIM_ERROR );
+					gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::gim_db_obj" , "DB : initialization error : use of db is not allowed without the application name" , __GIM_ERROR );
 			};
 
 			/*! gim_db_obj destructor: writes the configuration if changed (PERMANENT databases) and frees the tables.

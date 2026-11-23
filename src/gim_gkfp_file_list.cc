@@ -198,7 +198,7 @@ void	gim_gkfp_obj::ldestroy( void ) {
 		gim_error->set( "gim_gkfp_file_list_obj::destroy" , "Done" );
 	}
 	else 
-		gim_error->set( GIM_ERROR_WARNING , "gim_gkfp_file_list_obj::destroy" , "No file list" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_gkfp_file_list_obj::destroy" , "No file list" , __GIM_ERROR );
 }
 
 

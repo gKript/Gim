@@ -134,7 +134,7 @@ gim_file_manager_list *	gim_file_manager_obj::new_item( void ) {
 _gim_flag	gim_file_manager_obj::del_item( gim_file_manager_list * to_del ) {
 	gim_file_manager_list * prec = startlist;
 	if ( startlist == endlist ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_file_manager_obj::del_item" , "No element in list" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::del_item" , "No element in list" , __GIM_ERROR );
 	}
 	else {
 		for ( currentlist = startlist->next ; currentlist != NULL ; currentlist = currentlist->next ) {
@@ -536,7 +536,7 @@ _gim_flag	gim_file_manager_obj::flush( _gim_handler * hand , _gim_buffer data , 
 				break;
 			}
 			case __GIM_FILE_MAPPING : {
-				gim_error->set( GIM_ERROR_WARNING , "gim_file_obj::flush" , "Flush is not possible in __GIM_FILE_MAPPING" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_file_obj::flush" , "Flush is not possible in __GIM_FILE_MAPPING" , __GIM_ERROR );
 				return __GIM_NOT_OK;
 			}
 		}
@@ -545,7 +545,7 @@ _gim_flag	gim_file_manager_obj::flush( _gim_handler * hand , _gim_buffer data , 
 	}
 	else 
 		if ( tmp->mode != __GIM_WRITE ) {
-			gim_error->set( GIM_ERROR_WARNING , "gim_file_obj::flush" , "Flush is possible in __GIM_WRITE only" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_file_obj::flush" , "Flush is possible in __GIM_WRITE only" , __GIM_ERROR );
 		}
 	return __GIM_NOT_OK;
 }
@@ -730,10 +730,10 @@ _gim_buffer	gim_file_obj::load( void ) {
 	}
 	else {
 		if ( mode != __GIM_READ ) {
-			gim_error->set( GIM_ERROR_WARNING , "gim_file_obj::load" , "Load is possible in __GIM_READ only" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_file_obj::load" , "Load is possible in __GIM_READ only" , __GIM_ERROR );
 		}
 		else if  ( exist == __GIM_EXIST ) {
-			gim_error->set( GIM_ERROR_WARNING , "gim_file_obj::load" , "The file not exist" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_file_obj::load" , "The file not exist" , __GIM_ERROR );
 		}
 	}
 	f_buffer = handler->loadp;

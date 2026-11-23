@@ -30,11 +30,115 @@ _gim_Uint32				running_time;
 
 gim_ascii_file_obj *	header;
 
+//!< Build directory of the current project: the section named after the project in ~/.gim/gKmake/build.conf (per machine).
+/* Build directory per project: ~/.gim/gKmake/build.conf, one section per project name (as in .gkmake_conf),
+   key dir. Read lazily, on the first build step, when the project name is known. A project with no
+   entry is refused: it must never fall back to a shared "build" folder that belongs to another project. */
+static char build_dir[BUFF_DIM] = "";
+static int  build_dir_loaded = 0;
+
+/* -K <folder>: records the build folder of the current project in ~/.gim/gKmake/build.conf, written by the Gim parser (Lex B) */
+static void save_build_dir( const char * dir ) {
+	char path[BUFF_DIM] , section[BUFF_DIM];
+	_gim_prsr * bc = new _gim_prsr;
+	sprintf( path , "%s/.gim/gKmake/build.conf" , gim_identity->home() );
+	strncpy( section , gkmake.prj_name , BUFF_DIM - 1 );
+	section[ BUFF_DIM - 1 ] = '\0';
+	for ( char * q = section ; *q ; q++ )
+		*q = (char) toupper( (unsigned char) *q );
+	bc->SetLex( __LEX_B );
+	if ( bc->Read( path ) != __GIM_OK ) {
+		bc->Up( path , "gKmake build folders" );
+		bc->SetLex( __LEX_B );
+	}
+	if ( bc->ExistSection( section ) != __GIM_EXIST )
+		bc->AddSection( section );
+	if ( bc->ExistKey( section , "dir" ) == __GIM_EXIST )
+		bc->ChangeKey( section , "dir" , dir );
+	else
+		bc->AddKey( section , "dir" , dir );
+	if ( bc->Write() != __GIM_OK )
+		printf( "  ERROR: cannot write %s\n" , path );
+	else
+		printf( "  build folder of project '%s' saved in %s\n" , gkmake.prj_name , path );
+	delete bc;
+}
+static void ensure_build_dir( void ) {
+	char path[BUFF_DIM];
+	char section[BUFF_DIM];
+	_gim_prsr * bc;
+	if ( build_dir_loaded )
+		return;
+	build_dir_loaded = 1;
+	sprintf( path , "%s/.gim/gKmake/build.conf" , gim_identity->home() );
+	strncpy( section , gkmake.prj_name , BUFF_DIM - 1 );
+	section[ BUFF_DIM - 1 ] = '\0';
+	bc = new _gim_prsr;
+	for ( char * p = section ; *p ; p++ )
+		*p = (char) toupper( (unsigned char) *p );
+	bc->SetLex( __LEX_B );
+	if ( ( bc->Read( path ) != __GIM_OK ) || ( bc->ExistSection( section ) != __GIM_EXIST ) || ( bc->ExistKey( section , "dir" ) != __GIM_EXIST ) ) {
+		char key[BUFF_DIM];
+		strncpy( key , gkmake.prj_name , BUFF_DIM - 8 );
+		key[ BUFF_DIM - 8 ] = '\0';
+		for ( char * q = key ; *q ; q++ )
+			*q = (char) tolower( (unsigned char) *q );
+		printf( "\n  ERROR: no build directory for project '%s' in\n         %s\n" , gkmake.prj_name , path );
+		printf( "  the project is recognised by the key '%s::dir' (value: the folder of its build).\n" , key );
+		printf( "  The file is written by Gim (Lex B): do not edit it by hand.\n\n" );
+		exit( 1 );
+	}
+	strncpy( build_dir , bc->GetKeySTR( section , "dir" ) , BUFF_DIM - 1 );
+	build_dir[ BUFF_DIM - 1 ] = '\0';
+	delete bc;
+}
+
+static int build_cache_exists( void ) {
+	ensure_build_dir();
+	char p[BUFF_DIM];
+	sprintf( p , "%s/CMakeCache.txt" , build_dir );
+	return gkmake_exist( p );
+}
+
+static const char * cmake_build_cmd( void ) {
+	ensure_build_dir();
+	static char c[BUFF_DIM];
+	sprintf( c , "cmake --build \"%s\"" , build_dir );
+	return c;
+}
+
+static const char * cmake_clean_cmd( void ) {
+	ensure_build_dir();
+	static char c[BUFF_DIM];
+	sprintf( c , "cmake --build \"%s\" --target clean" , build_dir );
+	return c;
+}
+
+static const char * cmake_rm_cmd( void ) {
+	ensure_build_dir();
+	static char c[BUFF_DIM];
+	sprintf( c , "cmake -E rm -rf \"%s\"" , build_dir );
+	return c;
+}
+
+static const char * cmake_install_cmd( void ) {
+	ensure_build_dir();
+	static char c[BUFF_DIM];
+	sprintf( c , "cmake --install \"%s\"" , build_dir );
+	return c;
+}
+
+static const char * cmake_configure_cmd( void ) {
+	ensure_build_dir();
+	static char c[BUFF_DIM];
+	sprintf( c , "cmake -S . -B \"%s\" -DCMAKE_BUILD_TYPE=Release" , build_dir );
+	return c;
+}
 //!< Clean the build tree: cmake target clean (only if configured) or make clean.
 static void gk_clean( bool cmake ) {
 	if ( cmake ) {
-		if ( gkmake_exist( "./build/CMakeCache.txt" ) )
-			system( "cmake --build build --target clean" );
+		if ( build_cache_exists() )
+			system( cmake_clean_cmd() );
 	}
 	else
 		system( "make clean" );
@@ -72,6 +176,7 @@ int main( int argc , char *argv[] ) {
 	hand_shake();
 
 	gim_set_application_name( "gKmake" );
+	gim_set_application_version( GKMAKE_VERSION );
 	gim_obj * gim = new gim_obj;
 	_gim_time * runT = new _gim_time;
 	prsr_lexical_class * lex = new prsr_lexical_class;
@@ -80,7 +185,7 @@ int main( int argc , char *argv[] ) {
 	gim->error->set( "main" , "gkmake start here" );
 
 	gim_getopt_obj * gkopt = new gim_getopt_obj;
-	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:T:C:E:t:coeshidanz" );
+	gkopt->scanopt( argc , argv , ":RN:A:P:I:S:D:F:X:M:H:B:T:C:E:t:K:coeshidanz" );
 
 	// CMake is preferred whenever CMakeLists.txt exists (build tree in ./build)
 		const bool use_cmake = ( gkmake_exist( "./CMakeLists.txt" ) != 0 );
@@ -487,6 +592,10 @@ int main( int argc , char *argv[] ) {
 				}
 				break;
 			}
+			case 'K' : {
+				save_build_dir( gkopt->getoption()->argument );
+				break;
+			}
 			case 'B' : {
 				gkmake.ok_build = atoi( gkopt->getoption()->argument );
 				IF_EXIST_SECTION( gkconf , gim->identity->login() ) {
@@ -515,7 +624,7 @@ int main( int argc , char *argv[] ) {
 			case 'n' : {
 				puts( "  DISTCLEAN FOR THE PROJECT NOW...\n");
 				if ( do_system == __GIM_YES )
-					system( use_cmake ? "cmake -E rm -rf build" : "make distclean" );
+					system( use_cmake ? cmake_rm_cmd() : "make distclean" );
 				puts("");
 				do_system = __GIM_NO;
 				writec = __GIM_NO;
@@ -629,9 +738,9 @@ int main( int argc , char *argv[] ) {
 			case 'i' : {
 				install = __GIM_YES;
 				if ( gkmake.sudo == __GIM_YES ) 
-					sprintf( command_t1 , "sudo %s" , use_cmake ? "cmake --install build" : "make install" );
+					sprintf( command_t1 , "sudo %s" , use_cmake ? cmake_install_cmd() : "make install" );
 				else
-					sprintf( command_t1 , "%s" , use_cmake ? "cmake --install build" : "make install" );
+					sprintf( command_t1 , "%s" , use_cmake ? cmake_install_cmd() : "make install" );
 				break;
 			}
 		}		
@@ -675,12 +784,12 @@ int main( int argc , char *argv[] ) {
 		}
 	}
 	
-	if ( use_cmake && ( do_system == __GIM_YES ) && ( ! gkmake_exist( "./build/CMakeCache.txt" ) ) ) {
+	if ( use_cmake && ( do_system == __GIM_YES ) && ( ! build_cache_exists() ) ) {
 			puts( "  CONFIGURING WITH CMAKE...\n" );
-			if ( system( "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release" ) )
+			if ( system( cmake_configure_cmd() ) )
 				do_system = __GIM_NO;
 		}
-		sprintf( command , "%s" , use_cmake ? "cmake --build build" : GKMAKE_COMMAND );
+		sprintf( command , "%s" , use_cmake ? cmake_build_cmd() : GKMAKE_COMMAND );
 
 	if ( gkmake.parallel == __GIM_YES ) {
 		char tmp[16];
@@ -691,7 +800,7 @@ int main( int argc , char *argv[] ) {
 	if ( do_system == __GIM_YES ) {
 		if ( writec == __GIM_YES ) {
 			IF_EXIST_KEY( gkconf , gkmake.login , "succesful_build_number" )
-				printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , ++gkmake.tot_build , command );
+				{ gkmake.prj_sum_total_build++; printf( "  BUILDING (#%d) THE PROJECT ( %s )...\n\n" , ++gkmake.tot_build , command ); }
 			else
 				printf( "  BUILDING THE PROJECT ( %s )...\n\n" , command ); 
 		}
@@ -701,6 +810,7 @@ int main( int argc , char *argv[] ) {
 		if ( ! system( command ) ) {
 			IF_EXIST_KEY( gkconf , gkmake.login , "succesful_build_number" ) { 
 				gkconf->ChangeKey( gkmake.login , "succesful_build_number" , ++gkmake.ok_build );
+				gkmake.prj_sum_ok_build++;
 				gim->error->Set( GIM_ERROR_PRG_MESSAGE , "gkmain::main.cc::main()" , "Upgrading Succesfull Build to %d" , gkmake.ok_build );
 			}
 			else 

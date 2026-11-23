@@ -92,7 +92,7 @@ Esito: `PG_OK` se coincide, altrimenti `PG_GCP_ERROR_CRC_FAILED`.
 - `pg_gcp_engage`/`pg_gcp_rx_engage` definite due volte: **RISOLTO (2026-11-20)**, attiva quella a riga ~740; la copia a riga ~2480 e' in un commento `/* */` (2474-2538).
 - `pg_gcp_flag_set/get` usano il tipo `_pg_Uin8` (refuso).
 
-## 4. Normalizzazione degli ingressi (in implementazione: Gim genera la tabella dei canali; PicGIM non ancora compilato con C18)
+## 4. Normalizzazione degli ingressi (in implementazione: Gim genera la tabella dei canali; PicGIM compilato con XC8 V4.00 per PIC18F4620 e testato in simulazione gpsim, vedi 4.7)
 Scopo: portare N sensori di tipi diversi in un unico vettore di ingresso comparabile per la rete.
 Tre livelli separati: (1) driver di acquisizione per tipo di sensore, basati sui moduli PicGIM
 (`pgim_adc`, `pgim_i2c`, `pgim_spi`, `pgim_3wire`, `pgim_sensor`, `pgim_amg88xx`, `pgim_encoder`);

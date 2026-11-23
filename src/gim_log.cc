@@ -35,9 +35,62 @@
 //
 
 #include	"../include/gim_log.h"
+#include <atomic>
+
+/* thread column: blank on the main thread, T1 T2 ... on the others, numbered from 1 in the order they first write to the log */
+static const char * gim_thread_tag( void ) {
+	static std::atomic<int> counter( 0 );
+	static thread_local int number = 0;
+	static thread_local char tag[ 8 ];
+	if ( gim_is_main_thread() )
+		return "   ";
+	if ( number == 0 )
+		number = ++counter;
+	sprintf( tag , "T%-2d" , number );
+	return tag;
+}
+
+gim_time_obj	debug_timer;
 
 gim_log_obj		* gim_log;
-gim_time_obj	debug_timer;
+/* header of the log file: what it is, which program and versions, when, and one column title for each
+   field of the debug format, with the same width as the field, so the titles follow debug::debug_format */
+static void gim_write_log_header( FILE * fd , const char * file_name , const char * fmt ) {
+	char cols[1024] = "";
+	char piece[128];
+	size_t i;
+	fprintf( fd , "#########################################################################################\n" );
+	fprintf( fd , "# Gim log\n" );
+	fprintf( fd , "# program  : %s   version: %s\n" , gim_application_name , gim_application_version );
+	fprintf( fd , "# Gim      : %s\n" , gim_version_mini() );
+	fprintf( fd , "# started  : %s   pid: %ld\n" , debug_timer.date() , (long) gim_getpid() );
+	fprintf( fd , "# file     : %s\n" , file_name );
+	fprintf( fd , "# format   : %s\n" , fmt );
+	fprintf( fd , "#########################################################################################\n" );
+	for ( i = 0 ; fmt[ i ] ; i++ ) {
+		if ( fmt[ i ] == '$' ) {
+			i++;
+			switch ( fmt[ i ] ) {
+				case 't' : sprintf( piece , "%-11s" , "time(s)" ); break;
+				case 'p' : sprintf( piece , "%5s" , "tid" ); break;
+				case 'T' : sprintf( piece , "%-3s" , "thr" ); break;
+				case 'k' : sprintf( piece , "%-4s" , "kind" ); break;
+				case 'f' : sprintf( piece , "%-48s" , "function" ); break;
+				case 'm' : sprintf( piece , "%-45s" , "message" ); break;
+				case 'v' : sprintf( piece , "%3s" , "val" ); break;
+				case '$' : sprintf( piece , "$" ); break;
+				default  : piece[ 0 ] = '\0'; break;
+			}
+		}
+		else if ( fmt[ i ] == '_' )
+			sprintf( piece , " " );
+		else
+			sprintf( piece , "%c" , fmt[ i ] );
+		strncat( cols , piece , sizeof( cols ) - strlen( cols ) - 1 );
+	}
+	fprintf( fd , "%s\n" , cols );
+	fflush( fd );
+}
 
 void gim_log_obj::start	( void ) {
 	char message[256];
@@ -53,6 +106,7 @@ void gim_log_obj::start	( void ) {
 				enabled = __GIM_YES;
 				debug_timer.start_usec();
 				strcpy( format , "|$t|$p|$k_$f_|_$m" );
+				gim_write_log_header( log_fd , __GIM_LOG_FILENAME , format );
 				gim_error->set( "gim_log_obj::start" , "Start before configuration file due __GIM_LOG_FORCE" );
 				sprintf( message , "File log start on %s" , debug_timer.date() );
 				gim_error->set( "gim_log_obj::start" , message );
@@ -85,6 +139,7 @@ void gim_log_obj::start	( void ) {
 				else {
 					initialized = __GIM_YES;
 					debug_timer.start_usec();
+					gim_write_log_header( log_fd , gim_conf->GetKeySTR( "debug" , "f_debug_file" ) , format );
 					gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "Start to use gim File Debug" );
 					gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "File log start on %s" , debug_timer.date() );
 					gim_error->Set( GIM_ERROR_MESSAGE , "gim_log_obj::start" , "%s" , gim_version() );
@@ -126,10 +181,10 @@ void	gim_log_obj::addline( const char *t , const char *func , const char *mess ,
 				strftime( timestamp , 256 , "%A %x %H:%M:%S" , localtime ( &tp ) );
 				sprintf( function , "%s()" , func );
 				if ( Lexical.str_equal( strdup( t ) , strdup( GIM_ERROR_FATAL ) ) == __GIM_YES )
-//					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , gim_gettid() , (gim_gettid() != gim_getpid())?"TH":"  " , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
-					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , gim_gettid() , (gim_gettid() != gim_getpid())?"TH":"  " , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
+//					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , gim_gettid() , gim_thread_tag() , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
+					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , gim_gettid() , gim_thread_tag() , __GIM_LOG_FATAL , Lexical.string_trunc( function , 48 ) , mess );
 				else 
-					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , gim_gettid() , (gim_gettid() != gim_getpid())?"TH":"  " , t ,  Lexical.string_trunc( function , 48 ) , mess );
+					fprintf( log_fd , "%s %5d %s %s %-45s : %s\n" , debug_timer.get_usec() , gim_gettid() , gim_thread_tag() , t ,  Lexical.string_trunc( function , 48 ) , mess );
 				fflush( log_fd );
 			}
 			else {
@@ -206,7 +261,7 @@ void	gim_log_obj::addline_format( const char *t , const char *func , const char 
 								break;
 							}
 							case 'T' : {
-								sprintf( tmp , "%s%s" , tmp , (gim_gettid() != gim_getpid()) ? "TH" : "  " );
+								sprintf( tmp , "%s%s" , tmp , gim_thread_tag() );
 								break;
 							}
 							case '$' : {

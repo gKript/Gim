@@ -113,6 +113,7 @@
 	#define __GIM_MEM_FOBJ_LOAD_GCH 		0xff000020		/*!<	caller is gim_file_obj::load_gch */
 	#define __GIM_MEM_GETID_CPU				0xff000021		/*!<	caller is gim_identity_obj::cpu */
 	#define __GIM_MEM_GETID_MEM				0xff000022		/*!<	caller is gim_identity_obj::memory */
+	#define	__GIM_MEM_GIMSTAT_BUF			0xff000037	/*!<	caller is gimstat (test buffers) */
 	#define __GIM_HTML_PAGE					0xff000025		/*!<	caller is gim_html_obj */
 	#define	__GIM_MEM_FILE_DATA_R			0xff000026		/*!<	caller is gim_file_data_obj::read */
 	#define	__GIM_MEM_GKDP_TAKE				0xff000027		/*!<	caller is gim_gkp_obj::gkdp_take */

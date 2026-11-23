@@ -72,6 +72,7 @@ gim_memory_id memory_id_gim [] = {
 	{	0xff000028	,	"__GIM_MEM_INTERF_DATA"				} ,
 	{	0xff000029	,	"__GIM_MEM_DB_MAIN"					} ,
 	{	0xff000030	,	"__GIM_MEM_DB_TABLE"				} ,
+	{	0xff000037	,	"__GIM_MEM_GIMSTAT_BUF"				} ,
 	{	0xfe000001	,	"__GGG_MEM_PRINT_SERV"				} ,
 	{	0xfe000003	,	"__GGG_MEM_ADD_EVENT"				} ,
 	{	0xff002000	,	"__GIM_MEM_PAGE_ADD"				} ,

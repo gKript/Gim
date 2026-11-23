@@ -64,7 +64,7 @@ _gim_flag gim_prsr_obj::AddSection( const char * section_name ) {
 	if ( ( ! strlen( section_name ) ) || ( strlen( section_name ) >= 64 ) ) return -1;
 	tmp_name = strdup( Lexical.str_up( section_name , strlen( section_name ) ) );
 	if ( ExistSection( tmp_name ) == __GIM_YES ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddSection" , "Section already exist" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddSection" , "Section already exist" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {
@@ -252,7 +252,7 @@ _gim_flag	gim_prsr_obj::DelKey( const char * section_name , const char * key ) {
 								before_field->next_field = tmp_field->next_field ;
 							gim_error->set( "gim_prsr_obj::DelKey" , "Removing Key" );
 							if ( gim_memory->Free( tmp_field ) == __GIM_NOT_OK ) {
-								gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::DelKey" , "Some problems with memory" , __GIM_ERROR );
+								gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelKey" , "Some problems with memory" , __GIM_ERROR );
 							}
 							return __GIM_OK;
 						}
@@ -306,11 +306,11 @@ void	gim_prsr_obj::DelSection( prsr_kvalue_section * section ) {
 		gim_error->set( "gim_prsr_obj::DelSection" , tmp );
 		tmp2_field = tmp_field->next_field;
 		if ( gim_memory->Free( tmp_field ) == __GIM_NOT_OK )
-			gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::DelSection" , "Some problems with memory" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , "Some problems with memory" , __GIM_ERROR );
 		tmp_field = tmp2_field;
 	}
 	if ( gim_memory->Free( section ) == __GIM_NOT_OK )
-		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::DelSection" , "Some problems with memory" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , "Some problems with memory" , __GIM_ERROR );
 	gim_error->set( "gim_prsr_obj::DelSection" , "Section removed" );	
 }
 
@@ -426,7 +426,7 @@ _gim_flag	gim_prsr_obj::Down( void ) {
 	prsr_kvalue_section	* tmp2_section = NULL;
 	char	tmp[256];
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::Down" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Down" , "No parser object defined" , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	sprintf( tmp , "%s Prsr object goes down..." , prsr_obj->title );
@@ -441,7 +441,7 @@ _gim_flag	gim_prsr_obj::Down( void ) {
 	if ( prsr_obj->fp != NULL )
 		Close( __NO_FLUSH );
 	if ( gim_memory->Free( prsr_obj ) == __GIM_NOT_OK )
-		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::Down" , "Some problems with memory" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Down" , "Some problems with memory" , __GIM_ERROR );
 	prsr_obj = NULL;
 	gim_error->set( "gim_prsr_obj::Down" , "Done!" );
 	return __GIM_OK;
@@ -628,7 +628,7 @@ _gim_flag gim_prsr_obj::Read( const char * filename ) {
 			return __GIM_NOT_OK;
 		}
 		case __GIM_NOT_EXIST : {
-			gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::Read" , "File not exist" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Read" , "File not exist" , __GIM_ERROR );
 			return __GIM_NOT_EXIST;
 		}
 		case __SYNTAX_ERROR : {

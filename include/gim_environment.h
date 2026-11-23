@@ -175,10 +175,13 @@
 	extern gim_conf_data	* env_data;
 	/*! Name of the application (set with gim_set_application_name). */
 	extern char				gim_application_name[256];
+	extern char				gim_application_version[64];
 
 	/*! Sets the name of the application: its environment is then kept in a folder of its own.
 		\param	app_name	the name of the application
 	*/
 	void					gim_set_application_name( const char * app_name );
+	/*!	Optional version of the program, written in the header of the log. Default: not set. */
+	void					gim_set_application_version( const char * app_version );
 
 #endif /* _GIM_ENVIRONMENT_H_ */

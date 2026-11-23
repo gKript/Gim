@@ -360,7 +360,7 @@ _gim_flag   gim_db_obj::read( const char * dbname ) {
 	gim_error->Set( GIM_ERROR_DEBUG , "gim_db_obj::read" , " Reading DB : %s" , lex->string_trunc( file_name_long , 60 ) );
 	result = db->conf->Exist( file_name_long );
 	if ( result == __GIM_NOT_EXIST ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::read" , "I cannot found the DB file." , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::read" , "I cannot found the DB file." , __GIM_ERROR );
 		return __GIM_NOT_EXIST;
 	}
 	init();
@@ -383,7 +383,7 @@ _gim_flag	gim_db_obj::exist_environment( const char * dbname ) {
 	sprintf( file_name_long	, "%s/%s" , home , file_name );
 	result = db->conf->Exist( file_name_long );
 	if ( result != __GIM_EXIST ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::exist_environment" , "I cannot found the DB environment." , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::exist_environment" , "I cannot found the DB environment." , __GIM_ERROR );
 		return __GIM_NOT_EXIST;
 	}
 	gim_error->Set( GIM_ERROR_DEBUG , "gim_db_obj::exist_environment" , "DB environment succesfully found." );
@@ -426,10 +426,10 @@ _gim_flag	gim_db_obj::gdbs_open( void ) {
 
 void	gim_db_obj::gdbs_close( void ) {
 	if ( !strlen( gdbs_file_name ) ) {
-		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::gdbs_close" , "No file name set" , __GIM_ERROR  );
+		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_close" , "No file name set" , __GIM_ERROR  );
 	}
 	else if ( ! gdbs_file ) {
-		gim_error->set( GIM_ERROR_WARNING , "prsr_lexical_class::gdbs_close" , "File is not open" , __GIM_ERROR  );
+		gim_error->set( GIM_ERROR_CRITICAL , "prsr_lexical_class::gdbs_close" , "File is not open" , __GIM_ERROR  );
 	}
 	else {
 		gim_file_manager->close( gdbs_file );
@@ -651,7 +651,7 @@ _gim_flag	gim_db_obj::init_from_gdbs( const char * gdbs_name ) {
 	gdbs_line_num = 1;
 
 	if ( gdbs_run != __GIM_NOT_RUNNING ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::init_from_gdbs" , "GDBS engin is not in the correct state" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::init_from_gdbs" , "GDBS engin is not in the correct state" , __GIM_ERROR );
 		return __GIM_ERROR;
 	}
 	gdbs_run = __GIM_RUNNING;
@@ -903,11 +903,11 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 				case __GDBS_UNPIN_TABLE : {
 					gim_error->Set( GIM_ERROR_DEBUG , "gim_db_obj::gdbs_execute" , "EXECUTING LINE [%3d] : UNPIN TABLE..." , line->lline  );
 					if ( db->pin == __GIM_NO ) {
-						gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::gdbs_execute" , "No table is pinned" , __GIM_ERROR );
+						gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_execute" , "No table is pinned" , __GIM_ERROR );
 						break;
 					}
 					if ( db->Ttab == NULL ) {
-						gim_error->Set( GIM_ERROR_WARNING , "gim_db_obj::gdbs_execute" , "NO table pointer is pinned" , __GIM_ERROR );
+						gim_error->Set( GIM_ERROR_CRITICAL , "gim_db_obj::gdbs_execute" , "NO table pointer is pinned" , __GIM_ERROR );
 						break;
 					}
 					strcpy( db->pin_table , "" );
@@ -1032,7 +1032,7 @@ _gim_flag	gim_db_obj::gdbs_execute( void ) {
 
 _gim_flag	gim_db_obj::table_exist( char * table_name ) {
 	if ( db->tables_number < 1 ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_db_obj::table_exist" , "Tables number is 0." , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_db_obj::table_exist" , "Tables number is 0." , __GIM_ERROR );
 		return __GIM_ERROR;
 	}
 	for ( _gim_int32 c = 1 ; c <= db->tables_number ; c++ ) {

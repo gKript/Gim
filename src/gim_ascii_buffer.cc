@@ -69,7 +69,7 @@ _gim_flag	gim_ascii_file_obj::append( char * to_append ) {
 		this->seekf( __GIM_LAST );
 		return __GIM_OK;
 	}
-	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -81,7 +81,7 @@ _gim_flag	gim_ascii_file_obj::append( char * to_append ) {
 		this->seek( __GIM_LAST );
 		return __GIM_OK;
 	}
-	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::append" , "Buffer not defined" , __GIM_ERROR );
 	return __GIM_ERROR;
 }*/
 
@@ -106,7 +106,7 @@ _gim_int32	gim_ascii_file_obj::lenght( void ) {
 			pos++;
 		return pos;
 	}
-	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::leght" , "Buffer not defined" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::leght" , "Buffer not defined" , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -121,7 +121,7 @@ _gim_int32	gim_ascii_file_obj::lines( void ) {
 		}
 		return res;
 	}
-	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::lines" , "Buffer not defined" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::lines" , "Buffer not defined" , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -346,11 +346,11 @@ _gim_flag	gim_ascii_file_obj::load( char * filename , _gim_flag overwrite = __GI
 	char *			buffer = NULL;
 	
 	if( Ftl.check() == __GIM_NOT_EXIST ){
-		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::load" , "Opening file error" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Opening file error" , __GIM_ERROR );
 		return __GIM_ERROR;
 	}
 	if( ! Ftl.size() ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::load" , "File is empty" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "File is empty" , __GIM_ERROR );
 		return __GIM_ERROR;
 	}
 	if( ! this->dimension ) {
@@ -367,7 +367,7 @@ _gim_flag	gim_ascii_file_obj::load( char * filename , _gim_flag overwrite = __GI
 			Ftl.unload();
 		}
 		else {
-			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::load" , "Internal buffer not empty, overwrite not permitted" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::load" , "Internal buffer not empty, overwrite not permitted" , __GIM_ERROR );
 			return __GIM_ERROR;
 		}
 	}
@@ -389,7 +389,7 @@ _gim_flag	gim_ascii_file_obj::seekf( _gim_flag position ) {
 				return __GIM_OK;
 			}
 			default : {
-				gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seekf" , "Position flag unknown" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::seekf" , "Position flag unknown" , __GIM_ERROR );
 				return __GIM_ERROR;
 			}
 		}
@@ -400,7 +400,7 @@ _gim_flag	gim_ascii_file_obj::seekf( _gim_flag position ) {
 _gim_flag	gim_ascii_file_obj::seek( _gim_int32 position ) {
 	_gim_int32 c = 0;
 	if ( position > this->lenght() ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Requested position is beyond the end of buffer" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::seek" , "Requested position is beyond the end of buffer" , __GIM_ERROR );
 		return __GIM_ERROR;
 	}
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) ) {
@@ -410,11 +410,11 @@ _gim_flag	gim_ascii_file_obj::seek( _gim_int32 position ) {
 		if ( c == position ) 
 			return __GIM_OK;
 		else {
-			gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Reached the end of buffer before the requested position" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::seek" , "Reached the end of buffer before the requested position" , __GIM_ERROR );
 			return __GIM_ERROR;
 		}
 	}
-	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::seek" , "Buffer not defined" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::seek" , "Buffer not defined" , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -422,7 +422,7 @@ _gim_flag	gim_ascii_file_obj::seek( _gim_int32 position ) {
 char *	gim_ascii_file_obj::get_buffer( void ) {
 	if ( ( dimension > 0 ) && ( chrbuf != NULL ) )
 		return chrbuf;
-	gim_error->set( GIM_ERROR_WARNING , "gim_ascii_file_obj::get_buffer" , "Buffer not defined" , __GIM_ERROR );
+	gim_error->set( GIM_ERROR_CRITICAL , "gim_ascii_file_obj::get_buffer" , "Buffer not defined" , __GIM_ERROR );
 	return NULL;
 }
 

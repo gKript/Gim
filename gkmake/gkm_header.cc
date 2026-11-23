@@ -50,6 +50,7 @@ void print_help( void ) {
 	puts( "   -T ([1-n]/NO) -   Make the project in multi thread with the specify cores number. Save this decision on the configuration file." );
 	puts( "   -M (number >= 0)  Total build number." );
 	puts( "   -B (number >= 0)  Succesful build number." );
+	puts( "   -K (folder)       Build folder of this project, saved in ~/.gim/gKmake/build.conf." );
 	puts( "" );
 	puts( "  Build configurations:" );
 	puts( "   -t ([1-n])-   -   Make the project in multi thread with the specify cores number." );
@@ -111,7 +112,7 @@ void	make_header( void ) {
 	header->append("\n\n" );
 	header->append( "#ifndef\t%s_GKMAKE_VERSIONING\n", gkmake.prefix );
 	header->append( "#define\t%s_GKMAKE_VERSIONING\n\n", gkmake.prefix );
-	header->append( "   #define %s_AUTHOR                       %s\n", gkmake.prefix , gkmake.author );
+	header->append( "   #define %s_AUTHOR                       \"%s\"\n", gkmake.prefix , gkmake.author );
 	header->append( "   #define %s_GKMAKE_TOTAL_BUILD           %d\n", gkmake.prefix , gkmake.prj_sum_total_build );
 	header->append( "   #define %s_GKMAKE_BUILD                 %d\n", gkmake.prefix , gkmake.prj_sum_ok_build );
 	header->append( "   #define %s_GKMAKE_LAST_BUILD            \"%s\"\n", gkmake.prefix , gkmake.last_build );

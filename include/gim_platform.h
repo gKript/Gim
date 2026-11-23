@@ -133,6 +133,7 @@
 	char *	strsignal( int sig );
 
 	long	gim_gettid( void );
+	int	gim_is_main_thread( void );   /* TRUE on the thread that started the process */
 	long	gethostid( void );
 
 	/* ---- misc ------------------------------------------------------------ */
@@ -181,6 +182,7 @@
 		#define	gim_gettid()	( (long) syscall( SYS_gettid ) )
 	#else
 		#define	gim_gettid()	( (long) getpid() )
+	#define	gim_is_main_thread()	( gim_gettid() == gim_getpid() )
 	#endif
 	#define	gim_getpid()	( (long) getpid() )
 

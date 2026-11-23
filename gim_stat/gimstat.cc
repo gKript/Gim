@@ -31,13 +31,38 @@
 
 #############################################################################*/
 
+#include <stdarg.h>
+#include <string>
+#include <vector>
+#include <functional>
+#include <thread>
+#include <atomic>
+#include <chrono>
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 #include <gim/gim.h>
+#include <gim/gim_thread.h>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #define MIN_SIZE	256
+/* files at least this big get one thread per test and a progress bar on stderr */
+#define GIM_PARALLEL_MIN_BYTES	( 1L << 20 )
+
+/* buffers come from Gim's memory manager (its ceiling, its lock and its list of allocations), not from malloc; hidden from the log */
+static void * gim_mem_alloc( size_t size ) {
+	return gim_memory->Alloc( size , (_gim_Uint32) __GIM_MEM_GIMSTAT_BUF , __GIM_HIDE );
+}
+
+static void gim_mem_free( void * p ) {
+	if ( p != NULL )
+		gim_memory->Free( p );
+}
 
 /* ---- statistical tests with p-values ----------------------------------------
    Each test prints its p-value and PASS (p >= 0.01) or FAIL. The tests with many
@@ -90,14 +115,40 @@ static double gim_normal_p( double z ) {
 	return erfc( fabs( z ) / sqrt( 2.0 ) );
 }
 
-static double gim_pv[32];
+/* Each test writes its text and its p-values into its own context. Big files run one thread per test;
+   the main thread prints the texts in test order, so the output keeps the same order as before. */
+struct gim_test_ctx {
+	double				pv[ 32 ];
+	int					npv;
+	int					quiet;
+	std::string			out;
+	std::atomic<long>	progress;	/* 0..1000 */
+	std::atomic<bool>	done;
+	gim_test_ctx() : npv( 0 ) , quiet( 0 ) , progress( 0 ) , done( false ) {}
+};
+static thread_local gim_test_ctx * gim_ctx = NULL;
+
+static void gim_out( const char * fmt , ... ) {
+	char line[ 1024 ];
+	va_list ap;
+	if ( gim_ctx == NULL || gim_ctx->quiet )
+		return;
+	va_start( ap , fmt );
+	vsnprintf( line , sizeof( line ) , fmt , ap );
+	va_end( ap );
+	gim_ctx->out += line;
+}
+
+static void gim_tick( long done , long total ) {
+	if ( gim_ctx != NULL && total > 0 )
+		gim_ctx->progress.store( (long) ( (long long) done * 1000 / total ) );
+}
 static int gim_quiet = 0;
-static int gim_npv = 0;
 
 static void gim_report( const char * name , double p , double threshold , const char * detail ) {
-	if ( gim_npv < 32 )
-		gim_pv[ gim_npv++ ] = p;
-	if ( !gim_quiet ) printf( "%-30s p = %-10.4g %-34s %s\n" , name , p , detail , ( p >= threshold ) ? "PASS" : "FAIL" );
+	if ( gim_ctx->npv < 32 )
+		gim_ctx->pv[ gim_ctx->npv++ ] = p;
+	gim_out( "%-30s p = %-10.4g %-34s %s\n" , name , p , detail , ( p >= threshold ) ? "PASS" : "FAIL" );
 }
 
 /* test 1: chi-square of the 256 byte values (255 degrees of freedom) */
@@ -108,7 +159,7 @@ static void gim_test_bytes( const unsigned char * buf , long n ) {
 	char detail[64];
 	memset( cnt , 0 , sizeof( cnt ) );
 	for ( i = 0 ; i < n ; i++ )
-		cnt[ buf[ i ] ]++;
+		{ cnt[ buf[ i ] ]++; if ( ( i & 0xFFFF ) == 0 ) gim_tick( i , n ); }
 	for ( i = 0 ; i < 256 ; i++ ) {
 		double d = (double) cnt[ i ] - expected;
 		chi += d * d / expected;
@@ -242,6 +293,7 @@ static void gim_test_runs( const unsigned char * buf , long n ) {
 			if ( bit != prev )
 				runs++;
 			prev = bit;
+			if ( b == 7 && ( i & 0xFFFF ) == 0 ) gim_tick( i , n );
 		}
 	num = fabs( (double) runs - 2.0 * (double) nbits * pi * ( 1.0 - pi ) );
 	den = 2.0 * sqrt( 2.0 * (double) nbits ) * pi * ( 1.0 - pi );
@@ -259,14 +311,14 @@ static void gim_test_entropy( const unsigned char * buf , long n ) {
 	char detail[64];
 	memset( cnt , 0 , sizeof( cnt ) );
 	for ( i = 0 ; i < n ; i++ )
-		cnt[ buf[ i ] ]++;
+		{ cnt[ buf[ i ] ]++; if ( ( i & 0xFFFF ) == 0 ) gim_tick( i , n ); }
 	for ( k = 0 ; k < 256 ; k++ )
 		if ( cnt[ k ] ) {
 			double p = (double) cnt[ k ] / (double) n;
 			h -= p * log( p ) / log( 2.0 );
 		}
 	sprintf( detail , "H = %.5f bits (max 8)" , h );
-	if ( !gim_quiet ) printf( "%-30s %-44s %s\n" , "Shannon entropy (bytes)" , detail , ( h >= 7.999 ) ? "PASS" : "FAIL" );
+	gim_out( "%-30s %-44s %s\n" , "Shannon entropy (bytes)" , detail , ( h >= 7.999 ) ? "PASS" : "FAIL" );
 }
 
 /* linear complexity (Berlekamp-Massey over GF(2), bits packed in 64-bit words) */
@@ -297,10 +349,10 @@ static void gim_bs_xor_shl( unsigned long long * c , const unsigned long long * 
 
 static long gim_linear_complexity( const unsigned char * s , long N ) {
 	int w = (int) ( N / 64 + 2 );
-	unsigned long long * C = (unsigned long long *) calloc( w , sizeof( unsigned long long ) );
-	unsigned long long * B = (unsigned long long *) calloc( w , sizeof( unsigned long long ) );
-	unsigned long long * T = (unsigned long long *) calloc( w , sizeof( unsigned long long ) );
-	unsigned long long * R = (unsigned long long *) calloc( w , sizeof( unsigned long long ) );
+	unsigned long long * C = (unsigned long long *) gim_mem_alloc( w * sizeof( unsigned long long ) );
+	unsigned long long * B = (unsigned long long *) gim_mem_alloc( w * sizeof( unsigned long long ) );
+	unsigned long long * T = (unsigned long long *) gim_mem_alloc( w * sizeof( unsigned long long ) );
+	unsigned long long * R = (unsigned long long *) gim_mem_alloc( w * sizeof( unsigned long long ) );
 	long L = 0 , m = -1 , n;
 	C[ 0 ] = 1;
 	B[ 0 ] = 1;
@@ -317,10 +369,10 @@ static long gim_linear_complexity( const unsigned char * s , long N ) {
 			}
 		}
 	}
-	free( C );
-	free( B );
-	free( T );
-	free( R );
+	gim_mem_free( C );
+	gim_mem_free( B );
+	gim_mem_free( T );
+	gim_mem_free( R );
 	return L;
 }
 
@@ -341,15 +393,16 @@ static void gim_test_linear( const unsigned char * buf , long n ) {
 	int k;
 	memset( v , 0 , sizeof( v ) );
 	if ( blocks < 1 ) {
-		if ( !gim_quiet ) puts( "Linear complexity          too few words for one block" );
+		gim_out( "Linear complexity          too few words for one block\n" );
 		return;
 	}
-	seq = (unsigned char *) malloc( GIM_LC_M );
+	seq = (unsigned char *) gim_mem_alloc( GIM_LC_M );
 	for ( b = 0 ; b < blocks ; b++ ) {
 		long L;
 		for ( j = 0 ; j < GIM_LC_M ; j++ )
 			seq[ j ] = buf[ ( b * GIM_LC_M + j ) * 4 ] & 1;
 		L = gim_linear_complexity( seq , GIM_LC_M );
+		gim_tick( b , blocks );
 		lmean += (double) L;
 		{
 			double T = (double) L - mu + 2.0 / 9.0;
@@ -364,7 +417,7 @@ static void gim_test_linear( const unsigned char * buf , long n ) {
 			v[ bin ]++;
 		}
 	}
-	free( seq );
+	gim_mem_free( seq );
 	for ( k = 0 ; k < 7 ; k++ ) {
 		double e = blocks * pi[ k ];
 		chi += ( v[ k ] - e ) * ( v[ k ] - e ) / e;
@@ -373,50 +426,180 @@ static void gim_test_linear( const unsigned char * buf , long n ) {
 	gim_report( "Linear complexity (bit 0)" , gim_chi2_p( chi , 6 ) , 0.01 , detail );
 }
 
+static int gim_stderr_is_terminal( void ) {
+#ifdef _WIN32
+	return _isatty( _fileno( stderr ) );
+#else
+	return isatty( fileno( stderr ) );
+#endif
+}
+
+static void gim_draw_bar( const std::vector< gim_test_ctx > & ctx ) {
+	long sum = 0;
+	char bar[ 41 ];
+	double frac;
+	int i , filled;
+	for ( size_t k = 0 ; k < ctx.size() ; k++ )
+		sum += ctx[ k ].progress.load();
+	frac = (double) sum / ( 1000.0 * (double) ctx.size() );
+	filled = (int) ( frac * 40.0 );
+	for ( i = 0 ; i < 40 ; i++ )
+		bar[ i ] = ( i < filled ) ? '#' : '.';
+	bar[ 40 ] = '\0';
+	fprintf( stderr , "\r  [%s] %3.0f%%  " , bar , frac * 100.0 );
+	fflush( stderr );
+}
+
+static void gim_draw_progress( double frac , const char * label ) {
+	char bar[ 41 ];
+	int i , filled = (int) ( frac * 40.0 );
+	for ( i = 0 ; i < 40 ; i++ )
+		bar[ i ] = ( i < filled ) ? '#' : '.';
+	bar[ 40 ] = '\0';
+	fprintf( stderr , "\r  [%s] %3.0f%%  %s  " , bar , frac * 100.0 , label );
+	fflush( stderr );
+}
+
+static void gim_clear_bar( void ) {
+	fprintf( stderr , "\r%70s\r" , "" );
+	fflush( stderr );
+}
+static thread_local int gim_block_worker = 0;   /* 1 inside a block worker: its tests run in turn */
+
+/* how many threads may run at once: never more than the logical processors, and never more than the memory
+   budget allows: free RAM x memory::limit (the same ceiling Gim applies to its own allocations).
+   per_job is the memory one job needs at its peak. */
+static int gim_pool_size( int max_jobs , long long per_job ) {
+	int hw = gim_identity->n_proc();
+	int pct = 75;
+	long long budget , fit;
+	int n;
+	if ( hw < 1 )
+		hw = (int) std::thread::hardware_concurrency();
+	if ( hw < 1 )
+		hw = 1;
+	IF_EXIST_KEY_IN_CONF( "memory" , "limit" )
+		pct = gim_conf->GetKeyINT( "memory" , "limit" );
+	budget = (long long) gim_identity->mi->free * pct / 100;
+	fit = ( per_job > 0 ) ? budget / per_job : (long long) max_jobs;
+	n = max_jobs;
+	if ( hw < n )
+		n = hw;
+	if ( fit < n )
+		n = (int) ( fit < 1 ? 1 : fit );
+	if ( n < 1 )
+		n = 1;
+	static int last_max = -1 , last_n = -1;   /* log only when the sizing changes */
+	static long long last_per = -1;
+	if ( max_jobs != last_max || per_job != last_per || n != last_n ) {
+		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "threads: %d for %d jobs (logical processors %d, memory budget %lld MB, %lld MB per job)" , n , max_jobs , hw , budget / 1048576 , per_job / 1048576 );
+		last_max = max_jobs;  last_per = per_job;  last_n = n;
+	}
+	return n;
+}
+static const char * const gim_test_names[ 8 ] = { "byte chi-square" , "bit frequency" , "serial correlation (bytes)" , "serial correlation (words)" , "binary matrix rank" , "runs of bits" , "shannon entropy" , "linear complexity" };
+
+/* threads are used for big files only if the configuration allows the class (thread::gim_stat = YES, default).
+   Decided once, in the main thread, so that the log gets one message and not one per block. */
+static int gim_stat_threads_allowed( void ) {
+	static int allowed = -1;
+	if ( allowed < 0 )
+		allowed = ( gim_thread_allowed( "gim_stat" ) == __GIM_YES ) ? 1 : 0;
+	return allowed;
+}
 static double gim_stat_tests( const unsigned char * buf , long n ) {
-	double * x;
-	unsigned int * w;
-	long nw = n / 4 , i;
-	gim_npv = 0;
+		int npv = 0;  double pv[ 32 ];
 	if ( !gim_quiet ) puts( "Statistical tests (p-value, PASS if p >= 0.01)" );
 	if ( n < 8192 ) {
 		if ( !gim_quiet ) puts( "file too small for the tests (at least 8192 bytes)\n" );
 		return 0.0;
 	}
-	gim_test_bytes( buf , n );
-	gim_test_bits( buf , n );
+	{
+		const int NJ = 8;
+		std::vector< std::function< void() > > jobs;
+		std::vector< gim_test_ctx > ctx( NJ );
+		std::vector< std::thread > th;
+		bool parallel = ( n >= GIM_PARALLEL_MIN_BYTES ) && !gim_block_worker && gim_stat_threads_allowed();
+		int workers = parallel ? gim_pool_size( NJ , 11LL * n ) : 1;
+		parallel = ( workers > 1 );
+		bool show = parallel && !gim_quiet && gim_stderr_is_terminal();
+		int k;
 
-	x = (double *) malloc( sizeof( double ) * n );
-	for ( i = 0 ; i < n ; i++ )
-		x[ i ] = (double) buf[ i ] / 256.0;
-	gim_serial( "Serial correlation (bytes)" , x , n , 8 );
-	free( x );
+		jobs.push_back( [ buf , n ]() { gim_test_bytes( buf , n ); } );
+		jobs.push_back( [ buf , n ]() { gim_test_bits( buf , n ); } );
+		jobs.push_back( [ buf , n ]() {
+			double * x = (double *) gim_mem_alloc( sizeof( double ) * n );
+			for ( long i = 0 ; i < n ; i++ )
+				x[ i ] = (double) buf[ i ] / 256.0;
+			gim_serial( "Serial correlation (bytes)" , x , n , 8 );
+			gim_mem_free( x );
+		} );
+		jobs.push_back( [ buf , n ]() {
+			long nw = n / 4 , i;
+			double * x = (double *) gim_mem_alloc( sizeof( double ) * nw );
+			unsigned int * w = (unsigned int *) gim_mem_alloc( sizeof( unsigned int ) * nw );
+			for ( i = 0 ; i < nw ; i++ ) {
+				long o = i * 4;
+				w[ i ] = (unsigned int) buf[ o ] | ( (unsigned int) buf[ o + 1 ] << 8 ) |
+				         ( (unsigned int) buf[ o + 2 ] << 16 ) | ( (unsigned int) buf[ o + 3 ] << 24 );
+				x[ i ] = (double) w[ i ] / 4294967296.0;
+			}
+			gim_serial( "Serial correlation (words)" , x , nw , 4 );
+			gim_mem_free( x );
+			gim_mem_free( w );
+		} );
+		jobs.push_back( [ buf , n ]() { gim_test_rank( buf , n ); } );
+		jobs.push_back( [ buf , n ]() { gim_test_runs( buf , n ); } );
+		jobs.push_back( [ buf , n ]() { gim_test_entropy( buf , n ); } );
+		jobs.push_back( [ buf , n ]() { gim_test_linear( buf , n ); } );
 
-	x = (double *) malloc( sizeof( double ) * nw );
-	w = (unsigned int *) malloc( sizeof( unsigned int ) * nw );
-	for ( i = 0 ; i < nw ; i++ ) {
-		long o = i * 4;
-		w[ i ] = (unsigned int) buf[ o ] | ( (unsigned int) buf[ o + 1 ] << 8 ) |
-		         ( (unsigned int) buf[ o + 2 ] << 16 ) | ( (unsigned int) buf[ o + 3 ] << 24 );
-		x[ i ] = (double) w[ i ] / 4294967296.0;
+		for ( k = 0 ; k < NJ ; k++ )
+			ctx[ k ].quiet = gim_quiet;
+
+		auto run_job = [ &jobs , &ctx , n ]( int j ) {
+			gim_ctx = &ctx[ j ];
+			gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_test" , "%s: start (%ld bytes)" , gim_test_names[ j ] , n );
+			jobs[ j ]();
+			gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_test" , "%s: end" , gim_test_names[ j ] );
+			gim_ctx = NULL;
+			ctx[ j ].progress.store( 1000 );
+			ctx[ j ].done.store( true );
+		};
+		if ( parallel ) {
+		std::atomic<int> nxt( 0 );
+			for ( int w = 0 ; w < workers ; w++ )
+			th.emplace_back( [ & ]() { int j; while ( ( j = nxt++ ) < NJ ) run_job( j ); } );
+		}
+		/* results are printed in test order, as soon as each test (and the ones before it) is finished */
+		for ( k = 0 ; k < NJ ; k++ ) {
+			if ( parallel ) {
+				while ( !ctx[ k ].done.load() ) {
+					if ( show )
+						gim_draw_bar( ctx );
+					std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+				}
+			}
+			else
+				run_job( k );
+			if ( show )
+				gim_clear_bar();
+			if ( !gim_quiet )
+				fputs( ctx[ k ].out.c_str() , stdout );
+			for ( int p = 0 ; p < ctx[ k ].npv && npv < 32 ; p++ )
+				pv[ npv++ ] = ctx[ k ].pv[ p ];
+		}
+		for ( auto & x : th )
+			x.join();
+		fflush( stdout );
 	}
-	gim_serial( "Serial correlation (words)" , x , nw , 4 );
-	free( x );
-	free( w );
-
-	gim_test_rank( buf , n );
-	gim_test_runs( buf , n );
-	gim_test_entropy( buf , n );
-	gim_test_linear( buf , n );
-
 	/* single score: Fisher combination of all the p-values above.
 	   100 = no anomaly; it falls linearly with the orders of magnitude of the combined p, reaching 0 at p = 1e-300 */
 	{
 		double logsum = 0.0 , pcomb , l10 , score;
 		int k;
-		for ( k = 0 ; k < gim_npv ; k++ )
-			logsum += -2.0 * log( gim_pv[ k ] > 1e-300 ? gim_pv[ k ] : 1e-300 );
-		pcomb = gim_chi2_p( logsum , 2 * gim_npv );
+		for ( k = 0 ; k < npv ; k++ )
+			logsum += -2.0 * log( pv[ k ] > 1e-300 ? pv[ k ] : 1e-300 );
+		pcomb = gim_chi2_p( logsum , 2 * npv );
 		l10 = -log10( pcomb > 1e-300 ? pcomb : 1e-300 );
 		score = 100.0 * ( 1.0 - ( l10 > 300.0 ? 300.0 : l10 ) / 300.0 );
 		if ( !gim_quiet ) puts( "" );
@@ -434,7 +617,7 @@ static int gim_cmp_double( const void * a , const void * b );
 static double gim_print_blocks( double * sc , int nb , long long bs ) {
 	double mean = 0.0 , mn = 100.0 , median;
 	int pass = 0 , i;
-	double * sorted = (double *) malloc( sizeof( double ) * nb );
+	double * sorted = (double *) gim_mem_alloc( sizeof( double ) * nb );
 	for ( i = 0 ; i < nb ; i++ ) {
 		mean += sc[ i ];
 		if ( sc[ i ] < mn ) mn = sc[ i ];
@@ -462,7 +645,7 @@ static double gim_print_blocks( double * sc , int nb , long long bs ) {
 	}
 	qsort( sorted , nb , sizeof( double ) , gim_cmp_double );
 	median = sorted[ nb / 2 ];
-	free( sorted );
+	gim_mem_free( sorted );
 	printf( "\nBlock analysis: %d blocks of %lld bytes\n" , nb , bs );
 	printf( "  mean score    : %5.1f / 100\n" , mean );
 	printf( "  median score  : %5.1f / 100\n" , median );
@@ -480,6 +663,35 @@ static int gim_cmp_double( const void * a , const void * b ) {
 	return ( x < y ) ? -1 : ( x > y ) ? 1 : 0;
 }
 
+/* runs work(0..nb-1) on a pool of threads; the main thread only draws the progress bar */
+static void gim_run_blocks( int nb , int workers , bool show , const std::function< void( int ) > & work ) {
+	std::atomic<int> next( 0 ) , finished( 0 );
+	std::vector< std::thread > th;
+	if ( workers < 1 )
+		workers = 1;
+	if ( workers > nb )
+		workers = nb;
+	auto loop = [ & ]() {
+		int i;
+		gim_block_worker = 1;
+		while ( ( i = next++ ) < nb ) {
+			work( i );
+			finished++;
+		}
+		gim_block_worker = 0;
+	};
+	for ( int w = 0 ; w < workers ; w++ )
+		th.emplace_back( loop );
+	if ( show ) {
+		while ( finished.load() < nb ) {
+			gim_draw_progress( (double) finished.load() / (double) nb , "blocks" );
+			std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+		}
+		gim_clear_bar();
+	}
+	for ( auto & x : th )
+		x.join();
+}
 static double gim_stat_blocks( const unsigned char * buf , long n , int nb ) {
 	double * sc;
 	long bs = n / nb , i;
@@ -488,14 +700,17 @@ static double gim_stat_blocks( const unsigned char * buf , long n , int nb ) {
 		puts( "file too small for the block analysis" );
 		return 0.0;
 	}
-	sc = (double *) malloc( sizeof( double ) * nb );
-	for ( i = 0 ; i < nb ; i++ ) {
-		gim_quiet = 1;
-		sc[ i ] = gim_stat_tests( buf + i * bs , bs );
-		gim_quiet = 0;
-	}
+	sc = (double *) gim_mem_alloc( sizeof( double ) * nb );
+	gim_stat_threads_allowed();   /* decided here, in the main thread */
+	gim_quiet = 1;
+	gim_run_blocks( nb , gim_pool_size( nb , 11LL * bs ) , gim_stderr_is_terminal() != 0 , [ & ]( int j ) {
+		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_block" , "block %d of %d: start (%ld bytes)" , j + 1 , nb , bs );
+		sc[ j ] = gim_stat_tests( buf + j * bs , bs );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_block" , "block %d of %d: end, score %.1f" , j + 1 , nb , sc[ j ] );
+	} );
+	gim_quiet = 0;
 	mean = gim_print_blocks( sc , nb , bs );
-	free( sc );
+	gim_mem_free( sc );
 	return mean;
 }
 
@@ -516,25 +731,32 @@ static double gim_stat_big( const char * path , long long size ) {
 	const long long maxb = 128LL * 1024 * 1024;
 	long long stride = size / nb;
 	long bs = (long) ( stride < maxb ? stride : maxb );
-	unsigned char * buf = (unsigned char *) malloc( bs );
-	double * sc = (double *) malloc( sizeof( double ) * nb );
+	unsigned char * buf = (unsigned char *) gim_mem_alloc( bs );
+	double * sc = (double *) gim_mem_alloc( sizeof( double ) * nb );
 	FILE * f = fopen( path , "rb" );
 	int i;
+	bool show = gim_stderr_is_terminal() != 0;
 	printf( "file of %lld bytes: %d samples of %ld bytes spread over the file\n" , size , nb , bs );
 	fflush( stdout );
 	for ( i = 0 ; i < nb ; i++ ) {
 		size_t got;
 		fseeko64( f , (off64_t) ( i * stride ) , SEEK_SET );
 		got = fread( buf , 1 , (size_t) bs , f );
+		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_sample" , "sample %d of %d: start at offset %lld (%lu bytes)" , i + 1 , nb , (long long) ( i * stride ) , (unsigned long) got );
 		gim_quiet = 1;
 		sc[ i ] = gim_stat_tests( buf , (long) got );
 		gim_quiet = 0;
+		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_sample" , "sample %d of %d: end, score %.1f" , i + 1 , nb , sc[ i ] );
+		if ( show )
+			gim_draw_progress( (double) ( i + 1 ) / nb , "samples" );
 	}
+	if ( show )
+		gim_clear_bar();
 	fclose( f );
-	free( buf );
+	gim_mem_free( buf );
 	{
 		double mean = gim_print_blocks( sc , nb , bs );
-		free( sc );
+		gim_mem_free( sc );
 		return mean;
 	}
 }
@@ -548,16 +770,23 @@ int main ( int argc , char *argv[] ) {
 		exit( -1 );
 	}
 
+	gim_set_application_name( "Gimstat" );
+	gim_set_application_version( "0.1" );
+
+	gim_obj		* gim = new gim_obj;
+	gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "run start: %s (%lld bytes)" , argv[ 1 ] , gim_file_size64( argv[ 1 ] ) );
+	auto gim_t0 = std::chrono::steady_clock::now();
+
+	/* files over 1 GiB: sampled from disk; done after the Gim environment is up (gim_error, conf and memory are used) */
 	{
 		long long fsz = gim_file_size64( argv[1] );
 		if ( fsz > (long long) 1 << 30 ) {
 			double g = gim_stat_big( argv[1] , fsz );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "run end: exit %d, %.1f s" , (int) g , std::chrono::duration< double >( std::chrono::steady_clock::now() - gim_t0 ).count() );
+			delete gim;
 			exit( (int) g );
 		}
 	}
-	gim_set_application_name( "Gimstat" );
-
-	gim_obj		* gim = new gim_obj;
 
 	
 	gim_utils_obj   *util = new gim_utils_obj;
@@ -865,6 +1094,7 @@ int main ( int argc , char *argv[] ) {
 		
 	}
 	
+	gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "run end: exit %d, %.1f s" , (int) gqcaos , std::chrono::duration< double >( std::chrono::steady_clock::now() - gim_t0 ).count() );
 	delete gim;
 	
 	exit( (int)gqcaos);

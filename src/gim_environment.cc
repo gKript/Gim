@@ -34,8 +34,21 @@
 //
 
 #include "../include/gim.h"
+#include "../include/gim_thread.h"
+#include <ctype.h>
+
+/* case-insensitive comparison of a configuration value with a level name */
+static bool gim_same_name( const char * a , const char * b ) {
+	while ( *a && *b ) {
+		if ( toupper( (unsigned char) *a ) != toupper( (unsigned char) *b ) ) return false;
+		a++;
+		b++;
+	}
+	return ( *a == '\0' ) && ( *b == '\0' );
+}
 
 char			gim_application_name[256];
+char			gim_application_version[64] = "not set";
 
 gim_conf_data	* env_data;
 gim_home_obj	* gim_home;
@@ -58,9 +71,9 @@ void	gim_home_obj::up( void ) {
 			gim_environ->SetLex( __LEX_C );
 		}
 		if ( strlen( gim_application_name ) == 0 ) {
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "The application have not setted the name for the environment " , __GIM_ERROR );
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "    - This is very dangerous. Other apllications that uses Gim will be damaged by this choice" , __GIM_ERROR );
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "    - We suggest to set always an application name in order to separate each applications conf" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "The application have not setted the name for the environment " , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "    - This is very dangerous. Other apllications that uses Gim will be damaged by this choice" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "    - We suggest to set always an application name in order to separate each applications conf" , __GIM_ERROR );
 			sprintf( env_data->home 			, "%s/%s/"		, gim_identity->Home	, GIM_ENVIRON_NAME );
 			sprintf( env_data->general_home		, "%s/%s/"		, gim_identity->Home	, GIM_ENVIRON_NAME );
 			sprintf( env_data->Programs			, "%s%s/"		, env_data->home		, GIM_PROGRAMS_DIR_NAME );
@@ -68,7 +81,7 @@ void	gim_home_obj::up( void ) {
 			sprintf( fdebug_name				, "%s%s"		, env_data->home		, GIM_DEBUG_FILE_NAME );
 			if ( stat( env_data->home 			, &stat_home ) ) {
 				mkdir( env_data->home 			, 0777 );
-				gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Main env not found... created" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Main env not found... created" , __GIM_ERROR );
 			}
 		}
 		else {
@@ -79,11 +92,11 @@ void	gim_home_obj::up( void ) {
 			sprintf( fdebug_name				, "%s%s"		, env_data->home		, GIM_DEBUG_FILE_NAME );
 			if ( stat( env_data->general_home	, &stat_home ) ) {
 				mkdir( env_data->general_home	, 0777 );
-				gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Main env not found... created" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Main env not found... created" , __GIM_ERROR );
 			}
 			if ( stat( env_data->home			, &stat_home ) ) {
 				mkdir( env_data->home			, 0777 );
-				gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Main env not found... created" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Main env not found... created" , __GIM_ERROR );
 			}
 		}
 		sprintf( env_data->PrivateKeyPath	, "%s%s/"	, env_data->general_home , GIM_PRIVATE_KEY_DIR_NAME  );
@@ -139,15 +152,15 @@ void	gim_home_obj::up( void ) {
 		}
 		if ( stat( env_data->PrivateKeyPath , &stat_home ) ) {
 			mkdir( env_data->PrivateKeyPath	, 0777 );
-			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Private key env not found... created" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Private key env not found... created" , __GIM_ERROR );
 		}
 		if ( stat( env_data->OtherKeysPath , &stat_home ) ) {
 			mkdir( env_data->OtherKeysPath	, 0777 );
-			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Other key env not found... created" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Other key env not found... created" , __GIM_ERROR );
 		}
 		if ( stat( env_data->Programs , &stat_home ) ) {
 			mkdir( env_data->Programs	, 0777 );
-			gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Other programs env not found... created" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Other programs env not found... created" , __GIM_ERROR );
 		}
 		if ( env_changed == __GIM_YES ) {
 			gim_environ->SetLex( __LEX_C );
@@ -183,6 +196,7 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddKeyFlag(	"debug"				, "debug"				, __GIM_NO );
 			gim_conf->AddKeyFlag(	"debug"				, "f_debug"				, __GIM_NO );
 			gim_conf->AddKey( 		"debug"				, "f_debug_file"		, fdebug_name );
+			gim_conf->AddKey(		"debug"				, "min_type"			, "MESSAGE" );
 			gim_conf->AddKeyFlag(	"memory"			, "hide_in_log"			, __GIM_YES );
 			gim_conf->AddKeyFlag(	"memory"			, "virtual_memory"		, __GIM_OFF );
 			gim_conf->AddKeyFlag(	"memory"			, "alloc_limit"			, __GIM_YES );
@@ -221,7 +235,20 @@ void	gim_home_obj::up( void ) {
 				else
 					gim_error->set( "gim_home_obj::up" , "verbose_on_critical de-activated" );
 			}
-			IF_EXIST_KEY_IN_CONF( "debug" , "debug" ) {
+			IF_EXIST_KEY_IN_CONF( "debug" , "min_type" ) {
+					const char * mt = gim_conf->GetKeySTR( "debug" , "min_type" );
+					if ( gim_same_name( mt , "DEBUG" ) )			gim_error->set_min_type( GIM_ERROR_DEBUG );
+					else if ( gim_same_name( mt , "MESSAGE" ) )		gim_error->set_min_type( GIM_ERROR_MESSAGE );
+					else if ( gim_same_name( mt , "WARNING" ) )		gim_error->set_min_type( GIM_ERROR_WARNING );
+					else if ( gim_same_name( mt , "CRITICAL" ) )	gim_error->set_min_type( GIM_ERROR_CRITICAL );
+					else if ( gim_same_name( mt , "FATAL" ) )		gim_error->set_min_type( GIM_ERROR_FATAL );
+					else gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "DEBUG::min_type unknown (use DEBUG, MESSAGE, WARNING, CRITICAL or FATAL). MESSAGE used" , __GIM_NOT_OK );
+				}
+				else {
+					gim_conf->AddKey( "debug" , "min_type" , "MESSAGE" );
+					changed = __GIM_YES;
+				}
+				IF_EXIST_KEY_IN_CONF( "debug" , "debug" ) {
 				internal_gim->debug = gim_conf->GetKeyFLAG( "debug" , "debug" );
 				if ( internal_gim->debug == __GIM_YES ) {
 					gim_error->set( GIM_ON_FATAL_VERBOSE , __GIM_YES );
@@ -292,7 +319,7 @@ void	gim_home_obj::up( void ) {
 				if ( Lexical.str_equal( gim_conf->GetKeySTR( "version" , "milestone" ) , GIM_MILESTONE ) == __GIM_NO ) {
 					gim_conf->ChangeKey( "version" , "milestone" , GIM_MILESTONE );
 					changed = __GIM_YES;
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim major version updated" , __GIM_ERROR  );
+					gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim major version updated" , __GIM_ERROR  );
 				}
 			}
 			else {
@@ -302,21 +329,21 @@ void	gim_home_obj::up( void ) {
 				if ( gim_conf->GetKeyINT( "version" , "major" ) != GIM_MAJOR ) {
 					gim_conf->ChangeKey( "version" , "major" , GIM_MAJOR );
 					changed = __GIM_YES;
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim major version updated" , __GIM_ERROR );
+					gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim major version updated" , __GIM_ERROR );
 				}
 			}
 			IF_EXIST_KEY_IN_CONF( "version" , "minor" ) {
 				if ( gim_conf->GetKeyINT( "version" , "minor" ) != GIM_MINOR ) {
 					gim_conf->ChangeKey( "version" , "minor" , GIM_MINOR );
 					changed = __GIM_YES;
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim minor version updated" , __GIM_ERROR );
+					gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim minor version updated" , __GIM_ERROR );
 				}
 			}
 			IF_EXIST_KEY_IN_CONF( "version" , "subminor" ) {
 				if ( gim_conf->GetKeyINT( "version" , "subminor" ) != GIM_SUBMINOR ) {
 					gim_conf->ChangeKey( "version" , "subminor" , GIM_SUBMINOR );
 					changed = __GIM_YES;
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim subminor version updated" , __GIM_ERROR );
+					gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim subminor version updated" , __GIM_ERROR );
 				}
 			}
 			#ifdef GKMAKE_VERSIONING
@@ -324,7 +351,7 @@ void	gim_home_obj::up( void ) {
 					if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_GKMAKE_BUILD ) {
 						gim_conf->ChangeKey( "version" , "built" , GIM_GKMAKE_BUILD );
 						changed = __GIM_YES;
-						gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
+						gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
 					}
 				}
 			#endif
@@ -332,14 +359,16 @@ void	gim_home_obj::up( void ) {
 				if ( Lexical.str_equal( gim_conf->GetKeySTR( "version" , "version" ) , GIM_VERSION ) == __GIM_NO ) {
 					gim_conf->ChangeKey( "version" , "version" , GIM_VERSION );
 					changed = __GIM_YES;
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Gim version updated" , __GIM_ERROR );
+					gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim version updated" , __GIM_ERROR );
 				}
 			}
-			if ( changed == __GIM_YES ) {
+			if ( gim_thread_add_missing_config() == __GIM_YES )
+			changed = __GIM_YES;
+		if ( changed == __GIM_YES ) {
 				gim_conf->ChangeKey( "version" , "version" , GIM_VERSION );
 				add_default_comment();
 				gim_conf->Write();
-				gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Something changed in configuration. File updated" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Something changed in configuration. File updated" , __GIM_ERROR );
 			}
 		}
 		if ( gim_conf->GetKeyFLAG( "alias" , "enable" ) == __GIM_YES ) {
@@ -376,19 +405,19 @@ void	gim_home_obj::up( void ) {
 				if ( gim_alias->ExistSection( gim_identity->Login ) == __GIM_EXIST ) {
 					IF_EXIST_KEY_IN_CONF( "me" , "nick" ) {
 						if ( strcmp( gim_alias->GetKeySTR( "me" , "nick" ) , gim_identity->Login ) ) {
-							gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "ME::nick is not equal to the Login" , __GIM_ERROR  );
+							gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "ME::nick is not equal to the Login" , __GIM_ERROR  );
 							gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "But the Login section exist...updating" , __GIM_ERROR  );
 							gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , gim_alias->GetKeySTR( "me" , "nick" ) , __GIM_ERROR  );
 							gim_alias->RenameSection( gim_identity->Login , gim_alias->GetKeySTR( "me" , "nick" ) );
 							gim_alias->Write();
-							gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "Updated" , __GIM_ERROR );
+							gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Updated" , __GIM_ERROR );
 						}
 					}
 					else 
 						gim_error->set( "gim_home_obj::up" , "ME section seems ok" );
 				}
 				if ( gim_alias->ExistSection( gim_alias->GetKeySTR( "me" , "nick" ) ) != __GIM_EXIST ) {
-					gim_error->set( GIM_ERROR_WARNING , "gim_home_obj::up" , "The Nick  section was not found" , __GIM_ERROR );
+					gim_error->set( GIM_ERROR_CRITICAL , "gim_home_obj::up" , "The Nick  section was not found" , __GIM_ERROR );
 					_gim_int16 n;
 					n = gim_alias->GetHowManySection();
 					if ( n > 0 ) {
@@ -437,6 +466,11 @@ char *	gim_home_obj::get_other_keys_path( void ) {
 }
 
 
+void	gim_set_application_version( const char * app_version ) {
+	__GIM_CLEAR( gim_application_version , 64 , char );
+	strncpy( gim_application_version , app_version , 63 );
+}
+
 void	gim_set_application_name( const char * app_name ) {
 	__GIM_CLEAR( gim_application_name , 256 , char );
 	strcpy( gim_application_name , app_name );
@@ -445,6 +479,11 @@ void	gim_set_application_name( const char * app_name ) {
 
 void	gim_home_obj::add_default_comment( void ) {
 	gim_conf->AddKeyComment(	"debug"			, "debug_format"	, PRSR_AFTER , DEBUG_FORMAT_COMMENT );
+		gim_conf->AddKeyComment( "debug" , "min_type" , PRSR_BEFORE , "Minimum level written to the log: DEBUG, MESSAGE (default), WARNING, CRITICAL or FATAL" );
+		{
+			static char thread_comment[] = "Thread permission per class: YES lets the class start a background thread, NO disables it. Gim never starts a thread by itself.";
+			gim_conf->AddSectionComment( "thread" , PRSR_BEFORE , thread_comment );
+		}
 	gim_conf->AddComment(		"Put your comments beside a key and in any other location.\n# E.g.\n#  __LEX_A\n#    login = asyntote   # this is a comment\n#  __LEX_B\n#    version::name = Gim   # this is a comment" );
 }
 

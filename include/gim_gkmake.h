@@ -1,7 +1,7 @@
 /***************************************************************************
  *            gim_gkmake.h
  *
- *  Saturday 21-11-2026 05:52:07
+ *  Monday 23-11-2026 08:36:53
  *  Copyright  2006  gKript.org
  *  gkmake version : 0.8-5
  *  asyntote@gkript.org
@@ -38,9 +38,9 @@
 #define	GIM_GKMAKE_VERSIONING
 
    #define GIM_AUTHOR                       gKript.org
-   #define GIM_GKMAKE_TOTAL_BUILD           1574
-   #define GIM_GKMAKE_BUILD                 1397
-   #define GIM_GKMAKE_LAST_BUILD            "Saturday 21-11-2026 05:52:07"
+   #define GIM_GKMAKE_TOTAL_BUILD           1590
+   #define GIM_GKMAKE_BUILD                 1405
+   #define GIM_GKMAKE_LAST_BUILD            "Monday 23-11-2026 08:36:53"
    #define GIM_GKMAKE_RELEASE               "0.8-5"
 
 #endif

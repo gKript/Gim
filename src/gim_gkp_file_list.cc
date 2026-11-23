@@ -186,7 +186,7 @@ void	gim_gkdp_obj::destroy( void ) {
 		gim_error->set( "gim_gkdp_obj::destroy" , "Done" );
 	}
 	else 
-		gim_error->set( GIM_ERROR_WARNING , "gim_gkdp_obj::destroy" , "No memory list" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_gkdp_obj::destroy" , "No memory list" , __GIM_ERROR );
 }
 
 

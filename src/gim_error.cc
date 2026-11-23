@@ -134,6 +134,7 @@ void	gim_error_obj::set	( const char * type , const char * function , const char
 
 void	gim_error_obj::set	( pid_t cur_pid , const char * type , const char * function , const char * message , int value ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	if ( gim_error_type_rank( type ) < min_rank ) return;
 	strcpy	( this->type , type );
 	sprintf	( this->function , "%s()" , function );
 	strcpy	( this->message	, message );
@@ -168,6 +169,7 @@ void	gim_error_obj::set	( const char * function , const char * message ) {
 /*
 void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	if ( gim_error_type_rank( GIM_ERROR_MESSAGE ) < min_rank ) return;
 	char	message[1024];
 	va_list	VAList;
 	va_start( VAList , format );
@@ -179,6 +181,7 @@ void	gim_error_obj::Set	( const char * function , const char * format , ... ) {
 
 void	gim_error_obj::Set	( const char * type , const char * function , const char * format , ... ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
+	if ( gim_error_type_rank( type ) < min_rank ) return;
 	char	message[1024];
 	char	message_t[1024];
 	if ( ! ( strcmp ( type , GIM_ERROR_DEBUG ) ) )
@@ -216,6 +219,7 @@ void	gim_error_obj::set	( const char * function , int index ) {
 	if  ( ! ( strcmp ( type , GIM_ERROR_FATAL ) ) )
 		fatal = __GIM_YES;
 	strcpy	( type , gim_error_list[index].type );
+	if ( gim_error_type_rank( type ) < min_rank ) return;
 	sprintf	( this->function , "%s()" , function );
 	strcpy	( message , gim_error_list[index].message );
 	value = gim_error_list[index].value;
@@ -248,7 +252,7 @@ void	gim_error_obj::set	( const char * function , int index ) {
 void	gim_error_obj::get	( void ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( value || always_verbose ) {
-		if ( ( ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )  &&  ( verbose_on_critical == __GIM_YES ) ) ) {
+		if ( ( ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )  &&  ( verbose_on_critical == __GIM_YES )  &&  ( ! always_verbose ) ) ) {
 			fprintf ( stderr , "[%s] %s%-40s:#%2d: | %s \n" , error_time.process() , type , function , value , message );
 			fflush( stderr );
 		}
@@ -331,7 +335,9 @@ void		gim_error_obj::lflush( void ) {
 	gim_error_message * cursor = first_in;;
 	while( cursor ) {
 		if ( log_enable == __GIM_YES ) 
-			gim_log->addline_format( cursor->type , cursor->function , cursor->message , cursor->value );
+			/* buffered lines are filtered here too: they were stored before debug::min_type was read */
+				if ( gim_error_type_rank( cursor->type ) >= min_rank )
+					gim_log->addline_format( cursor->type , cursor->function , cursor->message , cursor->value );
 		cursor = cursor->next;
 		free( first_in );
 		first_in = cursor;
