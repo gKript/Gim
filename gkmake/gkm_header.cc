@@ -46,11 +46,11 @@ void print_help( void ) {
 	puts( "   -D (path) -   -   Documentation path." );
 	puts( "   -X (command)  -   Documentation command." );
 	puts( "   -S (YES/NO)   -   Always use SUDO to install the project. Save this decision on the configuration file." );
-	puts( "   -C (YES/NO)   -   Always clean before make the project. Save this decision on the configuration file." );
+	puts( "   -C (YES/NO)   -   Always clean before make the project (default NO: incremental build). Save this decision on the configuration file." );
 	puts( "   -T ([1-n]/NO) -   Make the project in multi thread with the specify cores number. Save this decision on the configuration file." );
 	puts( "   -M (number >= 0)  Total build number." );
 	puts( "   -B (number >= 0)  Succesful build number." );
-	puts( "   -K (folder)       Build folder of this project, saved in ~/.gim/gKmake/build.conf." );
+	puts( "   -K (folder)       Build folder of this project, saved in ~/.gim/gKmake/build.conf (default: build-<host>)." );
 	puts( "" );
 	puts( "  Build configurations:" );
 	puts( "   -t ([1-n])-   -   Make the project in multi thread with the specify cores number." );
@@ -66,6 +66,7 @@ void print_help( void ) {
 	puts( "  Build details:" );
 	puts( "   -o    -   -   -   Print the configuration file for this project." );
 	puts( "   -e    -   -   -   Edit the configuration file for this project." );
+	puts( "   -q    -   -   -   Status of the build environment: folders, cmake cache, tools copy, PATH. Exit 1 if something does not add up." );
 	puts( "   -h    -   -   -   Print this help text." );
 	puts( "" );
 	puts( "  Example :" );

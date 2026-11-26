@@ -344,6 +344,26 @@ void	prsr_lexical_class::scan_lex_type( const char * filename ) {
 	}
 }
 
+_gim_flag	prsr_lexical_class::scan_empty( const char * filename ) {
+	char	buffer[ 1024 ];
+	FILE *	tmpfp;
+	if ( gim_file_manager->exist( filename ) == __GIM_NOT_EXIST )
+		return __GIM_NOT_EXIST;
+	// same line reading as scan_lex_type: the file is empty when no line has a section ('[') or a key ('=' or '::')
+	tmpfp = fopen( filename , "rb" );
+	if ( ! tmpfp )
+		return __GIM_NOT_EXIST;
+	_gim_flag empty = __GIM_OK;
+	while ( fgets( buffer , sizeof( buffer ) , tmpfp ) ) {
+		if ( strchr( buffer , '[' ) || strchr( buffer , '=' ) || strstr( buffer , "( " ) ) {
+			empty = __GIM_NOT_OK;
+			break;
+		}
+	}
+	fclose( tmpfp );
+	return empty;
+}
+
 _gim_flag	prsr_lexical_class::scan_syntax( const char * filename , gim_prsr_obj * prsr ) {
 	_gim_flag	error = 0;
 	if ( gim_file_manager->exist( filename ) == __GIM_NOT_EXIST )
@@ -814,7 +834,7 @@ _gim_int8 prsr_lexical_class::tokenizer( char * line , const char * separator ) 
 
 char * prsr_lexical_class::str_up( const char * line , int len ) {
 	static char	* tmp = NULL;
-	_gim_Uint8	a = 0;
+	int		a = 0;		// int, not _gim_Uint8: with len > 255 an 8 bit index never reaches len
 	char	c = 0;
 	tmp = strdup( line );
 	for ( a = 0 ; a < len ; a++ ) {
@@ -826,7 +846,7 @@ char * prsr_lexical_class::str_up( const char * line , int len ) {
 
 char * prsr_lexical_class::str_down ( const char * line , int len ) {
 	static char	* tmp = NULL;
-	_gim_Uint8	a = 0;
+	int		a = 0;		// int, not _gim_Uint8: with len > 255 an 8 bit index never reaches len
 	char	c = 0;
 	tmp = strdup( line );
 	for ( a = 0 ; a < len ; a++ ) {

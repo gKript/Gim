@@ -215,6 +215,11 @@
 				\param filename	the configuration file
 			*/
 			void		scan_lex_type	( const char * filename);
+				/*! Tells if a file has no sections and no keys (only the title, comments or blank lines).
+					\param filename	the file to check
+					\return	__GIM_OK if the file is empty, __GIM_NOT_OK if it has a section or a key, __GIM_NOT_EXIST if the file does not exist
+				*/
+				_gim_flag	scan_empty		( const char * filename );
 			/*! Handles one line with the Lex A rules and updates the parser.
 				\param line	the line
 				\param prsr	the parser

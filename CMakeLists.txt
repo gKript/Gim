@@ -34,6 +34,10 @@ target_link_libraries(gim PUBLIC Threads::Threads)
 
 # the tools include <gim/gim.h> (installed layout): stage the headers that way
 file(GLOB GIM_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
+# gim_gkmake.h (build counters) is rewritten by gkmake at every run and is included only by src/gim_version.cc,
+# from the source folder: staging it would make every staged header a configure dependency and re-run CMake
+# after each gkmake build.
+list(FILTER GIM_HEADERS EXCLUDE REGEX "/gim_gkmake\\.h$")
 foreach(h ${GIM_HEADERS})
 	get_filename_component(hn ${h} NAME)
 	configure_file(${h} "${CMAKE_BINARY_DIR}/stage/gim/${hn}" COPYONLY)
@@ -52,10 +56,34 @@ endif()
 
 # ------------------------------------------------------------------ tools
 if(GIM_BUILD_TOOLS)
-	# Windows: after each build every tool is copied into a folder of the PATH (default: build-mingw).
+	# Windows: after each build every tool is copied into a folder of the PATH. The default is a folder in the
+	# user profile (%USERPROFILE%/.gim/bin): one per PC, never on a disk shared between PCs, so two machines
+	# cannot overwrite each other's executables. Set GIM_GKMAKE_COPY_DIR to another folder, or to an empty
+	# value to disable the copy.
 	# A running exe cannot be overwritten, so the old copy is first renamed (see cmake/gkmake_copy.cmake).
 	if(WIN32)
-		set(GIM_GKMAKE_COPY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build-mingw" CACHE PATH "folder that receives a copy of the tools (Windows only, skipped when missing)")
+		set(gim_default_copy_dir "")
+		if(DEFINED ENV{USERPROFILE})
+			file(TO_CMAKE_PATH "$ENV{USERPROFILE}/.gim/bin" gim_default_copy_dir)
+		endif()
+		set(GIM_GKMAKE_COPY_DIR "${gim_default_copy_dir}" CACHE PATH "folder that receives a copy of the tools (Windows only; empty = no copy)")
+		# the default folder is created when it is missing; a folder chosen by the user is never created
+		if(GIM_GKMAKE_COPY_DIR AND ( GIM_GKMAKE_COPY_DIR STREQUAL gim_default_copy_dir ) AND NOT EXISTS "${GIM_GKMAKE_COPY_DIR}")
+			file(MAKE_DIRECTORY "${GIM_GKMAKE_COPY_DIR}")
+		endif()
+		# The copy folder must not be the build folder: the copy would delete the tools it just linked.
+		set(gim_tool_copy ON)
+		if(GIM_GKMAKE_COPY_DIR AND EXISTS "${GIM_GKMAKE_COPY_DIR}")
+			file(REAL_PATH "${GIM_GKMAKE_COPY_DIR}" gim_copy_real)
+			file(REAL_PATH "${CMAKE_BINARY_DIR}" gim_bin_real)
+			string(TOLOWER "${gim_copy_real}" gim_copy_real)
+			string(TOLOWER "${gim_bin_real}" gim_bin_real)
+			if(gim_copy_real STREQUAL gim_bin_real)
+				message(WARNING "GIM_GKMAKE_COPY_DIR is the build folder itself (${CMAKE_BINARY_DIR}): tool copy disabled. "
+								"Build in another folder (e.g. build-<host>) or point GIM_GKMAKE_COPY_DIR elsewhere.")
+				set(gim_tool_copy OFF)
+			endif()
+		endif()
 	endif()
 	function(gim_tool name)
 		add_executable(${name} ${ARGN})
@@ -69,7 +97,7 @@ if(GIM_BUILD_TOOLS)
 			target_link_options(${name} PRIVATE -static)
 		endif()
 		install(TARGETS ${name} RUNTIME DESTINATION bin)
-			if(WIN32 AND EXISTS "${GIM_GKMAKE_COPY_DIR}")
+			if(WIN32 AND gim_tool_copy AND EXISTS "${GIM_GKMAKE_COPY_DIR}")
 				add_custom_command(TARGET ${name} POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -DSRC=$<TARGET_FILE:${name}> -DDST=${GIM_GKMAKE_COPY_DIR}/${name}.exe -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gkmake_copy.cmake
 					VERBATIM)
@@ -80,9 +108,7 @@ if(GIM_BUILD_TOOLS)
 	gim_tool(gkfp        gim_gkfp/gkfp.cc)
 	gim_tool(gimstat     gim_stat/gimstat.cc)
 	gim_tool(gkmake      gkmake/main.cc gkmake/gkm_header.cc)
-	gim_tool(gimclassgen gimclassgen/main.cc)
 	gim_tool(gimaitrain gim_ai_train/main.cc)
-	target_include_directories(gimclassgen PRIVATE gimclassgen)
 	gim_tool(gimshell
 		gim_shell/main.cc gim_shell/gim_sh_callback.cc gim_shell/gim_sh_commands.cc
 		gim_shell/gim_sh_environ_obj.cc gim_shell/gim_sh_mainloop.cc gim_shell/gim_sh_db.cc gim_shell/gim_sh_table.cc gim_shell/gim_sh_record.cc)

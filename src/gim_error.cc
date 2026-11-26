@@ -103,9 +103,9 @@ void	gim_error_obj::set	( const char * type , const char * function , const char
 	if ( gim_error_type_rank( type ) < min_rank )
 		return;
 	char mess[512];
-	strcpy	( this->type , type );
-	sprintf	( this->function , "%s()" , function );
-	strcpy	( this->message	, message );
+	snprintf( this->type , sizeof( this->type ) , "%s" , type );
+	snprintf( this->function , sizeof( this->function ) , "%s()" , function );
+	snprintf( this->message , sizeof( this->message ) , "%s" , message );
 	this->value	= value;
 	if  ( ! ( strcmp ( type , GIM_ERROR_CRITICAL ) ) )
 		sprintf( mess , "ERROR : %s" , message );
@@ -135,9 +135,9 @@ void	gim_error_obj::set	( const char * type , const char * function , const char
 void	gim_error_obj::set	( pid_t cur_pid , const char * type , const char * function , const char * message , int value ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( gim_error_type_rank( type ) < min_rank ) return;
-	strcpy	( this->type , type );
-	sprintf	( this->function , "%s()" , function );
-	strcpy	( this->message	, message );
+	snprintf( this->type , sizeof( this->type ) , "%s" , type );
+	snprintf( this->function , sizeof( this->function ) , "%s()" , function );
+	snprintf( this->message , sizeof( this->message ) , "%s" , message );
 	this->value	= value;
 	if ( gim_log->is_open() == __GIM_YES ) {
 		if ( first_in != NULL ) {
@@ -220,8 +220,8 @@ void	gim_error_obj::set	( const char * function , int index ) {
 		fatal = __GIM_YES;
 	strcpy	( type , gim_error_list[index].type );
 	if ( gim_error_type_rank( type ) < min_rank ) return;
-	sprintf	( this->function , "%s()" , function );
-	strcpy	( message , gim_error_list[index].message );
+	snprintf( this->function , sizeof( this->function ) , "%s()" , function );
+	snprintf( message , sizeof( message ) , "%s" , gim_error_list[index].message );
 	value = gim_error_list[index].value;
 	if ( index != 7 ) {
 		if ( gim_log->is_open() == __GIM_YES ) {
@@ -332,19 +332,20 @@ void		gim_error_obj::lflush( void ) {
 	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	int cnt = 0;
 	char message[256];
-	gim_error_message * cursor = first_in;;
-	while( cursor ) {
-		if ( log_enable == __GIM_YES ) 
-			/* buffered lines are filtered here too: they were stored before debug::min_type was read */
-				if ( gim_error_type_rank( cursor->type ) >= min_rank )
-					gim_log->addline_format( cursor->type , cursor->function , cursor->message , cursor->value );
-		cursor = cursor->next;
-		free( first_in );
-		first_in = cursor;
-		cnt++;
-	}
+	/* detach the list first: a message written while flushing (for example a format error) calls lflush again,
+	   and must find the list empty instead of freeing the nodes this loop still uses */
+	gim_error_message * cursor = first_in;
+	gim_error_message * next;
 	first_in = NULL;
 	last_in  = NULL;
+	while( cursor ) {
+		next = cursor->next;
+		if ( log_enable == __GIM_YES )
+			gim_log->addline_format( cursor->type , cursor->function , cursor->message , cursor->value );
+		free( cursor );
+		cursor = next;
+		cnt++;
+	}
 	if ( log_enable == __GIM_YES )
 		sprintf( message , "Succesfully flushed %d messages" , cnt );
 	else
@@ -370,7 +371,14 @@ const char *		gim_error_obj::char_filter( const char * from , char to_filter ) {
 	return (const char *)from;
 }
 
-
-
-
-
+/* for the programs: the function column shows the program name, so their lines are easy to tell apart in the log */
+void	gim_error_obj::app( const char * type , const char * function , const char * format , ... ) {
+	char	fn[ 256 ];
+	char	msg[ 1024 ];
+	va_list	ap;
+	snprintf( fn , sizeof( fn ) , "[%s] %s" , gim_application_name , function );
+	va_start( ap , format );
+	vsnprintf( msg , sizeof( msg ) , format , ap );
+	va_end( ap );
+	set( type , fn , msg , 0 );
+}

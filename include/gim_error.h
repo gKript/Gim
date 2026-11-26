@@ -163,7 +163,14 @@
 				\param	...			The arguments of the format.
 			*/
 			void		Set( const char * type , const char * function , const char * format , ... );
-
+			/*!	\brief	For the programs that use Gim: writes a message of the program, not of the library.
+						The function column shows the program name, e.g. "[GimUI] main()", so the lines of the
+						program are easy to tell apart from the lines of Gim in the log.
+				\param	type		GIM_ERROR_MESSAGE, GIM_ERROR_WARNING, GIM_ERROR_CRITICAL, ...
+				\param	function	the function of the program that writes the message
+				\param	format		printf-like format, with the arguments that follow
+			*/
+			void		app( const char * type , const char * function , const char * format , ... );
 			/*! \fn		void set( char * function , int index )
 				\internal	With this method Gim use set the more common errors. Use the other set function
 							to report an error.

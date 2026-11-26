@@ -47,6 +47,7 @@ gim_utils_obj			gim_utils;
  
  
 void	gim_file_manager_obj::init( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list * L_init;
 	startlist = NULL;
 	currentlist = NULL;
@@ -66,6 +67,7 @@ void	gim_file_manager_obj::init( void ) {
 
 
 void	gim_file_manager_obj::release( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_error->set( "gim_file_manager_obj::release" , 36 );
 	release_item_list();
 	gim_memory->Free( startlist );
@@ -76,6 +78,7 @@ void	gim_file_manager_obj::release( void ) {
 
 
 _gim_Uint32	gim_file_manager_obj::release_item_list( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list *	Next;
 	char message[256];
 	_gim_Uint32	total = 0;
@@ -121,6 +124,7 @@ _gim_Uint32	gim_file_manager_obj::release_item_list( void ) {
 
 
 gim_file_manager_list *	gim_file_manager_obj::new_item( void ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list * tmp;
 	tmp = ( gim_file_manager_list * ) gim_memory->Alloc ( sizeof ( gim_file_manager_list ) , __GIM_MEM_FMAN_NEW , __GIM_HIDE  );
 	tmp->next = NULL;
@@ -132,6 +136,7 @@ gim_file_manager_list *	gim_file_manager_obj::new_item( void ) {
 
 
 _gim_flag	gim_file_manager_obj::del_item( gim_file_manager_list * to_del ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list * prec = startlist;
 	if ( startlist == endlist ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::del_item" , "No element in list" , __GIM_ERROR );
@@ -158,6 +163,7 @@ _gim_flag	gim_file_manager_obj::del_item( gim_file_manager_list * to_del ) {
 
 
 void	gim_file_manager_obj::open_fp( gim_file_manager_list * item , _gim_flag mode ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	switch( mode ) {
 		case __GIM_READ : {
 			item->hand->fp = fopen( item->hand->name , "rb" );
@@ -181,6 +187,7 @@ void	gim_file_manager_obj::open_fp( gim_file_manager_list * item , _gim_flag mod
 
 
 void	gim_file_manager_obj::open_fm( gim_file_manager_list * item ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	item->hand->fd = ::open( item->hand->name , O_RDONLY | O_BINARY );
 	if ( item->hand->fd < 0 )
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::open_fm" , "I cannot open" , __GIM_ERROR );
@@ -196,6 +203,7 @@ void	gim_file_manager_obj::open_fm( gim_file_manager_list * item ) {
 
 
 void		gim_file_manager_obj::open_fd( gim_file_manager_list *	item , _gim_flag mode ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	switch( mode ) {
 		case __GIM_READ : {
 			item->hand->fd = ::open( item->hand->name , O_RDONLY | O_BINARY );
@@ -218,6 +226,7 @@ void		gim_file_manager_obj::open_fd( gim_file_manager_list *	item , _gim_flag mo
 
 
 void	gim_file_manager_obj::close( _gim_handler * hand ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list *	item;
 	//~ gim_error->set( "gim_file_manager_obj::close" , "Getting item pointer from handler" );
 	item = gim_file_manager_obj::item( hand->name );
@@ -271,6 +280,7 @@ void	gim_file_manager_obj::close( _gim_handler * hand ) {
 
 
 void	gim_file_manager_obj::close( const char * name ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list *	item;
 	gim_error->set( "gim_file_manager_obj::close" , "Getting item pointer from name" );
 	item = gim_file_manager_obj::item( name );
@@ -322,6 +332,7 @@ void	gim_file_manager_obj::close( const char * name ) {
 
 
 _gim_handler *	gim_file_manager_obj::open( const char * filename , _gim_flag method , _gim_flag mode ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list *	item;
 	char message[256];
 	if ( exist( filename ) == __GIM_NO ) {
@@ -389,6 +400,7 @@ _gim_handler *	gim_file_manager_obj::open( const char * filename , _gim_flag met
 
 
 gim_file_manager_list *	gim_file_manager_obj::item( const char * filename ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list * prec = startlist;
 	if ( startlist == endlist ) {
 		gim_error->set( GIM_ERROR_WARNING , "gim_file_manager_obj::item" , "No element in list" , __GIM_NOT_OK );
@@ -409,6 +421,7 @@ gim_file_manager_list *	gim_file_manager_obj::item( const char * filename ) {
 
 
 int		gim_file_manager_obj::length ( const char * fname ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	FILE * fid = fopen (fname, "r");
 	if ( ! fid ) {
 //		gim_error->set( GIM_ERROR_WARNING , "gim_file_manager_obj::length" , "File not found" , __GIM_NOT_EXIST );
@@ -422,6 +435,7 @@ int		gim_file_manager_obj::length ( const char * fname ) {
 
 
 _gim_flag	gim_file_manager_obj::exist ( const char * fname ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( access( fname , F_OK ) == 0 )
 		return __GIM_EXIST;
 	else
@@ -468,6 +482,7 @@ const char *			gim_file_manager_obj::method_str( _gim_flag method ) {
 
 
 _gim_buffer		gim_file_manager_obj::load( _gim_handler * hand ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	gim_file_manager_list * tmp = NULL;
 	tmp = item( hand->name );
 	if ( tmp != NULL ) {
@@ -484,12 +499,12 @@ _gim_buffer		gim_file_manager_obj::load( _gim_handler * hand ) {
 		if ( tmp->mode == __GIM_READ ) {
 			switch ( tmp->method ) {
 				case __GIM_FILE_DESCRIPTOR : {
-					hand->loadp = (char *)gim_memory->Alloc( hand->size * sizeof( char ) , __GIM_MEM_FMAN_LOAD , __GIM_HIDE );
+					hand->loadp = (char *)gim_memory->Alloc( ( hand->size + 1 ) * sizeof( char ) , __GIM_MEM_FMAN_LOAD , __GIM_HIDE );
 					read( hand->fd , hand->loadp , hand->size );
 					break;
 				}
 				case __GIM_FILE_POINTER : {
-					hand->loadp = (char *)gim_memory->Alloc( hand->size * sizeof( char ) , __GIM_MEM_FMAN_LOAD , __GIM_HIDE );
+					hand->loadp = (char *)gim_memory->Alloc( ( hand->size + 1 ) * sizeof( char ) , __GIM_MEM_FMAN_LOAD , __GIM_HIDE );
 					unsigned int tot = fread( hand->loadp , 1 , hand->size ,  hand->fp );
 					if ( tot != hand->size ) {
 						char message[256];
@@ -499,11 +514,14 @@ _gim_buffer		gim_file_manager_obj::load( _gim_handler * hand ) {
 					break;
 				}
 				case __GIM_FILE_MAPPING : {
-					hand->loadp = (char *)gim_memory->Alloc( hand->size * sizeof( char ) , __GIM_MEM_FMAN_LOAD , __GIM_HIDE );
+					hand->loadp = (char *)gim_memory->Alloc( ( hand->size + 1 ) * sizeof( char ) , __GIM_MEM_FMAN_LOAD , __GIM_HIDE );
 					memcpy( hand->loadp , hand->fm , hand->size );
 					break;
 				}
 			}
+			// one byte more than size(): the buffer always ends with '\0', so a text file can be searched as a string
+			if ( hand->loadp != NULL )
+				hand->loadp[ hand->size ] = '\0';
 			gim_error->set( "gim_file_manager_obj::load" , "Loaded succesfully" );
 		}
 		else {
@@ -519,6 +537,7 @@ _gim_buffer		gim_file_manager_obj::load( _gim_handler * hand ) {
 
 
 _gim_flag	gim_file_manager_obj::flush( _gim_handler * hand , _gim_buffer data , int data_len ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( data == NULL ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_obj::flush" , "The source buffer cannot be NULL" , __GIM_ERROR );
 		return __GIM_NOT_OK;
@@ -552,6 +571,7 @@ _gim_flag	gim_file_manager_obj::flush( _gim_handler * hand , _gim_buffer data , 
 
 
 _gim_flag			gim_file_manager_obj::DELETE( const char * fname ) {
+	std::lock_guard<std::recursive_mutex> gim_guard_( gim_global_lock() );
 	if ( exist( fname ) == __GIM_EXIST ) {
 		char message[256];
 		remove( fname );
@@ -708,24 +728,27 @@ _gim_buffer	gim_file_obj::load( void ) {
 	if ( ( mode == __GIM_READ ) && ( exist == __GIM_EXIST ) ) {
 		switch ( method ) {
 			case __GIM_FILE_DESCRIPTOR : {
-				handler->loadp = (char *)gim_memory->Alloc( handler->size * sizeof( char ) , __GIM_MEM_FOBJ_LOAD , __GIM_HIDE );
+				handler->loadp = (char *)gim_memory->Alloc( ( handler->size + 1 ) * sizeof( char ) , __GIM_MEM_FOBJ_LOAD , __GIM_HIDE );
 				if ( handler->loadp == NULL ) return NULL;
 				read( handler->fd , handler->loadp , handler->size );
 				break;
 			}
 			case __GIM_FILE_POINTER : {
-				handler->loadp = (char *)gim_memory->Alloc( handler->size * sizeof( char ) , __GIM_MEM_FOBJ_LOAD , __GIM_HIDE );
+				handler->loadp = (char *)gim_memory->Alloc( ( handler->size + 1 ) * sizeof( char ) , __GIM_MEM_FOBJ_LOAD , __GIM_HIDE );
 				if ( handler->loadp == NULL ) return NULL;
 				fread( handler->loadp , handler->size , 1 , handler->fp );
 				break;
 			}
 			case __GIM_FILE_MAPPING : {
-				handler->loadp = (char *)gim_memory->Alloc( handler->size * sizeof( char ) , __GIM_MEM_FOBJ_LOAD , __GIM_HIDE );
+				handler->loadp = (char *)gim_memory->Alloc( ( handler->size + 1 ) * sizeof( char ) , __GIM_MEM_FOBJ_LOAD , __GIM_HIDE );
 				if ( handler->loadp == NULL ) return NULL;
 				memcpy( handler->loadp , handler->fm , handler->size );
 				break;
 			}
 		}
+		// one byte more than size(): the buffer always ends with '\0', so a text file can be searched as a string
+		if ( handler->loadp != NULL )
+			handler->loadp[ handler->size ] = '\0';
 		gim_error->set( "gim_file_obj::load" , "Loaded succesfully"  );
 	}
 	else {

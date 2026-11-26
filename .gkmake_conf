@@ -52,8 +52,8 @@
         coder                            = asynt
         host                             = Ancarlo
         gkmake_rel                       = 0.8-5
-        total_build_number               = 0
-        succesful_build_number           = 0
+        total_build_number               = 54
+        succesful_build_number           = 44
     } 
     # ------------------------------------
 
@@ -62,9 +62,9 @@
         coder                            = Danilo
         host                             = Proxima
         gkmake_rel                       = 0.8-5
-        total_build_number               = 49
-        succesful_build_number           = 46
-        clean                            = YES
+        total_build_number               = 96
+        succesful_build_number           = 90
+        clean                            = NO
     } 
     # ------------------------------------
 
