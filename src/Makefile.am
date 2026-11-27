@@ -26,6 +26,10 @@ libgim_a_SOURCES = \
 	gim_enhanced.cc    \
 	gim_environment.cc    \
 	gim_error.cc    \
+	gim_ai_train.cc    \
+	gim_rpi_gpio.cc    \
+	gim_serial.cc    \
+	gim_thread.cc    \
 	gim_file.cc    \
 	gim_gkfp_file_data.cc    \
 	gim_gkfp_file_list.cc    \

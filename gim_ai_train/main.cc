@@ -8,7 +8,23 @@
 				   [--test-frac 0.25] [--seed 1] [--tol 0.02] [--test-vectors 16]
 		gimaitrain --synthetic-out synth.csv [--synthetic-n 600] [--seed 1]
 
-	Released under the terms of the GNU General Public License v2, as the rest of Gim.
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
+
+	This file is part of Gim library.
+
+	Gim is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 3 of the License, or
+	(at your option) any later version.
+
+	Gim is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "../include/gim_ai_train.h"
@@ -18,6 +34,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
+// After the standard headers: gim_sha512.h defines a min() macro.
+#include "../include/gim.h"
 
 namespace {
 
@@ -41,6 +60,9 @@ std::vector< int > parse_hidden( const std::string & s ) {
 }	// namespace
 
 int main( int argc , char ** argv ) {
+	/* Gim log: errors and results go through gim_error; the usage text and the report stay on the console. */
+	gim_set_application_name( "gimaitrain" );
+	gim_obj gim;
 	std::string dataset , out , report , synth_out;
 	int synth_n = 600;
 	gim_ai::Options opt;
@@ -49,7 +71,7 @@ int main( int argc , char ** argv ) {
 		std::string a = argv[ i ];
 		auto next = [ & ]() -> std::string {
 			if ( i + 1 >= argc ) {
-				std::cerr << "missing value for " << a << "\n";
+				gim_error->Set( GIM_ERROR_CRITICAL , "gimaitrain" , "missing value for %s" , a.c_str() );
 				std::exit( 1 );
 			}
 			return argv[ ++i ];
@@ -69,7 +91,7 @@ int main( int argc , char ** argv ) {
 		else if ( a == "--synthetic-n" )    synth_n = std::atoi( next().c_str() );
 		else if ( a == "-h" || a == "--help" ) { usage(); return 0; }
 		else {
-			std::cerr << "unknown option " << a << "\n";
+			gim_error->Set( GIM_ERROR_CRITICAL , "gimaitrain" , "unknown option %s" , a.c_str() );
 			usage();
 			return 1;
 		}
@@ -78,6 +100,7 @@ int main( int argc , char ** argv ) {
 	try {
 		if ( !synth_out.empty() ) {
 			gim_ai::write_synthetic( synth_out , synth_n , opt.seed );
+			gim_error->Set( GIM_ERROR_MESSAGE , "gimaitrain" , "synthetic dataset written %s" , synth_out.c_str() );
 			std::cout << "synthetic dataset written " << synth_out << "\n";
 			return 0;
 		}
@@ -93,23 +116,25 @@ int main( int argc , char ** argv ) {
 			rf << res.report;
 		}
 		if ( !res.accepted ) {
+			gim_error->Set( GIM_ERROR_CRITICAL , "gimaitrain" , "REJECTED: integer accuracy %.4f below float %.4f minus tolerance" , res.int_acc , res.float_acc );
 			std::cout << "REJECTED: integer accuracy " << res.int_acc
 					  << " below float " << res.float_acc << " minus tolerance\n";
 			return 2;
 		}
 		std::ofstream hf( out.c_str() , std::ios::binary );
 		if ( !hf ) {
-			std::cerr << "cannot write " << out << "\n";
+			gim_error->Set( GIM_ERROR_CRITICAL , "gimaitrain" , "cannot write %s" , out.c_str() );
 			return 1;
 		}
 		hf << res.header;
+		gim_error->Set( GIM_ERROR_MESSAGE , "gimaitrain" , "written %s" , out.c_str() );
 		std::cout << "written " << out << "\n";
 		return 0;
 	} catch ( const gim_ai::ModelError & e ) {
-		std::cout << "REJECTED: " << e.what() << "\n";
+		gim_error->Set( GIM_ERROR_CRITICAL , "gimaitrain" , "REJECTED: %s" , e.what() );
 		return 2;
 	} catch ( const std::exception & e ) {
-		std::cerr << "input error: " << e.what() << "\n";
+		gim_error->Set( GIM_ERROR_CRITICAL , "gimaitrain" , "input error: %s" , e.what() );
 		return 1;
 	}
 }

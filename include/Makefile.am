@@ -17,6 +17,10 @@ libgim_include_HEADERS = \
 	gim_doxygen.h           \
 	gim_environment.h           \
 	gim_error.h           \
+	gim_ai_train.h    \
+	gim_rpi_gpio.h    \
+	gim_serial.h    \
+	gim_thread.h    \
 	gim_file.h           \
 	gim_gkl.h           \
 	gim_gkl_commands.h           \
