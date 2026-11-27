@@ -730,3 +730,22 @@ table.markdownTable td, table.markdownTable tr {
 table.markdownTable th, table.markdownTable td {
 	border-color: var(--table-cell-border-color) !important;
 }
+/* note and exception: same look, yellow spine like the warning */
+dl.section.note, dl.exception {
+	border-left: 6px solid #f2c94c !important;
+	background-color: color-mix(in srgb, var(--pg-accent) 14%, var(--page-background-color)) !important;
+}
+dl.section.note dt, dl.exception dt {
+	color: var(--page-link-color) !important;
+	background-color: transparent !important;
+}
+/* todo list: the list itself is not a box, only its entries are */
+dl.reflist {
+	background-color: transparent !important;
+	border: none !important;
+	border-left: none !important;
+	border-radius: 0 !important;
+	padding: 0 !important;
+}
+/* exception: rounded like the other boxes */
+dl.exception { border-radius: var(--pg-radius); }
