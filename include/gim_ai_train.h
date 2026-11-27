@@ -1,3 +1,38 @@
+//
+//  gim_ai_train.h
+//
+//  Gim - Generic Information Manager
+//
+//  [http://www.gkript.org]
+//
+/*#############################################################################
+
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
+
+	This file is part of Gim library.
+
+	Gim is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 3 of the License, or
+	(at your option) any later version.
+
+	Gim is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
+
+#############################################################################*/
+//
+/*!     \file       gim_ai_train.h
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 /*!	\file		gim_ai_train.h
 	\brief		Gim side of the PicGIM AI model (SYNC/COMM_CONTRACT.md, sez. 4.4 - 4.6).
 				Trains a small fully connected network on a labelled dataset of raw sensor samples,
@@ -6,7 +41,7 @@
 
 				Port of scripts/gim_ai_train.py (same algorithm, same checks).
 
-	Released under the terms of the GNU General Public License v2, as the rest of Gim.
+	Released under the terms of the GNU General Public License v3, as the rest of Gim.
 */
 
 #ifndef _GIM_AI_TRAIN_H_

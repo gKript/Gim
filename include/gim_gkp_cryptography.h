@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,8 +26,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
@@ -36,10 +35,10 @@
 
 /*!	\file		gim_gkp_cryptography.h
 	\version	1.0-0
-	\brief		Copyright (C) 2002, 2003<BR>
+	\brief		Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
-				[ http://www.gkript.org/gkript-gpl.html ]
+				Released under the terms of the GNU General Public License v3<BR>
+				[ https://www.gnu.org/licenses/gpl-3.0.html ]
 */ 		
 
 #ifndef _GIM_GKP_CRYPTOGRAPHY_H
@@ -51,7 +50,11 @@
 		\version	1.0-0
 		\date		2003-2007
 	*/
-		class gim_cryptography_obj : public  gim_password_obj { 
+		
+	/*! Progress hook of the parallel key stream: called by the thread that started it, with the bytes done out of the total (all the passes). */
+	typedef void (*gim_crypt_progress_fn)( void * ctx , size_t done , size_t total );
+
+	class gim_cryptography_obj : public  gim_password_obj { 
 		public:
 		
 			//~ void		init_password( gim_password_obj * password );
@@ -80,6 +83,26 @@
 
 			/*!	advanced_password with a nonce (the chunk id of the file): every file gets its own key stream */
 			_gim_buffer	advanced_password_nonce( _gim_buffer buffer , _gim_Ulong size , const char * nonce );
+
+			/*!	Derives the 64-byte key from the password. It reads the password and changes nothing else: safe in threads. */
+			void		derive_key( unsigned char key[ 64 ] ) const;
+
+			/*!	Number of iterations of the key stream (from [crypt] iterations in the configuration). */
+			unsigned int	iterations( void ) const;
+
+			/*!	Applies the key stream to a buffer, in place. It uses only its arguments: no shared state, no log, no progress,
+				so it can run in several threads on different buffers. Same result as advanced_password_nonce.
+				\param	key		the key from derive_key()
+				\param	iter_n	the iterations from iterations()
+				\param	nonce	the chunk id of the file
+			*/
+			static void	apply_stream( const unsigned char key[ 64 ] , unsigned int iter_n , const char * nonce , unsigned char * buffer , size_t size );
+
+			/*!	Same result as apply_stream, computed by \a threads threads: the buffer is cut into ranges of blocks, each range is
+				done by one thread (all the passes of its blocks). The key stream of a block does not depend on the data, and the
+				XOR of the passes commutes, so the ranges are independent and the output is identical. Small buffers run in one thread.
+			*/
+			static void	apply_stream_parallel( const unsigned char key[ 64 ] , unsigned int iter_n , const char * nonce , unsigned char * buffer , size_t size , int threads , gim_crypt_progress_fn progress = NULL , void * ctx = NULL );
 
 			/*!	\fn		_gim_buffer	dna( _gim_buffer buffer , _gim_Ulong size , char * dna_file_name )
 				\brief	An very good method to encrypt or decrypt a buffer \n

@@ -10,7 +10,7 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003
+	Copyright (C) 2002-2026
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 	and
 	Adriano Zannoni (Tatti)
@@ -19,7 +19,7 @@
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -28,17 +28,16 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
 /*!	\file		gim_memory.h
 	\version	2.0-0
 	\brief		Memory manager of Gim: every allocation is traced, so leaks can be found.
-				Copyright (C) 2002, 2003<BR>
+				Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
+				Released under the terms of the GNU General Public License v3<BR>
 				[ http://gkript.org/gk_gpl_v2.php ]
 */
 
@@ -120,6 +119,7 @@
 	#define	__GIM_MEM_INTERF_DATA			0xff000028		/*!<	caller is gim_gkp_obj::gkdp_take */
 	#define	__GIM_MEM_DB_MAIN				0xff000029		/*!<	caller is gim_db_obj::gim_db_obj */
 	#define	__GIM_MEM_DB_TABLE				0xff000030		/*!<	caller is gim_db_obj::add_table */
+	#define	__GIM_MEM_DB_RECORD				0xff000038		/*!<	caller is gim_db_obj::update_record / delete_record (list of matching sections) */
 	#define __GIM_MEM_DIRECTORY_FLIST_ADD	0xff000031		/*!<	caller is gim_directory_obj::add */
 	#define __GIM_MEM_DIRECTORY_ITEM		0xff000032		/*!<	caller is gim_directory_obj::add */
 	#define __GIM_LIST_ITEM					0xff000033		/*!<	caller is gim_directory_obj::add */
@@ -254,7 +254,7 @@
 			_gim_flag	Check( void *  to_check );
 
 			/*!	\fn		void *	Relloc( void * pntr , size_t size , char * id )
-				\brief	This method is useful in order to expand an allocated slot memory.
+				\brief	This method is useful in order to expand an allocated slot memory. NOT WORKING: the block is not grown, see the memory page.
 				\param	pntr	The pointer to the memory slot you want to expand
 								\a pntr != NULL
 				\param	size	The size of the memory you want to expand the allocated slot\n
@@ -267,7 +267,7 @@
 			void *		Relloc( void * pntr , size_t size , char * id );
 
 			/*!	\fn		void *	Duplicate( void * id )
-				\brief	Makes a copy of an allocated memory block.
+				\brief	Returns a new block of the same size, filled with zeros. The data is NOT copied: see the memory page.
 				\param	id	The pointer to the block to duplicate
 				\return	a new allocated copy, or NULL in case of error
 			*/
@@ -293,7 +293,7 @@
 			void		mem_alloc_limit( _gim_flag flag , _gim_Uint8 mlimit );
 			/*!	\fn		void	set_default_lock( _gim_flag deflock )
 				\brief	Sets whether the new allocations are locked by default.
-				\param	deflock	__GIM_LOCK or __GIM_UNLOCK
+				\param	deflock	__GIM_MEM_LOCK or __GIM_MEM_UNLOCK
 			*/
 			void		set_default_lock( _gim_flag deflock );
 			/*!	\fn		void	Vmem( _gim_flag flag )
@@ -503,5 +503,107 @@
 			/*! Releases the pool and its pages. */
 			~gim_memory_page_obj();
 	};
+
+/*!	\page	gimdoc_memory	Memory
+
+	Allocation of memory with a trace of every block. \n
+	Class: \ref gim_memory_obj. Global object: \c gim_memory. Header: gim_memory.h
+
+	\tableofcontents
+
+	\section	gimdoc_mem_what	What it is for
+
+	Every block is allocated through \c gim_memory and kept in a list with its size and the code of its caller. The log
+	shows who allocated and who freed each block. At shutdown, the blocks still in the list are the leaks. It is also
+	possible to limit the total memory that the program may allocate.
+
+	\section	gimdoc_mem_example	Examples
+
+	Allocating and freeing:
+	\code{.cpp}
+	char * buf = (char *) gim_memory->Alloc( 256 );
+	if ( buf != NULL ) {
+		// use buf
+		if ( gim_memory->Free( buf ) != __GIM_OK )
+			gim_error->set( GIM_ERROR_WARNING , "main" , "block not freed" , __GIM_NOT_OK );
+	}
+	\endcode
+
+	Giving the log the code of the module that uses the block (the codes are in gim_memory.h). Use \c __GIM_MEM_OTHER
+	when none of them fits:
+	\code{.cpp}
+	char * rec = (char *) gim_memory->Alloc( 256 , __GIM_MEM_DB_MAIN , __GIM_HIDE );
+	\endcode
+
+	Checking whether a pointer comes from \c gim_memory:
+	\code{.cpp}
+	if ( gim_memory->Check( p ) == __GIM_EXIST )
+		gim_memory->Free( p );
+	\endcode
+
+	Limiting the memory to 75% of the free memory, and reading the numbers:
+	\code{.cpp}
+	gim_memory->mem_alloc_limit( __GIM_YES , 75 );
+	printf( "allocated %u bytes, peak %u bytes\n" , gim_memory->Allocated() , gim_memory->Allocated_peek() );
+	\endcode
+
+	\section	gimdoc_mem_methods	The methods, by purpose
+
+	| Purpose | Methods |
+	|---------|---------|
+	| Allocation | Alloc() (four forms), Alloc_locked(), Alloc_unlocked() |
+	| Release | Free(), Unlock_and_free() |
+	| Lock | Lock(), Unlock(), Get_lock_status() |
+	| Checks | Check(), Max_allocable(), Allocation_limit(), Virtual_memory() |
+	| Limits | mem_alloc_limit(), Vmem(), set_default_lock() |
+	| Numbers | Allocated(), Allocated_peek(), peek_reset(), metric_converter() |
+	| Log | hide() |
+	| Not to use | Relloc(), Duplicate() (see the warnings) |
+
+	The details of each one are in \ref gim_memory_obj.
+
+	\section	gimdoc_mem_lock	Locks
+
+	A lock is a flag kept with the block. New blocks get the default lock set by \c memory::default_lock in
+	\ref gimdoc_files_conf. Alloc_locked() and Alloc_unlocked() set it for one block; Lock() and Unlock() change it later.
+	Free() refuses a locked block only when its caller is \c __GIM_MEM_OTHER (see the warnings).
+
+	\section	gimdoc_mem_config	Configuration
+
+	Section \c memory of \ref gimdoc_files_conf. It is read at startup:
+
+	| Key | Values | Default | Meaning |
+	|-----|--------|---------|---------|
+	| \c hide_in_log | YES, NO | YES | blocks allocated with \c __GIM_HIDE are not logged |
+	| \c virtual_memory | ON, OFF | OFF | OFF: the total is limited by \c limit |
+	| \c alloc_limit | YES, NO | YES | turns the limit on |
+	| \c limit | 0 to 100 | 75 | percent of the free memory the program may use |
+	| \c default_lock | LOCKED, UNLOCKED | LOCKED | the lock of the new blocks |
+
+	\section	gimdoc_mem_threads	Threads
+
+	Every public method takes the global lock of Gim, so the calls are serialized. What is not protected:
+	- two threads using the same block (one can free a block that the other still uses);
+	- the strings returned by metric_converter() and code_to_id(), which are static buffers and can be overwritten by the next call.
+
+	\section	gimdoc_mem_warnings	Warnings and limits
+
+	- \b Duplicate() \b does \b not \b copy. It returns a new block of the same size, filled with zeros. gim_ascii_file_obj::load()
+	  uses it to copy a file, so the buffer it gets is full of zeros. Do not use it as a copy.
+	- \b Relloc() \b does \b not \b grow the block. When the new size is equal to or bigger than the current one, the size
+	  is replaced by the current one (an assignment written in place of a comparison). The counters are not updated either.
+	- Exceeding the limit is a FATAL error: with the default settings of \ref gimdoc_error the program ends with exit code -1.
+	  Check Max_allocable() before a large request.
+	- Free() of a NULL pointer, or of a pointer that is not in the list, returns __GIM_NOT_OK. A NULL pointer is also a FATAL error.
+	- Free() refuses a locked block only when its caller is \c __GIM_MEM_OTHER: a locked block with another caller is freed.
+	- Allocated(), Allocated_peek() and the limit use \c int: above 2 GB the counters overflow.
+	- When an allocation fails, the caller code is not reset. The next Alloc( size ) without a code can be logged with the
+	  name of the previous caller.
+	- Every allocation is logged, unless the caller passes \c __GIM_HIDE and \c hide_in_log is YES. Blocks that are allocated
+	  often should use \c __GIM_HIDE.
+	- The page allocator \ref gim_memory_page_obj is declared but not implemented: its Alloc() and Free() do not link.
+	- The constructor sets only the lists. The lock, the virtual memory and the limit get their values from the configuration
+	  at startup: allocations made before that use values that are not set.
+*/
 
 #endif /* _GIM_MEMORY_H_ */

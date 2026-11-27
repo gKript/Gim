@@ -1,0 +1,8 @@
+CREATE DB gdbs_bad;
+SET DB VOLATILE;
+CREATE TABLE clienti;
+PIN TABLE clienti;
+ADD FIELD 1 INT codice;
+SET FIELD 1 KEY;
+UNPIN TABLE;
+UPDATE clienti SET nome tre WHERE;

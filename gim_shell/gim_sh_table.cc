@@ -7,7 +7,23 @@
 //
 /*#############################################################################
 
-	Released under the terms of the GNU General Public License v2, as the rest of Gim.
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
+
+	This file is part of Gim library.
+
+	Gim is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 3 of the License, or
+	(at your option) any later version.
+
+	Gim is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
@@ -47,9 +63,16 @@ static int table_records( _gim_db_table * t ) {
 	return ( n > 0 ) ? n : 0;
 }
 
+static int table_drop( int argc , char ** argv );
+static int table_export( int argc , char ** argv );
+static int table_import( int argc , char ** argv );
+
 static int table_usage( void ) {
 	puts( "usage: table list" );
 	puts( "       table show <name>" );
+	puts( "       table drop <name>      removes the table and its data (PERMANENT: deletes its files)" );
+	puts( "       table export <name> <file.csv>   writes the records as CSV (label,ch0,ch0_ok,... layout)" );
+	puts( "       table import <name> <file.csv>   adds the records of a CSV file (checked first; a KEY must stay unique)" );
 	return GIM_SH_CMD_ERROR;
 }
 
@@ -138,5 +161,69 @@ int cmd_table( int argc , char ** argv ) {
 		return table_list();
 	if ( strcmp( argv[ 1 ] , "show" ) == 0 )
 		return table_show( argc , argv );
+	if ( strcmp( argv[ 1 ] , "drop" ) == 0 )
+		return table_drop( argc , argv );
+	if ( strcmp( argv[ 1 ] , "export" ) == 0 )
+		return table_export( argc , argv );
+	if ( strcmp( argv[ 1 ] , "import" ) == 0 )
+		return table_import( argc , argv );
 	return table_usage();
+}
+
+// table drop <name>: removes the table; the records go with it
+static int table_drop( int argc , char ** argv ) {
+	if ( argc < 3 )
+		return table_usage();
+	gim_db_obj * db = gim_sh_current_db();
+	if ( db == NULL ) {
+		puts( "no database selected (use 'db use <name>' or 'db create')" );
+		return GIM_SH_CMD_ERROR;
+	}
+	if ( db->drop_table( argv[ 2 ] ) != __GIM_OK ) {
+		printf( "table drop: '%s' not dropped (see the messages above)\n" , argv[ 2 ] );
+		return GIM_SH_CMD_ERROR;
+	}
+	printf( "table '%s' dropped\n" , argv[ 2 ] );
+	return GIM_SH_CMD_OK;
+}
+
+// table export <name> <file.csv>: writes the records and prints the SHA-256 of the file
+static int table_export( int argc , char ** argv ) {
+	if ( argc < 4 ) {
+		puts( "usage: table export <name> <file.csv>" );
+		return GIM_SH_CMD_ERROR;
+	}
+	gim_db_obj * db = gim_sh_current_db();
+	if ( db == NULL ) {
+		puts( "no database selected (use 'db use <name>' or 'db create')" );
+		return GIM_SH_CMD_ERROR;
+	}
+	char sha[ 65 ];
+	if ( db->export_csv( argv[ 2 ] , argv[ 3 ] , sha ) != __GIM_OK ) {
+		printf( "table export: '%s' not exported (see the messages above)\n" , argv[ 2 ] );
+		return GIM_SH_CMD_ERROR;
+	}
+	printf( "table '%s' exported to %s\nsha256 %s\n" , argv[ 2 ] , argv[ 3 ] , sha );
+	return GIM_SH_CMD_OK;
+}
+
+// table import <name> <file.csv>: adds the records of the file and prints the SHA-256 of the file read
+static int table_import( int argc , char ** argv ) {
+	if ( argc < 4 ) {
+		puts( "usage: table import <name> <file.csv>" );
+		return GIM_SH_CMD_ERROR;
+	}
+	gim_db_obj * db = gim_sh_current_db();
+	if ( db == NULL ) {
+		puts( "no database selected (use 'db use <name>' or 'db create')" );
+		return GIM_SH_CMD_ERROR;
+	}
+	int n = 0;
+	char sha[ 65 ];
+	if ( db->import_csv( argv[ 2 ] , argv[ 3 ] , &n , sha ) != __GIM_OK ) {
+		printf( "table import: nothing imported into '%s' (see the messages above)\n" , argv[ 2 ] );
+		return GIM_SH_CMD_ERROR;
+	}
+	printf( "%d record(s) imported into '%s' from %s\nsha256 %s\n" , n , argv[ 2 ] , argv[ 3 ] , sha );
+	return GIM_SH_CMD_OK;
 }

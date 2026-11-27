@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003
+	Copyright (C) 2002-2026
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,8 +26,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
@@ -37,10 +36,10 @@
 /*!	\file		gim_kvalue.h
 	\version	1.0-0
 	\brief		Key/value configuration files: reading, writing and editing of sections and keys.
-				Copyright (C) 2002, 2003<BR>
+				Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
-				[ http://www.gkript.org/gkript-gpl.html ]
+				Released under the terms of the GNU General Public License v3<BR>
+				[ https://www.gnu.org/licenses/gpl-3.0.html ]
 */
 
 #ifndef _GIM_PRSR_KVALUE_H_
@@ -126,8 +125,8 @@
 	#define IF_NOT_EXIST_KEY( obj_prsr , section , key )	if ( obj_prsr->ExistSection( section ) == __GIM_EXIST ) if ( obj_prsr->ExistKey( section , key ) == __GIM_NOT_EXIST )
 
 	/*! \class 		gim_prsr_obj
-		\brief		With this class you ara able to manage the configuration file key/value.
-					There are two example in the \a example section abaout a config file in __LEX_A and in __LEX_B.
+		\brief		Reads, creates, changes and writes key/value configuration files.
+					Guide with examples, limits and warnings: \ref gimdoc_kvalue
 		\author		Danilo Zannoni  -  asyntote@gkript.org
 		\version	1.0-0
 		\date		2003-2007
@@ -140,7 +139,7 @@
 				\param	filename	The name of the file you want to generate\n
 									\a filename != NULL
 				\param	title		The title of the ini\n
-									\a title > 0
+									\a title != NULL, at most 63 characters
 			*/
 			void 	Up( const char * filename , const char * title );
 
@@ -148,15 +147,15 @@
 				\brief	This function is used to put a comment on the file
 				\param	comment		The comment to add
 									\a comment != NULL
-				\return	\a __OK if the object is release \n
-						\a __NOT_OK if not
+				\return	\a __GIM_OK if the object is release \n
+						\a __GIM_NOT_OK if not
 			*/
 			_gim_flag	AddComment( const char * comment );
 
 			/*!	\fn		_gim_flag	Down( void )
-				\brief	This function is used in order to destroy the object and release all the allocated memmory
-				\return	\a __OK if the object is release \n
-						\a __NOT_OK if not
+				\brief	Releases the memory of the file. Call it before deleting the object: there is no destructor
+				\return	\a __GIM_OK if the object is release \n
+						\a __GIM_NOT_OK if not
 			*/
 			_gim_flag	Down( void );
 
@@ -164,45 +163,47 @@
 				\brief	This function is used in order to read an existing configuration file
 				\param	filename	The name of the file you want to read\n
 									\a filename != NULL
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if the file exist but some error occurred\n
-						\a __NOT_EXIST if file not found
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if the file exist but some error occurred\n
+						\a __GIM_NOT_EXIST if file not found
 			*/
 			_gim_flag	Read( const char * filename );
 
 			/*!	\fn		_gim_flag	Write( void )
 				\brief	This function is used in order to write a configuration file to disk
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	Write( void );
 
 			/*!	\fn		_gim_buffer	WriteOnBuffer( void )
 				\brief	This function is used in order to get a buffer filled with a configuration file
-				\return	the buffer with the file content
+				\return	a buffer of 10240 bytes with the content of the file, \a NULL on error.\n
+						The caller frees it with gim_memory->Free()
 			*/
 			_gim_buffer	WriteOnBuffer( void );
 
 			/*!	\fn		_gim_flag	List( void )
 				\brief	This function is used in order to print on \a stdout a configuration file
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	List( void );
 
 			/*!	\fn		void	SetLex( _gim_flag Lex )
 				\brief	This function is used in order to choose the lexical of a configuration file
-				\param	Lex	You can choose two kind of lexical for your ini file.\n
-							Default is \a __LEX_UNKNOW \n
-							( ( \a Lex == \a __LEX_A ) || ( \a Lex == \a __LEX_B ) )
+				\param	Lex	The syntax of the file. Any other value is ignored.\n
+							Default is \a __LEX_UNKNOWN \n
+							\a __LEX_A, \a __LEX_B or \a __LEX_C
 			*/
 			void	SetLex( _gim_flag Lex );
 
 			/*!	\fn		_gim_flag	GetLex( void )
 				\brief	Use this function if you want to get the lexical used in a configuration file
-				\return	\a __LEX_UNKNOW	if the lexical is not yet defined \n
+				\return	\a __LEX_UNKNOWN	if the lexical is not yet defined \n
 						\a __LEX_A 		if the lexical is defined as \a __LEX_A \n
-						\a __LEX_B		if the lexical is defined as \a __LEX_B
+						\a __LEX_B		if the lexical is defined as \a __LEX_B \n
+						\a __LEX_C		if the lexical is defined as \a __LEX_C
 			*/
 			_gim_flag	GetLex( void );
 
@@ -210,8 +211,8 @@
 				\brief	To add a new section to the ini file
 				\param	section_name	The name of the new section you want to add\n
 										\a section_name != NULL
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddSection( const char * section_name );
 
@@ -220,8 +221,8 @@
 				\param	section_name	The section the comment refers to
 				\param	position		PRSR_BEFORE, PRSR_INLINE or PRSR_AFTER
 				\param	comment			The text of the comment
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddSectionComment( const char * section_name , _gim_flag position , char * comment );
 
@@ -229,8 +230,8 @@
 				\brief	To delete an existing section from a ini file
 				\param	section_name	The name of the section you want to delete\n
 										\a section_name != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	DelSection( const char * section_name );
 
@@ -239,15 +240,15 @@
 				\param	from			A pointer to the class of the source configuration file
 				\param	section_name	The name of the section you want to copy\n
 										\a section_name != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	CopySection( gim_prsr_obj * from , const char * section_name );
 
 			/*!	\fn		_gim_int16	GetHowManySection( void )
 				\brief	To know how many section are present in a ini file
-				\return \a The number of section present\n
-						\a __ERROR if some error occurred
+				\return The number of section present\n
+						\a __GIM_ERROR if some error occurred
 			*/
 			_gim_int16	GetHowManySection( void );
 
@@ -255,8 +256,8 @@
 				\brief	To get the name of a specific section number
 				\param	secindex	The section number you want to knwo the name\n
 									\a secindex >= 0
-				\return \a The name of section\n
-						\a __ERROR if an error occurred
+				\return The name of the section, inside the object: do not free it\n
+						\a NULL if an error occurred
 			*/
 			char *  GetSectionName( _gim_int16 secindex );
 
@@ -264,8 +265,8 @@
 				\brief	To know how many keys are present inside a section of a ini file
 				\param	section_name	The section to check\n
 										\a section_name != NULL
-				\return \a The number of Keys present inside a section \n
-						\a __ERROR if some error occurred
+				\return The number of Keys present inside a section \n
+						\a __GIM_ERROR if some error occurred
 			*/
 			_gim_int8	GetHowManyKey( const char * section_name );
 
@@ -275,8 +276,8 @@
 										\a section_name != NULL
 				\param	kindex			The index of the key you want to know the name \n
 										\a kindex >= 0
-				\return \a The name of the Key\n
-						\a __ERROR if an error occurred
+				\return The name of the key, inside the object: do not free it\n
+						\a NULL if an error occurred
 			*/
 			char *  GetKeyName( const char * section_name , _gim_int16 kindex );
 
@@ -287,8 +288,8 @@
 				\param	key				The name of the new key you want to add\n
 										\a key != NULL
 				\param	value			The value of the new key
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKey( const char * section_name , const char * key , int value );
 
@@ -300,20 +301,20 @@
 										\a key != NULL
 				\param	value			The value of the new key \n
 										\a value != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKey( const char * section_name , const char * key , const char * value );
 
 			/*! \fn		_gim_flag	AddKey( const char * section_name , const char * key , float value )
-				\brief	To add a new key in a existing section to a ini file ( \a value must be a \a float )
+				\brief	To add a new key in a existing section to a ini file ( \a value must be a \a float, it is written with 5 decimals )
 				\param	section_name	The name of the section you want to add a new key\n
 										\a section_name != NULL
 				\param	key				The name of the new key you want to add\n
 										\a key != NULL
 				\param	value			The value of the new key
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKey( const char * section_name , const char * key , float value );
 
@@ -324,8 +325,8 @@
 				\param	key				The name of the new key you want to add\n
 										\a key != NULL
 				\param	flag			The value of the new key ( __GIM_YES or __GIM_NO )
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKeyFlag( const char * section_name , const char * key , _gim_flag flag );
 
@@ -336,8 +337,8 @@
 				\param	key				The key the comment refers to
 				\param	position		PRSR_BEFORE, PRSR_INLINE or PRSR_AFTER
 				\param	comment			The text of the comment
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	AddKeyComment( const char * section_name , const char * key , _gim_flag	position , const char * comment );
 
@@ -349,8 +350,8 @@
 										\a key != NULL
 				\param	string			The value of the new key \n
 										\a string != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	ChangeKey( const char * section_name , const char * key , const char * string );
 
@@ -361,18 +362,26 @@
 				\param	key				The name of the new key you want to add\n
 										\a key != NULL
 				\param	value			The value of the new key
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	ChangeKey( const char * section_name , const char * key , int value );
+
+			/*! Changes the value of a float key. Written with the same format as AddKey( float ).
+				\param section_name	name of the section
+				\param key			name of the key
+				\param value		new value
+				\return __GIM_OK on success
+			*/
+			_gim_flag	ChangeKey( const char * section_name , const char * key , float value );
 
 			/*!	\fn		_gim_flag	ChangeKeyFlag( const char * section_name , const char * key , _gim_flag flag )
 				\brief	To change the value of an existing key to a flag (__GIM_YES or __GIM_NO)
 				\param	section_name	The section that contains the key
 				\param	key				The key to change
 				\param	flag			The new value
-				\return \a __OK if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	ChangeKeyFlag( const char * section_name , const char * key , _gim_flag flag );
 
@@ -382,8 +391,8 @@
 										\a section_name != NULL
 				\param	key				The name of the new key you want to delete\n
 										\a key != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	DelKey( const char * section_name , const char * key );
 
@@ -391,8 +400,8 @@
 				\brief	To rename the title of a ini file
 				\param	new_title	The new title\n
 									\a new_title != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	RenameTitle( const char * new_title );
 
@@ -402,8 +411,8 @@
 									\a old_section != NULL
 				\param	new_section	The new name for the section\n
 									\a new_section != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	RenameSection( const char * old_section , const char * new_section );
 
@@ -415,8 +424,8 @@
 									\a old_key != NULL
 				\param	new_key		The new name for the key\n
 									\a new_key != NULL
-				\return \a __OK		if everything it's ok\n
-						\a __NOT_OK if some error occurred
+				\return \a __GIM_OK		if everything it's ok\n
+						\a __GIM_NOT_OK if some error occurred
 			*/
 			_gim_flag	RenameKey( const char * section , const char * old_key , const char * new_key );
 
@@ -426,8 +435,8 @@
 										\a section_name != NULL
 				\param	key				The name of the key\n
 										\a key != NULL
-				\return \a The value \n
-						\a NULL if some error occurred
+				\return The value, inside the object: do not free it \n
+						\a NULL if the key does not exist
 			*/
 			char *	GetKeySTR( const char * section_name , const char * key );
 
@@ -437,8 +446,8 @@
 										\a section_name != NULL
 				\param	key				The name of the key\n
 										\a key != NULL
-				\return \a The value \n
-						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class
+				\return The value \n
+						The key must exist: check it first with IF_EXIST_KEY
 			*/
 			int	GetKeyINT( const char * section_name , const char * key );
 
@@ -448,8 +457,8 @@
 										\a section_name != NULL
 				\param	key				The name of the key\n
 										\a key != NULL
-				\return \a The value \n
-						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class
+				\return The value \n
+						The key must exist: check it first with IF_EXIST_KEY
 			*/
 			float	GetKeyFLT( const char * section_name , const char * key );
 
@@ -459,8 +468,8 @@
 										\a section_name != NULL
 				\param	key				The name of the key\n
 										\a key != NULL
-				\return \a The flag \n
-						\a if will be __ERROR it's better check the error with the \p get() from cnc_error_class
+				\return The flag \n
+						The key must exist: check it first with IF_EXIST_KEY
 			*/
 			_gim_flag	GetKeyFLAG( const char * section_name , const char * key );
 
@@ -468,8 +477,8 @@
 				\brief	In order to check if a section exitst or not
 				\param	section_name	The section to check\n
 										\a section_name != NULL
-				\return \a __EXIST		if the section exist \n
-						\a __NOT_EXIST	if don't
+				\return \a __GIM_EXIST		if the section exist \n
+						\a __GIM_NOT_EXIST	if don't
 			*/
 			_gim_flag	ExistSection( const char * section_name );
 
@@ -479,8 +488,8 @@
 										\a section_name != NULL
 				\param	key				The name of the key to check\n
 										\a key != NULL
-				\return \a __EXIST		if the key exist \n
-						\a __NOT_EXIST	if don't
+				\return \a __GIM_EXIST		if the key exist \n
+						\a __GIM_NOT_EXIST	if don't
 			*/
 			_gim_flag	ExistKey( const char * section_name , const char * key );
 
@@ -488,8 +497,8 @@
 				\brief	This function is used in order to check if a configuration file exists
 				\param	filename	The name of the file to check\n
 									\a filename != NULL
-				\return \a __NOT_OK if the file exist but some error occurred\n
-						\a __NOT_EXIST if file not found
+				\return \a __GIM_EXIST if the file can be opened\n
+						\a __GIM_NOT_EXIST if not
 			*/
 			_gim_flag	Exist( const char * filename );
 
@@ -552,5 +561,130 @@
 	extern gim_prsr_obj	* gim_alias;
 	/*! Global environment file of Gim. */
 	extern gim_prsr_obj	* gim_environ;
+
+/*!	\page	gimdoc_kvalue	Key/value files
+
+	Reads, creates, changes and writes configuration files made of sections and keys. \n
+	Class: \ref gim_prsr_obj. Short names: \c _gim_kvalue and \c _gim_prsr. Header: gim_kvalue.h
+
+	\tableofcontents
+
+	\section	gimdoc_kv_what	What it is for
+
+	A file has a title, one or more sections, and keys inside the sections. The whole file is kept in memory:
+	the methods work on the memory, only Read() and Write() touch the disk. \n
+	Three syntaxes are available, see \ref gimdoc_files_lex. Read() recognizes the syntax by itself; a new file must
+	choose one with SetLex().
+
+	Gim uses it for its own configuration: \c gim->conf, \c gim->alias, \c gim->compatibility and \c gim->environ are
+	objects of this class.
+
+	\section	gimdoc_kv_example	Examples
+
+	The examples need a living ::gim_obj.
+
+	Creating a file:
+	\code{.cpp}
+	_gim_kvalue * kv = new _gim_kvalue;
+	kv->Up( "station.conf" , "station" );
+	kv->SetLex( __LEX_C );
+	kv->AddSection( "serial" );
+	kv->AddKey( "serial" , "port" , "/dev/ttyUSB0" );
+	kv->AddKey( "serial" , "speed" , 9600 );
+	kv->AddKeyFlag( "serial" , "enable" , __GIM_YES );
+	kv->AddKeyComment( "serial" , "speed" , PRSR_BEFORE , "bit per second" );
+	kv->Write();
+	kv->Down();
+	delete kv;
+	\endcode
+
+	Reading it. The existence of the key is checked first:
+	\code{.cpp}
+	_gim_kvalue * kv = new _gim_kvalue;
+	int speed = 9600;
+	if ( kv->Read( "station.conf" ) == __GIM_OK ) {
+		IF_EXIST_KEY( kv , "serial" , "speed" )
+			speed = kv->GetKeyINT( "serial" , "speed" );
+		kv->Down();
+	}
+	delete kv;
+	\endcode
+
+	Adding a section with its defaults to the configuration of the program:
+	\code{.cpp}
+	IF_NOT_EXIST_SECTION( gim->conf , "station" )
+		gim->conf->AddSection( "station" );
+	IF_NOT_EXIST_KEY( gim->conf , "station" , "quiet" )
+		gim->conf->AddKeyFlag( "station" , "quiet" , __GIM_NO );
+	gim->conf->Write();
+	\endcode
+
+	\section	gimdoc_kv_methods	The methods, by purpose
+
+	| Purpose | Methods |
+	|---------|---------|
+	| Start and end | \ref gim_prsr_obj::Up "Up()", \ref gim_prsr_obj::Down "Down()", \ref gim_prsr_obj::ParserIsUp "ParserIsUp()" |
+	| Disk and output | \ref gim_prsr_obj::Read "Read()", \ref gim_prsr_obj::Write "Write()", \ref gim_prsr_obj::WriteOnBuffer "WriteOnBuffer()", \ref gim_prsr_obj::List "List()", \ref gim_prsr_obj::Exist "Exist()" |
+	| Syntax | \ref gim_prsr_obj::SetLex "SetLex()", \ref gim_prsr_obj::GetLex "GetLex()" |
+	| Sections | \ref gim_prsr_obj::AddSection "AddSection()", \ref gim_prsr_obj::DelSection "DelSection()", \ref gim_prsr_obj::RenameSection "RenameSection()", \ref gim_prsr_obj::CopySection "CopySection()", \ref gim_prsr_obj::ExistSection "ExistSection()", \ref gim_prsr_obj::ThereIsASection "ThereIsASection()" |
+	| Keys | \ref gim_prsr_obj::AddKey "AddKey()", \ref gim_prsr_obj::AddKeyFlag "AddKeyFlag()", \ref gim_prsr_obj::ChangeKey "ChangeKey()", \ref gim_prsr_obj::ChangeKeyFlag "ChangeKeyFlag()", \ref gim_prsr_obj::DelKey "DelKey()", \ref gim_prsr_obj::RenameKey "RenameKey()", \ref gim_prsr_obj::ExistKey "ExistKey()" |
+	| Values | \ref gim_prsr_obj::GetKeySTR "GetKeySTR()", \ref gim_prsr_obj::GetKeyINT "GetKeyINT()", \ref gim_prsr_obj::GetKeyFLT "GetKeyFLT()", \ref gim_prsr_obj::GetKeyFLAG "GetKeyFLAG()" |
+	| Listing | \ref gim_prsr_obj::GetHowManySection "GetHowManySection()", \ref gim_prsr_obj::GetSectionName "GetSectionName()", \ref gim_prsr_obj::GetHowManyKey "GetHowManyKey()", \ref gim_prsr_obj::GetKeyName "GetKeyName()" |
+	| Comments and title | \ref gim_prsr_obj::AddComment "AddComment()", \ref gim_prsr_obj::AddSectionComment "AddSectionComment()", \ref gim_prsr_obj::AddKeyComment "AddKeyComment()", \ref gim_prsr_obj::RenameTitle "RenameTitle()" |
+
+	The details of each one are in \ref gim_prsr_obj.
+
+	\section	gimdoc_kv_names	Names and values
+
+	- The names of the sections are upper case and without spaces: "GimUI Demo" and "GIMUIDEMO" are the same section.
+	- The names of the keys are lower case.
+	- A value cannot be empty. Inner spaces are kept, the ones at the beginning and at the end are lost when the file is read.
+
+	| Item | Longest |
+	|------|---------|
+	| file name | 511 characters |
+	| title, name of a section, value | 63 characters |
+	| name of a key | 31 characters |
+	| comment | 10239 characters |
+
+	\section	gimdoc_kv_flags	Flags
+
+	GetKeyFLAG() recognizes these words, in upper case, and returns __GIM_ERROR for any other:
+
+	| Word | Value |
+	|------|-------|
+	| YES, NO, AUTO | __GIM_YES, __GIM_NO, __GIM_AUTO |
+	| TRUE, FALSE | __GIM_TRUE, __GIM_FALSE |
+	| ON, OFF | __GIM_ON, __GIM_OFF |
+	| A, B, C | __LEX_A, __LEX_B, __LEX_C |
+	| LOCKED, UNLOCKED | __GIM_MEM_LOCK, __GIM_MEM_UNLOCK |
+	| TEXT, HTML | __GIM_LOG_TEXT, __GIM_LOG_HTML |
+
+	\section	gimdoc_kv_comments	Comments
+
+	Comments are written, but not read: after a Read() and a Write() the comments that were in the file are gone.
+
+	\warning	A line that contains \# is read as a comment, all of it. A key written with a comment on the same line
+				(PRSR_INLINE) is therefore lost at the next Read(), and in Lex A and C the opening of a section too. Use PRSR_BEFORE or PRSR_AFTER.
+
+	\section	gimdoc_kv_threads	Threads
+
+	Not thread-safe: the class and the lexical analyzer use shared static buffers. Use it from one thread only, or
+	protect every call with a lock, also between different objects.
+
+	\section	gimdoc_kv_limits	Warnings and limits
+
+	- Call Up() or Read() before any other method, except SetLex(), GetLex(), Exist(), ParserIsUp() and ThereIsASection().
+	- GetKeyINT(), GetKeyFLT() and GetKeyFLAG() need an existing key: use IF_EXIST_KEY first.
+	- Choose the syntax before Write(): without it the sections are not written.
+	- Lex B does not write the sections without keys.
+	- GetKeySTR(), GetKeyName() and GetSectionName() return a pointer inside the object: do not free it, and do not use it after Down().
+	- AddKey() with a float needs a \c float (\c 1.5f): with \c 1.5 the call is ambiguous.
+	- WriteOnBuffer() uses a buffer of 10240 bytes: not for bigger files. The caller frees it with \c gim_memory->Free().
+	- The object has no destructor: call Down() before \c delete.
+	- The IF_... macros expand to one or two \c if without braces: do not follow them with \c else.
+	- Read() does not report wrong lines: they are skipped. The log has the details.
+	- ChangeKey() also takes a float: it is written with 5 decimals, as AddKey() does with a float.
+*/
 
 #endif /* _GIM_PRSR_KVALUE_H_ */

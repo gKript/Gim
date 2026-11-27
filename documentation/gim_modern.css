@@ -1,0 +1,732 @@
+/*
+	gim_modern.css  -  Gim documentation, modern skin for Doxygen 1.18
+
+	Loaded AFTER doxygen.css through HTML_EXTRA_STYLESHEET, so it only overrides the stock
+	theme (it does not replace it). Two palettes, chosen with the selector in the header (gim_palette.js):
+	"modern" (the default, dark grey) and "blue" (navy and gold). HTML_COLORSTYLE = LIGHT: no sun/moon button.
+
+	Palette taken from the We.DOC logo:  navy #1c2b5e  /  electric blue #2f6fed
+*/
+
+/* ===================================================================== palettes */
+:root, html[data-palette="modern"] {
+	/* gKript modern: dark grey (default), from the site stylesheet */
+	color-scheme: dark;
+
+	--page-background-color: #2a2a2a;
+	--page-foreground-color: #c8c8c8;
+	--page-link-color: #c4d3ec;
+	--page-visited-link-color: #c4d3ec;
+	--page-external-link-color: #e0e0e0;
+	--index-odd-item-bg-color: #313131;
+	--index-even-item-bg-color: #2a2a2a;
+	--index-header-color: #ebebeb;
+	--index-separator-color: #4b4b4b;
+	--header-background-color: #202020;
+	--header-separator-color: #3e3e3e;
+	--group-header-separator-color: #4b4b4b;
+	--group-header-color: #cacaca;
+	--footer-foreground-color: #9e9e9e;
+	--citation-label-color: #cacaca;
+	--title-background-color: #202020;
+	--title-separator-color: #424242;
+	--blockquote-background-color: #333333;
+	--blockquote-border-color: #6e6e6e;
+	--scrollbar-thumb-color: #545454;
+	--scrollbar-background-color: #272727;
+	--icon-background-color: #9f9f9f;
+	--icon-foreground-color: #fbfbfb;
+	--icon-folder-open-fill-color: #565656;
+	--icon-folder-fill-color: #434343;
+	--icon-folder-border-color: #b2b2b2;
+	--icon-doc-fill-color: #434343;
+	--icon-doc-border-color: #b2b2b2;
+	--memdecl-background-color: #333333;
+	--memdecl-foreground-color: #b2b2b2;
+	--memdecl-template-color: #c8c8c8;
+	--memdecl-border-color: #444444;
+	--memdef-border-color: #545454;
+	--memdef-title-background-color: #3d3d3d;
+	--memdef-proto-background-color: #323232;
+	--memdef-proto-text-color: #e0e0e0;
+	--memdef-param-name-color: #b7b7b7;
+	--memdef-template-color: #c8c8c8;
+	--table-cell-border-color: #5a5a5a;
+	--table-header-background-color: #4b4b4b;
+	--table-header-foreground-color: #fbfbfb;
+	--label-background-color: #919191;
+	--label-left-top-border-color: #9f9f9f;
+	--label-right-bottom-border-color: #505050;
+	--label-foreground-color: #fbfbfb;
+	--nav-background-color: #3a3a3a;
+	--nav-foreground-color: #e0e0e0;
+	--nav-border-color: #424242;
+	--nav-breadcrumb-separator-color: #545454;
+	--nav-breadcrumb-active-bg: #4c4c4c;
+	--nav-breadcrumb-color: #cacaca;
+	--nav-splitbar-bg-color: #3e3e3e;
+	--nav-splitbar-handle-color: #676767;
+	--nav-text-normal-color: #e0e0e0;
+	--nav-menu-button-color: #cacaca;
+	--nav-menu-background-color: #3a3a3a;
+	--nav-menu-foreground-color: #e0e0e0;
+	--nav-menu-active-bg: #4c4c4c;
+	--nav-menu-active-color: #c8c8c8;
+	--nav-arrow-color: #676767;
+	--nav-arrow-selected-color: #b2b2b2;
+	--sync-icon-border-color: #4b4b4b;
+	--sync-icon-background-color: #272727;
+	--sync-icon-selected-background-color: #3d3d3d;
+	--sync-icon-color: #676767;
+	--sync-icon-selected-color: #b2b2b2;
+	--toc-background-color: #333333;
+	--toc-border-color: #424242;
+	--toc-header-color: #c8c8c8;
+	--pg-accent: #c4d3ec;
+	--pg-accent-soft: rgba(178, 178, 178, .16);
+	--pg-shadow: 0 1px 2px rgba(21, 21, 21, .35), 0 4px 14px rgba(21, 21, 21, .30);
+	--pg-shadow-pop: 0 14px 36px rgba(21, 21, 21, .55);
+	--pg-code-bg: #222222;
+	--pg-muted: #aaaaaa;
+	--pg-canvas: #2a2a2a;
+	--pg-surface: #3a3a3a;
+	--pg-card-border: #4a4a4a;
+	--pg-radius: 6px;
+}
+
+html[data-palette="blue"] {
+	/* gKript blue: navy and gold, from the site stylesheet */
+	color-scheme: dark;
+
+	--page-background-color: #1b2238;
+	--page-foreground-color: #a0a0a4;
+	--page-link-color: #b5cbff;
+	--page-visited-link-color: #b5cbff;
+	--page-external-link-color: #b5cbff;
+	--index-odd-item-bg-color: #131a2b;
+	--index-even-item-bg-color: #0e1320;
+	--index-header-color: #e6ebf5;
+	--index-separator-color: #263250;
+	--header-background-color: #252e49;
+	--header-separator-color: #1b2540;
+	--group-header-separator-color: #223056;
+	--group-header-color: #9db8f5;
+	--footer-foreground-color: #7f8db0;
+	--citation-label-color: #9db8f5;
+	--title-background-color: #252e49;
+	--title-separator-color: #1f2a45;
+	--blockquote-background-color: #252e49;
+	--blockquote-border-color: #35508f;
+	--scrollbar-thumb-color: #2c3a5e;
+	--scrollbar-background-color: #0b101c;
+	--icon-background-color: #4b78e6;
+	--icon-foreground-color: #ffffff;
+	--icon-folder-open-fill-color: #2a3a66;
+	--icon-folder-fill-color: #1d2849;
+	--icon-folder-border-color: #6f93ec;
+	--icon-doc-fill-color: #1d2849;
+	--icon-doc-border-color: #6f93ec;
+	--memdecl-background-color: #252e49;
+	--memdecl-foreground-color: #9aa7c2;
+	--memdecl-template-color: #8db1ff;
+	--memdecl-border-color: #1f2b49;
+	--memdef-border-color: #2a3a62;
+	--memdef-title-background-color: #172140;
+	--memdef-proto-background-color: #121a2e;
+	--memdef-proto-text-color: #cdd8f5;
+	--memdef-param-name-color: #e8a07f;
+	--memdef-template-color: #8db1ff;
+	--table-cell-border-color: #2a3a62;
+	--table-header-background-color: #1b2a5c;
+	--table-header-foreground-color: #ffffff;
+	--label-background-color: #3a64d8;
+	--label-left-top-border-color: #4b78e6;
+	--label-right-bottom-border-color: #1d2f66;
+	--label-foreground-color: #ffffff;
+	--nav-background-color: #252e49;
+	--nav-foreground-color: #c9d3ea;
+	--nav-border-color: #1f2a45;
+	--nav-breadcrumb-separator-color: #2a3a62;
+	--nav-breadcrumb-active-bg: #404d77;
+	--nav-breadcrumb-color: #c9d3ea;
+	--nav-splitbar-bg-color: #1b2540;
+	--nav-splitbar-handle-color: #3a4d7c;
+	--nav-text-normal-color: #c9d3ea;
+	--nav-menu-button-color: #9db8f5;
+	--nav-menu-background-color: #252e49;
+	--nav-menu-foreground-color: #c9d3ea;
+	--nav-menu-active-bg: #404d77;
+	--nav-menu-active-color: #ffdd00;
+	--nav-arrow-color: #3a4d7c;
+	--nav-arrow-selected-color: #ffdd00;
+	--sync-icon-border-color: #223056;
+	--sync-icon-background-color: #0b101c;
+	--sync-icon-selected-background-color: #172140;
+	--sync-icon-color: #3a4d7c;
+	--sync-icon-selected-color: #6f93ec;
+	--toc-background-color: #252e49;
+	--toc-border-color: #1f2a45;
+	--toc-header-color: #b5cbff;
+	--pg-accent: #c3a402;
+	--pg-accent-soft: rgba(111, 147, 236, .16);
+	--pg-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 4px 14px rgba(0, 0, 0, .30);
+	--pg-shadow-pop: 0 14px 36px rgba(0, 0, 0, .55);
+	--pg-code-bg: #1b2238;
+	--pg-muted: #8f9cbc;
+	--pg-canvas: #1b2238;
+	--pg-surface: #252e49;
+	--pg-card-border: #404d77;
+	--title-foreground-color: #b5cbff;
+	--pg-radius: 6px;
+}
+
+/* ===================================================================== base typography */
+html { scroll-behavior: smooth; }
+
+body, table, div, p, dl {
+	font-size: 15px;
+	line-height: 1.65;
+}
+
+::selection { background: var(--pg-accent-soft); }
+
+a { transition: color .15s ease; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+h1, h2, h3, h4 { color: var(--group-header-color); letter-spacing: -.01em; }
+
+/* ===================================================================== header */
+#titlearea {
+	padding: 14px 26px;
+	background: linear-gradient(180deg, var(--title-background-color) 0%, var(--header-background-color) 100%);
+	border-bottom: 1px solid var(--title-separator-color);
+	box-shadow: inset 0 -3px 0 0 var(--pg-accent);
+}
+
+#projectlogo img {
+	width: 75%;
+	max-width: 75%;
+	height: auto;
+	padding-right: 16px;
+}
+#titlearea #projectrow > td,
+#titlearea #projectrow td {
+	vertical-align: middle;
+	padding-left: 0;
+}
+#titlearea #projectlogo {
+	text-align: left;
+	padding-left: 0;
+	margin-left: 0;
+}
+html #projectlogo img {
+	margin-right: 16px;
+}
+
+#projectname {
+	font-size: 26px;
+	font-weight: 750;
+	letter-spacing: -.015em;
+	color: var(--group-header-color);
+}
+#projectnumber {                            /* version as a pill */
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .02em;
+	padding: 2px 10px;
+	margin-left: 10px;
+	border-radius: 999px;
+	background: var(--pg-accent);
+	color: #ffffff;
+	vertical-align: middle;
+}
+#projectbrief {
+	font-size: 13px;
+	font-weight: 400;
+	margin-top: 2px;
+	color: var(--pg-muted);
+}
+
+/* ===================================================================== top menu */
+#main-menu { padding: 4px 10px; }
+
+#main-menu a,
+#main-menu a:active,
+#main-menu a:focus,
+#main-menu a:hover {
+	font-family: var(--font-family-normal);
+	font-weight: 500;
+	letter-spacing: .01em;
+	border-radius: 8px;
+	transition: background-color .15s ease, color .15s ease;
+}
+#main-menu a:hover,
+#main-menu a.highlighted {
+	background-color: var(--nav-menu-active-bg);
+	color: var(--nav-menu-active-color);
+}
+#main-menu a.current { color: var(--pg-accent); }
+
+/* dropdown */
+#main-menu ul {
+	border: 1px solid var(--nav-border-color);
+	border-radius: var(--pg-radius);
+	box-shadow: var(--pg-shadow-pop);
+	padding: 6px;
+	background: var(--nav-menu-background-color);
+}
+#main-menu ul a,
+#main-menu ul a:active,
+#main-menu ul a:focus,
+#main-menu ul a:hover {
+	border-left: 0;
+	padding: 0 18px 0 14px;
+	border-radius: 8px;
+	background-color: transparent;
+}
+#main-menu ul a:hover { background-color: var(--nav-menu-active-bg); }
+
+/* ===================================================================== page title strip */
+div.header {
+	background: var(--header-background-color);
+	border-bottom: 1px solid var(--header-separator-color);
+}
+div.headertitle { padding: 12px 18px 10px 18px; }
+div.title {
+	font-size: 26px;
+	font-weight: 700;
+	letter-spacing: -.015em;
+	color: var(--group-header-color);
+}
+
+/* ===================================================================== content */
+div.contents { margin: 18px 26px 30px 26px; }
+
+h2.groupheader {
+	font-size: 19px;
+	font-weight: 700;
+	margin-top: 30px;
+	padding-bottom: 6px;
+	border-bottom: 2px solid var(--group-header-separator-color);
+}
+
+/* member boxes */
+div.memitem {
+	border-radius: var(--pg-radius);
+	box-shadow: var(--pg-shadow);
+	overflow: hidden;
+}
+div.memproto, table.memname { border-radius: var(--pg-radius) var(--pg-radius) 0 0; }
+div.memdoc { border-radius: 0 0 var(--pg-radius) var(--pg-radius); }
+
+/* code */
+div.fragment, pre.fragment {
+	background: var(--pg-code-bg);
+	border: 1px solid var(--memdef-border-color);
+	border-radius: 10px;
+	padding: 10px 14px;
+	box-shadow: var(--pg-shadow);
+}
+div.line, pre.fragment, code, tt {
+	font-family: var(--font-family-monospace);
+	font-size: 13px;
+}
+code, tt {
+	background: var(--pg-accent-soft);
+	border-radius: 5px;
+	padding: 1px 5px;
+}
+
+/* tables */
+table.doxtable, table.markdownTable {
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--table-cell-border-color);
+	border-radius: 10px;
+	overflow: hidden;
+}
+table.doxtable th, table.markdownTable th { font-weight: 600; letter-spacing: .01em; }
+table.doxtable td, table.markdownTable td { border-color: var(--table-cell-border-color); }
+
+/* indexes (data structures, files, ...) */
+div.directory {
+	border: 1px solid var(--index-separator-color);
+	border-radius: 10px;
+	overflow: hidden;
+}
+.directory td.desc { border-left-color: var(--index-separator-color); }
+.directory tr:hover { background-color: var(--pg-accent-soft); }
+
+/* table of contents card */
+div.toc {
+	border-radius: var(--pg-radius);
+	box-shadow: var(--pg-shadow);
+}
+
+/* blockquotes and notes */
+blockquote { border-radius: 0 10px 10px 0; }
+
+/* images never overflow the page */
+div.contents img { max-width: 100%; height: auto; }
+
+/* ===================================================================== footer */
+#nav-path ul { border-top: 1px solid var(--nav-border-color); }
+li.footer, address.footer, .footer {
+	font-size: 12px;
+	color: var(--footer-foreground-color);
+}
+img.footer { vertical-align: middle; }
+
+/* ===================================================================== small screens */
+@media (max-width: 720px) {
+	#titlearea { padding: 10px 14px; }
+	#projectname { font-size: 21px; }
+	div.contents { margin: 12px 14px 24px 14px; }
+}
+
+/* ===================================================================== motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+	* { transition: none !important; }
+}
+/* ===================================================================== GitHub tickets (generated by gen_tickets.ps1) */
+.pg-tickets h3.pg-ms {
+	margin: 26px 0 8px 0;
+	font-size: 17px;
+}
+.pg-tickets h3.pg-ms small { font-weight: 500; color: var(--pg-muted); }
+.pg-tickets table.doxtable { width: 100%; margin-bottom: 6px; }
+.pg-tickets table.doxtable td:first-child { white-space: nowrap; font-weight: 600; }
+.pg-label {
+	display: inline-block;
+	font-size: 11.5px;
+	line-height: 1.5;
+	padding: 0 9px;
+	margin: 1px 2px 1px 0;
+	border-radius: 999px;
+	border: 1px solid var(--c, var(--pg-accent));
+	background: color-mix(in srgb, var(--c, var(--pg-accent)) 14%, transparent);
+	color: var(--page-foreground-color);
+	white-space: nowrap;
+}
+/* ===================================================================== section cards (postprocess_cards.ps1) */
+body:has(section.pg-card) #doc-content { background: var(--pg-canvas); }
+body:has(section.pg-card) div.contents { margin-top: 0; padding-top: 22px; }
+
+section.pg-card {
+	background: var(--pg-surface);
+	border: 1px solid var(--pg-card-border);
+	border-radius: 14px;
+	padding: 4px 28px 20px 28px;
+	margin: 0 0 24px 0;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 12px 22px -12px rgba(15, 23, 42, .28);
+	transition: box-shadow .2s ease, transform .2s ease;
+}
+section.pg-card:hover {
+	box-shadow: 0 2px 4px rgba(15, 23, 42, .08), 0 18px 30px -14px rgba(15, 23, 42, .38);
+	transform: translateY(-1px);
+}
+html section.pg-card {
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 14px 26px -14px rgba(0, 0, 0, .75);
+}
+html section.pg-card:hover {
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .5), 0 20px 34px -14px rgba(0, 0, 0, .9);
+}
+section.pg-card > h1:first-child {
+	margin: 18px 0 12px 0;
+	padding-bottom: 8px;
+	font-size: 21px;
+	border-bottom: 1px solid var(--pg-card-border);
+}
+section.pg-card h2.doxsection { margin-top: 22px; font-size: 17px; }
+section.pg-card > :last-child { margin-bottom: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+	section.pg-card, section.pg-card:hover { transition: none; transform: none; }
+}
+@media (max-width: 720px) {
+	section.pg-card { padding: 2px 16px 16px 16px; border-radius: 10px; }
+}
+/* ===================================================================== left navigation tree */
+/* The tree is built by navtree.js: #nav-tree > #nav-tree-contents > ul > li > div.item > span.arrow + span.label.
+   The indentation is set inline on span.arrow by the script: do not touch padding/width of .arrow. */
+#nav-tree {
+	background: var(--nav-background-color);
+	border-right: 1px solid var(--pg-card-border);
+}
+body:has(section.pg-card) #nav-tree { background: var(--pg-canvas); }
+
+#nav-tree-contents { margin: 0; padding: 22px 10px 28px 12px; }
+
+#nav-tree .item {
+	margin: 1px 0;
+	padding: 0 10px 0 4px;
+	border-radius: 9px;
+	transition: background-color .15s ease;
+}
+#nav-tree .item:hover { background-color: var(--nav-menu-active-bg); }
+
+#nav-tree .label {
+	font: 500 13.5px/30px var(--font-family-normal);
+}
+#nav-tree .label a,
+#nav-tree .label a:visited { color: var(--nav-text-normal-color); transition: color .15s ease; }
+#nav-tree .label a:hover { color: var(--pg-accent); }
+
+/* current page: soft pill with an accent bar (the script marks both the row and its label as .selected) */
+#nav-tree .selected {
+	background-color: var(--pg-accent-soft);
+	border-radius: 9px;
+}
+#nav-tree .selected .selected { background: none; box-shadow: none; }
+#nav-tree .item.selected { box-shadow: inset 3px 0 0 var(--pg-accent); }
+#nav-tree .selected a,
+#nav-tree .selected a:visited { color: var(--pg-accent); font-weight: 650; }
+
+div.nav-sync-icon { border-radius: 7px; }
+
+/* "on this page" outline on the right */
+#page-nav { border-left: 1px solid var(--pg-card-border); }
+body:has(section.pg-card) #page-nav { background: var(--pg-canvas); }
+ul.page-outline { margin: 14px 8px 8px 8px; }
+ul.page-outline div.item { font: 500 13px/28px var(--font-family-normal); }
+ul.page-outline li.vis { background-color: var(--pg-accent-soft); border-radius: 8px; }
+
+/* ---- Title area inside the left column (Doxyfile: DISABLE_INDEX = YES, FULL_SIDEBAR = YES) ----
+   Doxygen puts logo, name, version, brief and search box in a two-column table. In a 300px column
+   the cells get squeezed and the text is cut, so inside #side-nav they are stacked one under the other. */
+#side-nav #titlearea { padding: 16px 14px 14px; }
+#side-nav #projectrow { height: auto; }          /* doxygen.css fixes it at 56px: with the cells stacked the text would overflow onto the search box */
+#side-nav #titlearea table,
+#side-nav #titlearea tbody,
+#side-nav #titlearea tr,
+#side-nav #titlearea td { display: block; width: 100%; box-sizing: border-box; }
+#side-nav #projectlogo { text-align: center; padding: 0 0 10px 0; }
+#side-nav #projectlogo img { max-width: 100%; height: auto; max-height: 56px; padding-right: 0; margin-right: 0; }
+html #side-nav #projectlogo img { margin-right: 0; }
+#side-nav #projectalign { text-align: center; padding: 0; }
+#side-nav #projectname { font-size: 20px; line-height: 1.3; white-space: normal; }
+#side-nav #projectnumber { margin-left: 6px; }
+#side-nav #projectbrief { white-space: normal; margin-top: 4px; }
+#side-nav #MSearchBox { display: block; width: 100%; margin-top: 12px; box-sizing: border-box; }
+#side-nav #MSearchBox .left { width: 100%; }
+#side-nav #MSearchField { width: calc(100% - 30px); }
+
+/* ===================================================================== palette selector (gim_palette.js) */
+#titlearea { position: relative; }
+#gim-palette {
+	display: inline-flex;
+	align-items: center;
+	position: absolute;
+	right: 200px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+#gim-palette button {
+	font: inherit;
+	font-size: 12px;
+	text-transform: uppercase;
+	color: var(--nav-foreground-color);
+	background: transparent;
+	border: 1px solid var(--nav-border-color);
+	padding: 3px 9px;
+	cursor: pointer;
+}
+#gim-palette button:first-child { border-radius: 6px 0 0 6px; }
+#gim-palette button:last-child { border-radius: 0 6px 6px 0; border-left: 0; }
+#gim-palette button[aria-pressed="true"] {
+	background: var(--pg-accent);
+	color: var(--page-background-color);
+	border-color: var(--pg-accent);
+}
+
+/* ===================================================================== readability (both palettes)
+   The stock doxygen.css hard-codes white and black in many places. These rules send all of them to the palette. */
+html, body, div.contents, div.header, div.headertitle, div.textblock, div.summary, div.memproto, div.memdoc,
+#doc-content, .contents {
+	background-color: var(--page-background-color) !important;
+	color: var(--page-foreground-color) !important;
+}
+body, p, li, dd, dt, td, div.contents, .contents p, .contents li, .contents dd, .contents dt, .textblock,
+div.line, .memtitle, .memname, .memdoc, .memproto, .params, .returns, .retval, .exception, .fieldtable td {
+	color: var(--page-foreground-color) !important;
+}
+h1, h2, h3, h4, h5, h6, .title, .sm-dox a, .sm-dox a:visited {
+	color: var(--title-foreground-color, var(--page-link-color)) !important;
+}
+a, a:visited, .contents a, .contents a:visited {
+	color: var(--page-link-color) !important;
+}
+/* header and footer bars, separators */
+#titlearea, #titlearea table, #projectrow, #projectrow td {
+	background-color: var(--header-background-color) !important;
+}
+#titlearea {
+	border-bottom: 1px solid var(--nav-border-color) !important;
+	box-shadow: none !important;
+}
+#nav-path, .navpath, .navpath ul {
+	background-color: var(--nav-background-color) !important;
+	border-top: 1px solid var(--nav-border-color) !important;
+	color: var(--nav-foreground-color) !important;
+}
+.navpath li, .navpath li.navelem a, .navpath li.footer, .navpath li.footer a {
+	color: var(--nav-foreground-color) !important;
+	background: transparent !important;
+}
+hr.footer, address.footer, div.footer { border-color: var(--nav-border-color) !important; color: var(--footer-foreground-color) !important; background: var(--nav-background-color) !important; }
+#splitbar, .ui-resizable-e { background-color: var(--nav-splitbar-bg-color) !important; }
+/* code */
+div.fragment, pre.fragment, div.line, .fragment {
+	background-color: var(--pg-code-bg) !important;
+	color: var(--page-foreground-color) !important;
+	border-color: var(--table-cell-border-color) !important;
+}
+div.fragment span.keyword, div.fragment span.keywordtype, div.fragment span.keywordflow,
+span.keyword, span.keywordtype, span.keywordflow { color: var(--pg-accent) !important; }
+div.fragment span.comment, span.comment { color: var(--pg-muted) !important; font-style: italic; }
+div.fragment span.preprocessor, span.preprocessor { color: var(--memdecl-template-color) !important; }
+div.fragment span.stringliteral, span.stringliteral { color: var(--memdef-param-name-color) !important; }
+div.fragment span.preprocessor, div.fragment span.keywordtype { color: var(--memdecl-template-color) !important; }
+/* tables */
+table.doxtable, table.doxtable td, table.doxtable tr {
+	background-color: var(--page-background-color) !important;
+	color: var(--page-foreground-color) !important;
+	border-color: var(--table-cell-border-color) !important;
+}
+table.doxtable th, table.doxtable tr:first-child, table.doxtable thead th {
+	background-color: var(--table-header-background-color) !important;
+	color: var(--table-header-foreground-color) !important;
+}
+table.doxtable td code, table.doxtable code { background: var(--pg-code-bg) !important; color: var(--page-foreground-color) !important; }
+/* warning and note boxes: the stock colours are pale */
+dl.warning, dl.note, dl.attention, dl.deprecated, dl.todo, dl.bug, dl.invariant, dl.pre, dl.post, dl.remark, dl.par {
+	background-color: var(--blockquote-background-color) !important;
+	border-color: var(--blockquote-border-color) !important;
+	color: var(--page-foreground-color) !important;
+}
+dl.warning dd, dl.note dd, dl.attention dd, dl.deprecated dd, dl.todo dd, dl.bug dd, dl.invariant dd, dl.remark dd, dl.par dd,
+dl.warning dt, dl.note dt, dl.attention dt, dl.deprecated dt, dl.todo dt, dl.bug dt {
+	color: var(--page-foreground-color) !important;
+}
+/* inline code (the stock sheet paints it pale) */
+code, .fragment code, tt, .memname, .memtemplate {
+	background-color: var(--pg-code-bg) !important;
+	color: var(--page-foreground-color) !important;
+}
+/* scrollbars and index pages */
+table.directory td.entry, table.directory td.desc, table.memberdecls td, table.memberdecls tr, td.memSeparator {
+	background-color: var(--page-background-color) !important;
+	color: var(--page-foreground-color) !important;
+}
+
+/* ===================================================================== round 2: details (both palettes) */
+/* search box centred vertically, on the right of the title bar */
+#MSearchBox { position: absolute !important; right: 26px; top: 50%; transform: translateY(-50%); margin: 0; }
+/* code inside warnings and notes: readable in both palettes */
+dl.warning code, dl.warning span, dl.note code, dl.note span, dl.attention code, dl.attention span,
+dl.warning .fragment, dl.note .fragment, dl.warning pre, dl.note pre {
+	background-color: var(--pg-code-bg) !important;
+	color: var(--page-foreground-color) !important;
+	border-color: var(--table-cell-border-color) !important;
+}
+/* group headers: no white side blocks */
+h2.groupheader { box-shadow: none !important; background: transparent !important; }
+/* member and page title bars: rounded, palette colours, no white strip */
+.memtitle, div.memtitle {
+	background-color: var(--memdef-title-background-color) !important;
+	border-color: var(--memdef-border-color) !important;
+	border-radius: var(--pg-radius) var(--pg-radius) 0 0;
+}
+.memtitle:after { background: var(--memdef-title-background-color) !important; }
+div.memitem, .memitem { border-radius: var(--pg-radius); overflow: hidden; }
+/* right-hand table of contents and directory rows */
+div.toc, div.toc li, div.toc ul, .toc .toc-title {
+	background-color: var(--toc-background-color) !important;
+	color: var(--page-foreground-color) !important;
+}
+.directory tr.even, .directory tr.odd { background-color: var(--page-background-color) !important; }
+/* navigation path bar: no white triangles */
+#nav-path li.navelem:after, #nav-path ul { background: var(--nav-background-color) !important; }
+/* todo list, reference lists and every definition list: palette colours, rounded, no pale strips */
+dl.todo, dl.test, dl.bug, dl.deprecated, dl.reflist, dl.section, dl.note, dl.warning, dl.attention, dl.important,
+dl.pre, dl.post, dl.invariant, dl.remark, dl.par {
+	background-color: var(--blockquote-background-color) !important;
+	border-color: var(--blockquote-border-color) !important;
+	border-radius: var(--pg-radius);
+	color: var(--page-foreground-color) !important;
+}
+dl.todo dt, dl.test dt, dl.bug dt, dl.deprecated dt, dl.reflist dt, dl.section dt, dl.note dt, dl.warning dt,
+dl.attention dt, dl.important dt, dl.pre dt, dl.post dt, dl.invariant dt, dl.remark dt, dl.par dt {
+	background-color: var(--memdef-title-background-color) !important;
+	color: var(--title-foreground-color, var(--page-link-color)) !important;
+	border-radius: var(--pg-radius) var(--pg-radius) 0 0;
+}
+dl.todo dd, dl.test dd, dl.bug dd, dl.deprecated dd, dl.reflist dd, dl.section dd, dl.note dd, dl.warning dd,
+dl.attention dd, dl.important dd, dl.pre dd, dl.post dd, dl.invariant dd, dl.remark dd, dl.par dd {
+	background-color: transparent !important;
+	color: var(--page-foreground-color) !important;
+}
+dl.todo .tt, dl.reflist .tt { background-color: var(--pg-code-bg) !important; }
+
+/* ===================================================================== round 3 */
+/* right-hand "on this page" outline: the palette, on every page */
+#page-nav, #page-nav *, ul.page-outline, ul.page-outline li, ul.page-outline div.item {
+	background-color: var(--toc-background-color) !important;
+	color: var(--nav-text-normal-color) !important;
+}
+ul.page-outline li.vis, ul.page-outline li.vis div.item { background-color: var(--pg-accent-soft) !important; }
+/* line numbers of the code listings */
+span.lineno, span.lineno a, span.lineno a:visited, span.lineno a:hover, a.lineno, a.lineno:hover {
+	background-color: var(--pg-code-bg) !important;
+	color: var(--pg-muted) !important;
+	border-right-color: var(--table-cell-border-color) !important;
+}
+/* admonition boxes: each kind has its own accent, as in the stock theme */
+dl.warning, dl.attention, dl.important, dl.bug { border-left: 6px solid #f2c94c !important; }
+dl.deprecated { border-left: 6px solid #f0ad4e !important; }
+dl.todo, dl.note, dl.remark, dl.test, dl.invariant, dl.pre, dl.post, dl.par, dl.section, dl.reflist {
+	border-left: 6px solid var(--page-link-color) !important;
+}
+dl.warning dt, dl.attention dt, dl.important dt, dl.bug dt { color: #ffdd66 !important; }
+dl.deprecated dt { color: #f0ad4e !important; }
+dl.todo dt, dl.note dt, dl.remark dt, dl.test dt, dl.invariant dt, dl.pre dt, dl.post dt, dl.par dt, dl.section dt, dl.reflist dt {
+	color: var(--page-link-color) !important;
+}
+/* the stock markup is <dl class="section warning">: the generic "section" rule above must not win */
+dl.section.warning, dl.section.attention, dl.section.important, dl.section.bug {
+	border-left: 6px solid #f2c94c !important;
+}
+dl.section.warning dt, dl.section.attention dt, dl.section.important dt, dl.section.bug dt { color: #ffdd66 !important; }
+dl.section.deprecated { border-left: 6px solid #f0ad4e !important; }
+dl.section.deprecated dt { color: #f0ad4e !important; }
+/* each admonition box is tinted with its accent, so the whole box stands out from the card */
+dl.section.warning, dl.section.attention, dl.section.important, dl.section.bug {
+	background-color: color-mix(in srgb, #f2c94c 14%, var(--page-background-color)) !important;
+}
+dl.section.deprecated {
+	background-color: color-mix(in srgb, #f0ad4e 14%, var(--page-background-color)) !important;
+}
+dl.todo, dl.note, dl.remark, dl.test, dl.invariant, dl.pre, dl.post, dl.par, dl.section, dl.reflist {
+	background-color: color-mix(in srgb, var(--page-link-color) 14%, var(--page-background-color)) !important;
+}
+dl.section.warning dt, dl.section.attention dt, dl.section.important dt, dl.section.bug dt,
+dl.section.deprecated dt, dl.todo dt, dl.note dt, dl.remark dt, dl.test dt, dl.invariant dt, dl.pre dt, dl.post dt,
+dl.par dt, dl.section dt, dl.reflist dt {
+	background-color: transparent !important;
+}
+/* markdown tables: the header row takes the palette colour (the stock sheet paints it blue) */
+table.markdownTable th, table.markdownTable tr.markdownTableHead th, table.markdownTable tr.markdownTableHeadNone th,
+table.markdownTable tr:first-child th, table.markdownTable tr:first-child td {
+	background-color: var(--table-header-background-color) !important;
+	color: var(--table-header-foreground-color) !important;
+}
+table.markdownTable td, table.markdownTable tr {
+	background-color: var(--page-background-color) !important;
+	color: var(--page-foreground-color) !important;
+}
+/* markdown tables: visible grid lines in both palettes */
+table.markdownTable th, table.markdownTable td {
+	border-color: var(--table-cell-border-color) !important;
+}

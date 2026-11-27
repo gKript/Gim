@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,10 +26,16 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
+
+/*!     \file       gim.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include "../include/gim.h"
 
@@ -297,7 +303,7 @@ void	gim_gkdp_obj::New( const char * filename , _gim_flag crypt ) {
 	strcpy( header.user , gim_identity->login() );
 	strcpy( header.hostname , gim_identity->node() );
 	header.recursive = __GIM_NO;
-	header.crypt = crypt;
+	header.crypt = ( crypt == __GIM_FOG ) ? __GIM_FOG : __GIM_SUN;   /* canonical: FOG = encrypted, SUN = plain */
 	header.compression = __GIM_NO;
 	header.hashed_file = __GIM_NO;
 	header.xhk = __GIM_NO;
@@ -374,9 +380,8 @@ _gim_gkdp *	gim_gkdp_obj::take( const char * name ) {
 			gkdp->size = currentlist->size;
 			if ( header.crypt == __GIM_FOG ) {
 				crypt->set_secondary( currentlist->name );
-				crypt->advanced_password( gkdp->data , gkdp->size );
+				crypt->advanced_password_nonce( gkdp->data , gkdp->size , currentlist->nonce );   /* same nonce as the writer: the chunk id */
 			}
-			gkdp->size--;
 			sprintf( message , "File GKP::%s taken" , gkdp->name );
 			gim_error->set( "gim_gkp_obj::gkdp_take" , message );
 			return gkdp;

@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,8 +26,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
@@ -51,6 +50,13 @@
  * will fill a supplied 16-byte array with the digest.
  */
  
+/*!     \file       gim_md5.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
+
 #include "../include/gim_md5.h"
 
 #ifndef _CRT_SECURE_NO_DEPRECATE

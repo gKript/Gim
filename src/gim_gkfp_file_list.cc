@@ -1,8 +1,44 @@
 //
+//  gim_gkfp_file_list.cc
+//
+//  Gim - Generic Information Manager
+//
+//  [http://www.gkript.org]
+//
+/*#############################################################################
+
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
+
+	This file is part of Gim library.
+
+	Gim is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 3 of the License, or
+	(at your option) any later version.
+
+	Gim is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
+
+#############################################################################*/
+//
+//
 // File: gim_gkfp_file_list_obj.cc
 // Created by: AsYntote <asyntote@gkript.org>
 // Created on: Sun Jun 24 16:40:17 2007
 //
+
+/*!     \file       gim_gkfp_file_list.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include "../include/gim.h"
 
@@ -43,7 +79,15 @@ _gim_gkp_flist *	gim_gkfp_obj::ladd( void ) {
 }
 
 
-_gim_Uint32	gim_gkfp_obj::lmake( const char * dir_name , _gim_Uint16 level ) {
+_gim_Uint32	gim_gkfp_obj::lmake( const char * dir_in , _gim_Uint16 level ) {
+	/* the entries are joined to the directory name: it must end with a separator, otherwise they are never found */
+	char			dir[ 1100 ];
+	const char	* dir_name = dir;
+	size_t			dir_len;
+	snprintf( dir , sizeof( dir ) - 2 , "%s" , dir_in );
+	dir_len = strlen( dir );
+	if ( dir_len && dir[ dir_len - 1 ] != '/' && dir[ dir_len - 1 ] != '\\' )
+		strcat( dir , "/" );
 	struct dirent 	** eps;
 	int				n , cnt;
 	char			TmpFileName[1024];
@@ -51,11 +95,11 @@ _gim_Uint32	gim_gkfp_obj::lmake( const char * dir_name , _gim_Uint16 level ) {
 	n = scandir ( dir_name , &eps , NULL , alphasort );
 	if ( n ) {
 		if ( level == __GIM_ROOT ) {
-			sprintf( message , "Adding root %s" , dir_name );
+			sprintf( message , "Adding root %s" , dir_in );
 			gim_error->set( "gim_gkfp_file_list_obj::make" , message );
 			currentlist = ladd();
 			strcpy( currentlist->path , "" );
-			strcpy( currentlist->name , dir_name );
+			strcpy( currentlist->name , dir_in );
 			currentlist->size = 0;
 			currentlist->type = ROOT;
 			stat( dir_name , &( currentlist->stat ) );

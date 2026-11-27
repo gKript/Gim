@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,15 +26,42 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4
 //
 
+/*!     \file       gim_kvalue.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
+
 #include "../include/gim_kvalue.h"
+#include <ctype.h>
+
+/* section names are stored in upper case WITHOUT blanks (the lexer drops them when it reads a file): normalise
+   the name the same way on every lookup and insert, so "GimUI Demo" finds the section "GIMUIDEMO" */
+/* message with the section and the key it refers to, so the log shows which entry was involved */
+static const char * kv_msg( const char * msg , const char * section , const char * key ) {
+	static thread_local char buf[ 512 ];
+	snprintf( buf , sizeof( buf ) , "%s [section: %s , key: %s]" , msg , section ? section : "-" , key ? key : "-" );
+	return buf;
+}
+static char * gim_section_key( const char * name ) {
+	static char key[ 256 ];
+	size_t i , j = 0;
+	for ( i = 0 ; name[ i ] && ( j < sizeof( key ) - 1 ) ; i++ ) {
+		if ( name[ i ] == ' ' || name[ i ] == '\t' )
+			continue;
+		key[ j++ ] = (char) toupper( (unsigned char) name[ i ] );
+	}
+	key[ j ] = '\0';
+	return key;
+}
 //#include "../include/gim_memory.h"
  
 
@@ -62,9 +89,9 @@ _gim_flag gim_prsr_obj::AddSection( const char * section_name ) {
 	prsr_kvalue_section	* new_section = NULL;
 	char * tmp_name;
 	if ( ( ! strlen( section_name ) ) || ( strlen( section_name ) >= 64 ) ) return -1;
-	tmp_name = strdup( Lexical.str_up( section_name , strlen( section_name ) ) );
+	tmp_name = strdup( gim_section_key( section_name ) );
 	if ( ExistSection( tmp_name ) == __GIM_YES ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddSection" , "Section already exist" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddSection" , kv_msg( "Section already exist" , section_name , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {
@@ -92,39 +119,39 @@ _gim_flag	gim_prsr_obj::AddKey( const char * section_name , const char * key , c
 	char * tmp_section_name;
 	char * tmp_key_name;
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "No parser object defined" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section == NULL )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Before to define a Key you must define a Section" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "Before to define a Key you must define a Section" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( section_name ) ) || ( strlen( section_name ) >= 64 ) )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of section name" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "Wrong lenght of section name" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( value ) ) || ( strlen( value ) >= 64 ) )  {
-		gim_error->Set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of value: %s" , value );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "Wrong lenght of value: %s" , section_name , key ) , value );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( key ) ) || ( strlen( key ) >= 64 ) )  {
-		gim_error->Set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Wrong lenght of Key name: %s" , key );
+		gim_error->Set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "Wrong lenght of Key name: %s" , section_name , key ) , key );
 		return __GIM_NOT_OK;
 	}
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	tmp_key_name     = strdup( Lexical.str_down( key          , strlen( key          ) ) );
 	if ( ExistKey( tmp_section_name , tmp_key_name ) == 1 ) return -1;
 	for( ; tmp_section ; tmp_section = tmp_section->next_section ) {
 		if ( ! strcmp( tmp_section_name , tmp_section->section_name ) ) break;
 	}
 	if ( ! tmp_section ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Section Name not found" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "Section Name not found" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( tmp_section->first_field != NULL ) {
 		for( tmp_field = tmp_section->first_field ; tmp_field->next_field ; tmp_field = tmp_field->next_field ) {
 			if ( ! ( strcmp( tmp_field->key , tmp_key_name ) ) ) {
-				gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , "Section Name already exist" , __GIM_ERROR );
+				gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKey" , kv_msg( "Key already exists" , section_name , key ) , __GIM_ERROR );
 				return __GIM_NOT_OK;
 			}				
 		}
@@ -234,10 +261,10 @@ _gim_flag	gim_prsr_obj::DelKey( const char * section_name , const char * key ) {
 	prsr_kvalue_field	* tmp_field , * before_field = NULL;
 	char * tmp_section_name;
 	char * tmp_key_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	tmp_key_name     = strdup( Lexical.str_down( key          , strlen( key          ) ) );
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelKey" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelKey" , kv_msg( "No parser object defined" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {
@@ -250,9 +277,9 @@ _gim_flag	gim_prsr_obj::DelKey( const char * section_name , const char * key ) {
 								tmp_section->first_field = tmp_field->next_field ;
 							if ( before_field )
 								before_field->next_field = tmp_field->next_field ;
-							gim_error->set( "gim_prsr_obj::DelKey" , "Removing Key" );
+							gim_error->set( "gim_prsr_obj::DelKey" , kv_msg( "Removing Key" , section_name , key ) );
 							if ( gim_memory->Free( tmp_field ) == __GIM_NOT_OK ) {
-								gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelKey" , "Some problems with memory" , __GIM_ERROR );
+								gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelKey" , kv_msg( "Some problems with memory" , section_name , key ) , __GIM_ERROR );
 							}
 							return __GIM_OK;
 						}
@@ -269,9 +296,9 @@ _gim_flag	gim_prsr_obj::DelSection( const char * section_name ) {
 	prsr_kvalue_section	* before_section = NULL;
 
 	char * tmp_section_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , kv_msg( "No parser object defined" , section_name , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {
@@ -287,7 +314,7 @@ _gim_flag	gim_prsr_obj::DelSection( const char * section_name ) {
 				if ( tmp_section->first_field ) {
 					DelSection( tmp_section );
 				}
-				gim_error->set( "gim_prsr_obj::DelSection" , "Done!" );
+				gim_error->set( "gim_prsr_obj::DelSection" , kv_msg( "Done!" , section_name , NULL ) );
 				return __GIM_OK;
 			}
 		}
@@ -298,7 +325,9 @@ _gim_flag	gim_prsr_obj::DelSection( const char * section_name ) {
 void	gim_prsr_obj::DelSection( prsr_kvalue_section * section ) {
 	prsr_kvalue_field	* tmp_field , * tmp2_field = NULL;
 	char message[512];
-	sprintf( message , "Removing section %s" , section->section_name );
+	char sname[128];
+	snprintf( sname , sizeof( sname ) , "%s" , section->section_name );   /* the section is freed below: keep its name */
+	sprintf( message , "Removing section %s" , sname );
 	gim_error->set( "gim_prsr_obj::DelSection" , message );
 	for( tmp_field = section->first_field ; tmp_field ;  ) {
 		char tmp[256];
@@ -306,12 +335,12 @@ void	gim_prsr_obj::DelSection( prsr_kvalue_section * section ) {
 		gim_error->set( "gim_prsr_obj::DelSection" , tmp );
 		tmp2_field = tmp_field->next_field;
 		if ( gim_memory->Free( tmp_field ) == __GIM_NOT_OK )
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , "Some problems with memory" , __GIM_ERROR );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , kv_msg( "Some problems with memory" , sname , NULL ) , __GIM_ERROR );
 		tmp_field = tmp2_field;
 	}
 	if ( gim_memory->Free( section ) == __GIM_NOT_OK )
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , "Some problems with memory" , __GIM_ERROR );
-	gim_error->set( "gim_prsr_obj::DelSection" , "Section removed" );	
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::DelSection" , kv_msg( "Some problems with memory" , sname , NULL ) , __GIM_ERROR );
+	gim_error->set( "gim_prsr_obj::DelSection" , kv_msg( "Section removed" , sname , NULL ) );	
 }
 
 _gim_flag	gim_prsr_obj::ChangeKey( const char * section_name , const char * key , const char * string ) {
@@ -320,26 +349,26 @@ _gim_flag	gim_prsr_obj::ChangeKey( const char * section_name , const char * key 
 	char * tmp_section_name;
 	char * tmp_key_name;
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , kv_msg( "No parser object defined" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section == NULL )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , "Before to define a Key you must define a Section" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , kv_msg( "Before to define a Key you must define a Section" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( section_name ) ) || ( strlen( section_name ) >= 64 ) )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , "Wrong lenght of section name" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , kv_msg( "Wrong lenght of section name" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( string ) ) || ( strlen( string ) >= 64 ) )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , "Wrong lenght of value" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , kv_msg( "Wrong lenght of value" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ( ! strlen( key ) ) || ( strlen( key ) >= 32 ) )  {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , "Wrong lenght of Key name" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::ChangeKey" , kv_msg( "Wrong lenght of Key name" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	tmp_key_name     = strdup( Lexical.str_down( key          , strlen( key          ) ) );
 	if ( prsr_obj->first_section != NULL ) {
 		for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
@@ -365,12 +394,19 @@ _gim_flag	gim_prsr_obj::ChangeKey	( const char * section_name , const char * key
 	return ChangeKey( section_name , key , tmp );
 }
 
+_gim_flag	gim_prsr_obj::ChangeKey	( const char * section_name , const char * key , float value ) {
+	char tmp[64];
+	__GIM_CLEAR( tmp , 64 , char );
+	sprintf( tmp , "%15.5f" , value );		// same format as AddKey( float )
+	return ChangeKey( section_name , key , tmp );
+}
+
 
 
 _gim_flag	gim_prsr_obj::ExistSection( const char * section_name ) {
 	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
 	char * tmp_section_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	if ( prsr_obj->first_section != NULL ) {
 		for( ; tmp_section ; tmp_section = tmp_section->next_section ) {
 			if( ! strcmp( tmp_section_name , tmp_section->section_name ) ) {
@@ -385,7 +421,7 @@ _gim_flag	gim_prsr_obj::ExistSection( const char * section_name ) {
 prsr_kvalue_section	* gim_prsr_obj::SearchSection( const char * section_name ) {
 	prsr_kvalue_section	* tmp_section = prsr_obj->first_section;
 	char * tmp_section_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	if ( prsr_obj->first_section != NULL ) {
 		for( ; tmp_section ; tmp_section = tmp_section->next_section ) {
 			if( Lexical.str_equal( tmp_section_name , tmp_section->section_name ) == __GIM_YES ) {
@@ -402,7 +438,7 @@ _gim_flag	gim_prsr_obj::ExistKey( const char * section_name , const char * key )
 	prsr_kvalue_field	* tmp_field;
 	char * tmp_section_name;
 	char * tmp_key_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	tmp_key_name     = strdup( Lexical.str_down( key          , strlen( key          ) ) );
 	if ( prsr_obj->first_section != NULL ) {
 		for( ; tmp_section != NULL ; tmp_section = tmp_section->next_section ) {
@@ -624,6 +660,15 @@ _gim_flag gim_prsr_obj::Read( const char * filename ) {
 			}
 		}
 		case __LEX_UNKNOWN : {
+			// A file with a title and no sections has no syntax to recognise (the lex is found from '[', '::' or '( ').
+			// It is an empty parser, not an error: this is what Write() produces after the last section is deleted.
+			if ( Lexical.scan_empty( filename ) == __GIM_OK ) {
+				Up( filename , NULL );
+				if ( GetLex() == __LEX_UNKNOWN )
+					SetLex( __LEX_A );		// the database tables are always Lex A
+				gim_error->set( "gim_prsr_obj::Read" , "Empty file read: no sections" );
+				return __GIM_OK;
+			}
 			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::Read" , "I cannot read this file" , __GIM_ERROR );
 			return __GIM_NOT_OK;
 		}
@@ -674,10 +719,10 @@ char *	gim_prsr_obj::GetKeySTR( const char * section_name , const char * key ) {
 	prsr_kvalue_field	* tmp_field , * before_field = NULL;
 	char * tmp_section_name;
 	char * tmp_key_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	tmp_key_name     = strdup( Lexical.str_down( key          , strlen( key          ) ) );
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeySTR" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeySTR" , kv_msg( "No parser object defined" , section_name , key ) , __GIM_ERROR );
 		return NULL;
 	}
 	if ( prsr_obj->first_section != NULL ) {
@@ -715,10 +760,10 @@ _gim_flag	gim_prsr_obj::GetKeyFLAG( const char * section_name , const char * key
 		else if ( Lexical.str_equal( tmp , "UNLOCKED"   ) == __GIM_YES ) return __GIM_MEM_UNLOCK;
 		else if ( Lexical.str_equal( tmp , "TEXT"   ) == __GIM_YES ) return __GIM_LOG_TEXT;
 		else if ( Lexical.str_equal( tmp , "HTML"   ) == __GIM_YES ) return __GIM_LOG_HTML;
-		else 	gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyFLAG" , "UNKNOWN flag value" , __GIM_ERROR );
+		else 	gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyFLAG" , kv_msg( "UNKNOWN flag value" , section_name , key ) , __GIM_ERROR );
 	}
 	else 
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyFLAG" , "GetKeySTR return NULL." , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyFLAG" , kv_msg( "GetKeySTR return NULL." , section_name , key ) , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -730,7 +775,7 @@ int	gim_prsr_obj::GetKeyINT( const char * section_name , const char * key ) {
 	if ( tmp != NULL )
 		return atoi( tmp );
 	else 
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyINT" , "GetKeySTR return NULL." , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyINT" , kv_msg( "GetKeySTR return NULL." , section_name , key ) , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -740,7 +785,7 @@ float	gim_prsr_obj::GetKeyFLT( const char * section_name , const char * key ) {
 	if ( tmp != NULL )
 		return atof( tmp );
 	else
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyFLT" , "GetKeySRT return NULL." , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyFLT" , kv_msg( "GetKeySRT return NULL." , section_name , key ) , __GIM_ERROR );
 	return __GIM_ERROR;
 }
 
@@ -750,7 +795,7 @@ _gim_int8	gim_prsr_obj::GetHowManyKey( const char * section_name ) {
 	prsr_kvalue_field	* tmp_field;
 	char * tmp_section_name;
 	_gim_Uint8  cont = 0;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	if ( prsr_obj == NULL ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetHowManyKey" , "No parser object defined" , __GIM_ERROR );
 		return __GIM_ERROR;
@@ -779,7 +824,7 @@ char *  gim_prsr_obj::GetKeyName( const char * section_name , _gim_int16 kindex 
 	prsr_kvalue_field	* tmp_field;
 	char * tmp_section_name;
 	_gim_int16  cont = 0;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	if ( prsr_obj == NULL ) {
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetKeyName" , "No parser object defined" , __GIM_ERROR );
 		return NULL;
@@ -819,9 +864,10 @@ _gim_int16	gim_prsr_obj::GetHowManySection( void ) {
 		return c;
 	}
 	else {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::GetHowManySection" , "No section defined in this object" , __GIM_ERROR );
+		// no sections is a normal state (for example after the last DelSection): 0, not an error
+		gim_error->set( GIM_ERROR_DEBUG , "gim_prsr_obj::GetHowManySection" , "No section defined in this object" , __GIM_OK );
+		return 0;
 	}
-	return __GIM_ERROR;
 }
 
 char *  gim_prsr_obj::GetSectionName( _gim_int16 secindex ) {
@@ -889,15 +935,15 @@ _gim_flag	gim_prsr_obj::RenameSection( const char * old_section , const char * n
 	char	* tmp_new_section;
 	_gim_flag	found = __GIM_NO;
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , kv_msg( "No parser object defined" , old_section , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ! strlen( new_section ) ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , "New section is NULL" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , kv_msg( "New section is NULL" , old_section , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 		if ( ! strlen( old_section ) ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , "Old section is NULL" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , kv_msg( "Old section is NULL" , old_section , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	tmp_section_name = strdup( Lexical.str_up  ( old_section , strlen( old_section ) ) );
@@ -912,12 +958,12 @@ _gim_flag	gim_prsr_obj::RenameSection( const char * old_section , const char * n
 			}
 		}
 		if ( found == __GIM_NO ) {
-			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , "Old Section not found" , __GIM_NOT_EXIST );
+			gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , kv_msg( "Old Section not found" , old_section , NULL ) , __GIM_NOT_EXIST );
 			return __GIM_NOT_EXIST;
 		}
 	}
 	else {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , "No one section is defined in this prsp object" , __GIM_NOT_EXIST );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameSection" , kv_msg( "No one section is defined in this prsp object" , old_section , NULL ) , __GIM_NOT_EXIST );
 		return __GIM_NOT_EXIST;
 	}
 	return __GIM_OK;
@@ -930,20 +976,20 @@ _gim_flag	gim_prsr_obj::RenameKey( const char * section , const char * old_key ,
 	char * tmp_old_key_name;
 	char * tmp_new_key_name;
 	if ( prsr_obj == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , "No parser object defined" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , kv_msg( "No parser object defined" , section , old_key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	tmp_section = prsr_obj->first_section;
 	if ( ! strlen( section ) ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , "Section name is NULL" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , kv_msg( "Section name is NULL" , section , old_key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ! strlen( new_key ) ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , "New key is NULL" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , kv_msg( "New key is NULL" , section , old_key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( ! strlen( old_key ) ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , "Old key is NULL" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::RenameKey" , kv_msg( "Old key is NULL" , section , old_key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	tmp_section_name	= strdup( Lexical.str_up  ( section	, strlen( section ) ) );
@@ -1047,14 +1093,14 @@ _gim_flag	gim_prsr_obj::AddKeyComment( const char * section_name , const char * 
 	prsr_kvalue_field	* tmp_field;
 	char * tmp_section_name;
 	char * tmp_key_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	tmp_key_name     = strdup( Lexical.str_down( key          , strlen( key          ) ) );
 	if ( comment == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKeyComment" , "Comment must not be NULL. I cannot add this comment" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKeyComment" , kv_msg( "Comment must not be NULL. I cannot add this comment" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( strlen( comment ) > 10240 ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddKeyComment" , "Comment is too long. It will be skipped" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddKeyComment" , kv_msg( "Comment is too long. It will be skipped" , section_name , key ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {
@@ -1080,13 +1126,13 @@ _gim_flag	gim_prsr_obj::AddSectionComment( const char * section_name , _gim_flag
 	prsr_kvalue_field	* tmp_field;
 	char * tmp_section_name;
 	char * tmp_key_name;
-	tmp_section_name = strdup( Lexical.str_up  ( section_name , strlen( section_name ) ) );
+	tmp_section_name = strdup( gim_section_key( section_name ) );
 	if ( comment == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKeyComment" , "Comment must not be NULL. I cannot add this comment" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_CRITICAL , "gim_prsr_obj::AddKeyComment" , kv_msg( "Comment must not be NULL. I cannot add this comment" , section_name , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( strlen( comment ) > 10240 ) {
-		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddKeyComment" , "Comment is too long. It will be skipped" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_prsr_obj::AddKeyComment" , kv_msg( "Comment is too long. It will be skipped" , section_name , NULL ) , __GIM_ERROR );
 		return __GIM_NOT_OK;
 	}
 	if ( prsr_obj->first_section != NULL ) {

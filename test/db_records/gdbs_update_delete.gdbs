@@ -1,0 +1,13 @@
+CREATE DB gdbs_upd;
+SET DB VOLATILE;
+CREATE TABLE clienti;
+PIN TABLE clienti;
+ADD FIELD 1 INT codice;
+SET FIELD 1 KEY;
+ADD FIELD 2 STRING nome;
+UNPIN TABLE;
+INSERT clienti codice 1 nome uno;
+INSERT clienti codice 2 nome due;
+INSERT clienti codice 3 nome due;
+UPDATE clienti SET nome tre WHERE codice 2;
+DELETE clienti WHERE nome due AND codice 3;

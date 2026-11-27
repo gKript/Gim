@@ -1,0 +1,5 @@
+db use test_records_perm
+select clienti
+insert clienti codice 1 nome "Dopo" temperatura 1 attivo YES
+select clienti
+exit

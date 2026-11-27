@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" width="420" height="120" role="img" aria-label="gKript.org">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#44598a"/>
+      <stop offset="1" stop-color="#2b3c6a"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e4ecfa"/>
+      <stop offset="0.35" stop-color="#7d93bf"/>
+      <stop offset="0.7" stop-color="#3a4f7d"/>
+      <stop offset="1" stop-color="#0e1a36"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbe2a0"/>
+      <stop offset="0.45" stop-color="#d89a3c"/>
+      <stop offset="1" stop-color="#6b3f12"/>
+    </linearGradient>
+    <linearGradient id="wordsteel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfdcf2"/>
+      <stop offset="0.5" stop-color="#6f88b8"/>
+      <stop offset="1" stop-color="#26385f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="3" dy="4" stdDeviation="2" flood-color="#05091a" flood-opacity="0.75"/>
+    </filter>
+  </defs>
+  <rect width="420" height="120" fill="url(#bg)"/>
+
+  <g filter="url(#shadow)">
+    <!-- big G: steel ring with a brass inner line, open on the right where the K enters -->
+    <path d="M96 26 A42 42 0 1 0 96 94" fill="none" stroke="url(#steel)" stroke-width="22"/>
+    <path d="M96 36 A32 32 0 1 0 96 84" fill="none" stroke="url(#brass)" stroke-width="5"/>
+    <!-- crossbar of the G -->
+    <rect x="62" y="56" width="40" height="11" fill="url(#steel)"/>
+    <rect x="62" y="56" width="40" height="3" fill="url(#brass)"/>
+
+    <!-- K: brass stem and two arms overlapping the G -->
+    <rect x="98" y="20" width="18" height="80" fill="url(#brass)" stroke="#0e1a36" stroke-width="1.2"/>
+    <polygon points="116,58 150,20 166,20 128,62" fill="url(#brass)" stroke="#0e1a36" stroke-width="1.2"/>
+    <polygon points="118,66 158,100 142,100 112,72" fill="url(#brass)" stroke="#0e1a36" stroke-width="1.2"/>
+    <path d="M100 24 L100 96" stroke="#fff1c0" stroke-width="1.5" opacity="0.7"/>
+  </g>
+
+  <!-- long bar under the wordmark -->
+  <g filter="url(#shadow)">
+    <rect x="138" y="97" width="270" height="3" fill="url(#steel)"/>
+  </g>
+
+  <!-- wordmark: "ript.org" in steel italic -->
+  <g filter="url(#shadow)">
+    <text x="176" y="78" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="40" fill="url(#wordsteel)" textLength="236" lengthAdjust="spacing">r i p t . o r g</text>
+  </g>
+</svg>

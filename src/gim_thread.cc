@@ -1,16 +1,20 @@
 //
 //  gim_thread.cc
 //
-//  Gim  -  Generic Information Manager
-//  See gim_thread.h.
+//  Gim - Generic Information Manager
+//
+//  [http://www.gkript.org]
 //
 /*#############################################################################
+
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -18,7 +22,19 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
+
 #############################################################################*/
+//  Gim  -  Generic Information Manager
+//  See gim_thread.h.
+
+/*!     \file       gim_thread.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include "../include/gim_thread.h"
 #include "../include/gim_error.h"
@@ -27,7 +43,7 @@
 #include <string>
 
 /* Classes that use or plan a thread. Add a name here when a new class gets a thread. */
-static const char * const gim_thread_known_classes[] = { "gim_interface" , "gim_serial" , "gim_stat" };
+static const char * const gim_thread_known_classes[] = { "gim_interface" , "gim_serial" , "gim_stat" , "gim_gkfp" };
 #define GIM_THREAD_KNOWN_CLASSES_NUMBER	( sizeof( gim_thread_known_classes ) / sizeof( gim_thread_known_classes[ 0 ] ) )
 
 _gim_flag	gim_thread_allowed( const char * class_name ) {

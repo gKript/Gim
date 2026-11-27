@@ -1,0 +1,32 @@
+db create test_records_vol %SEED_VOL%
+insert clienti codice 1 nome "Cliente 14" temperatura 7.1 attivo NO
+insert clienti codice 2 nome "Cliente 5" temperatura 14.2 attivo NO
+insert clienti codice 3 nome "Cliente 19" temperatura 21.3 attivo YES
+insert clienti codice 4 nome "Cliente 10" temperatura 28.4 attivo NO
+insert clienti codice 5 nome "Cliente 1" temperatura 4.5 attivo NO
+insert clienti codice 6 nome "Cliente 15" temperatura 11.6 attivo YES
+insert clienti codice 7 nome "Cliente 6" temperatura 18.7 attivo NO
+insert clienti codice 8 nome "Cliente 20" temperatura 25.8 attivo NO
+insert clienti codice 9 nome "Cliente 11" temperatura 1.9 attivo YES
+insert clienti codice 10 nome "Cliente 2" temperatura 8.0 attivo NO
+insert clienti codice 11 nome "Cliente 16" temperatura 15.1 attivo NO
+insert clienti codice 12 nome "Cliente 7" temperatura 22.2 attivo YES
+insert clienti codice 13 nome "Cliente 21" temperatura 29.3 attivo NO
+insert clienti codice 14 nome "Cliente 12" temperatura 5.4 attivo NO
+insert clienti codice 15 nome "Cliente 3" temperatura 12.5 attivo YES
+insert clienti codice 16 nome "Cliente 17" temperatura 19.6 attivo NO
+insert clienti codice 17 nome "Cliente 8" temperatura 26.7 attivo NO
+insert clienti codice 18 nome "Cliente 22" temperatura 2.8 attivo YES
+insert clienti codice 19 nome "Cliente 13" temperatura 9.9 attivo NO
+insert clienti codice 20 nome "Cliente 4" temperatura 16.0 attivo NO
+update clienti set nome "Corretto" where codice = 5
+update clienti set nome "X" where temperatura > 1000
+update clienti set codice 99 where codice = 5
+update clienti set codice 1 where codice = 99
+update clienti set codice 50 where attivo = YES
+update clienti set temperatura 12.5 where codice = 7
+update clienti set nope 1 where codice = 1
+delete clienti where temperatura > 25
+delete clienti
+select clienti
+exit

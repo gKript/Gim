@@ -1,0 +1,8 @@
+CREATE DB gdbs_gt;
+SET DB VOLATILE;
+CREATE TABLE clienti;
+PIN TABLE clienti;
+ADD FIELD 1 INT codice;
+SET FIELD 1 KEY;
+UNPIN TABLE;
+DELETE clienti WHERE codice > 2;

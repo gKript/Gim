@@ -1,0 +1,2 @@
+db create gdbs_bad %SCRIPT%
+exit

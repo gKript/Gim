@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,13 +26,19 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4
 //
+
+/*!     \file       gim_gkp_file_list.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include "../include/gim.h"
 
@@ -93,7 +99,15 @@ void		gim_gkdp_obj::set_manual( void ) {
 }
 
 
-_gim_Uint32	gim_gkdp_obj::make_gkdp( const char * dir_name ) {
+_gim_Uint32	gim_gkdp_obj::make_gkdp( const char * dir_in ) {
+	/* the entries are joined to the directory name: it must end with a separator, otherwise they are never found */
+	char			dir[ 1100 ];
+	const char	* dir_name = dir;
+	size_t			dir_len;
+	snprintf( dir , sizeof( dir ) - 2 , "%s" , dir_in );
+	dir_len = strlen( dir );
+	if ( dir_len && dir[ dir_len - 1 ] != '/' && dir[ dir_len - 1 ] != '\\' )
+		strcat( dir , "/" );
 	struct dirent 	** eps;
 	int				n , cnt;
 	char			TmpFileName[1024];
@@ -101,9 +115,9 @@ _gim_Uint32	gim_gkdp_obj::make_gkdp( const char * dir_name ) {
 	if ( n ) {
 		char message[256];
 		currentlist = add();
-		strcpy( currentlist->name , dir_name );
+		strcpy( currentlist->name , dir_name );   /* with the separator: the data writer joins the names to it */
 		currentlist->size = 0;
-		sprintf( message , "Adding root %s" , dir_name );
+		sprintf( message , "Adding root %s" , dir_in );
 		gim_error->set( "gim_gkdp_obj::make_gkdp" , message );
 		for ( cnt = 0 ; cnt < n ; cnt++ ) {
 			struct stat tmp;

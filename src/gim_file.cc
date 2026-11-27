@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,13 +26,19 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4
 //
+
+/*!     \file       gim_file.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include "../include/gim_file.h"
 
@@ -210,11 +216,11 @@ void		gim_file_manager_obj::open_fd( gim_file_manager_list *	item , _gim_flag mo
 			break;
 		}
 		case __GIM_WRITE : {
-			item->hand->fd = ::open( item->hand->name , O_WRONLY | O_BINARY );
+			item->hand->fd = ::open( item->hand->name , O_WRONLY | O_CREAT | O_TRUNC | O_BINARY );
 			break;
 		}
 		case __GIM_APPEND : {
-			item->hand->fd = ::open( item->hand->name , O_APPEND | O_BINARY );
+			item->hand->fd = ::open( item->hand->name , O_APPEND | O_CREAT | O_BINARY );
 			break;
 		}
 		default : {
@@ -266,7 +272,7 @@ void	gim_file_manager_obj::close( _gim_handler * hand ) {
 		//~ del_item( item );
 		//~ gim_memory->Free( hand );
 		//~ gim_error->set( "gim_file_manager_obj::close" , "Backup item handler" );
-		//~ _gim_handler	* tmp = item->hand;
+		//~
 		//~ gim_error->set( "gim_file_manager_obj::close" , "Deleting item from list" );
 		del_item( item );
 		//~ gim_error->set( "gim_file_manager_obj::close" , "Item memory releasing" );
@@ -318,11 +324,10 @@ void	gim_file_manager_obj::close( const char * name ) {
 			gim_error->set( "gim_file_manager_obj::close" , "Unloaded succesfully" );
 		}
 		gim_error->set( "gim_file_manager_obj::close" , "Backup item handler" );
-		_gim_handler	* tmp = item->hand;
 		gim_error->set( "gim_file_manager_obj::close" , "Deleting item from list" );
 		del_item( item );
 		gim_error->set( "gim_file_manager_obj::close" , "Item memory releasing" );
-		gim_memory->Free( tmp );
+		// del_item() already frees the handle: freeing it again here was a double free
 	}
 	else
 		gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::close" , "item not found. Maybe never opened or close twice" , __GIM_NOT_OK );
@@ -359,7 +364,7 @@ _gim_handler *	gim_file_manager_obj::open( const char * filename , _gim_flag met
 	switch( method ) {
 		case __GIM_FILE_DESCRIPTOR : {
 			open_fd( item , mode );
-			if ( item->hand->fd == 0 ) {
+			if ( item->hand->fd < 0 ) {
 				gim_error->set( GIM_ERROR_CRITICAL , "gim_file_manager_obj::open" , "Some problem opening file" , __GIM_NOT_OK );
 				del_item( item );
 				return NULL;
@@ -544,6 +549,7 @@ _gim_flag	gim_file_manager_obj::flush( _gim_handler * hand , _gim_buffer data , 
 	}
 	gim_file_manager_list * tmp = NULL;
 	tmp = item( hand->name );
+	if ( tmp == NULL ) return __GIM_NOT_OK;
 	if ( tmp->mode == __GIM_WRITE ) {
 		switch ( tmp->method ) {
 			case __GIM_FILE_DESCRIPTOR : {
@@ -702,9 +708,9 @@ _gim_flag	gim_file_obj::error( void ) {
 
 
 _gim_flag	gim_file_obj::type( void ) {
-	if ( gim_utils.isdir( this->fname ) == __GIM_YES )
+	if ( gim_utils.isdir( this->handler->name ) == __GIM_YES )
 		return __GIM_REGULAR_NODE;
-	if ( gim_utils.isregular( this->fname ) == __GIM_YES ) {
+	if ( gim_utils.isregular( this->handler->name ) == __GIM_YES ) {
 		if ( this->handler->size == 0 ) {
 			return __GIM_EMPTY_FILE;
 		}
@@ -712,9 +718,9 @@ _gim_flag	gim_file_obj::type( void ) {
 			return __GIM_REGULAR_FILE;
 		}
 	}
-	if ( gim_utils.islink( this->fname ) == __GIM_YES )
+	if ( gim_utils.islink( this->handler->name ) == __GIM_YES )
 		return __GIM_LINK;
-	if ( gim_utils.isdevice( this->fname ) == __GIM_YES )
+	if ( gim_utils.isdevice( this->handler->name ) == __GIM_YES )
 		return __GIM_DEVICE;
 	return __GIM_FILE_UNKNOWN;
 }
@@ -840,8 +846,10 @@ char *	gim_file_obj::load_gch( void ) {
 
 void		gim_file_obj::unload( void ) {
 	if ( handler->loadp != NULL ) {
-		if ( gim_memory->Free( handler->loadp ) == __GIM_OK ) 
+		if ( gim_memory->Free( handler->loadp ) == __GIM_OK ) {
+			handler->loadp = NULL;		// clear it: a later load() must not return the freed buffer
 			gim_error->set( "gim_file_obj::unload" , "Unloaded succesfully" );
+		}
 		else
 			gim_error->set( GIM_ERROR_CRITICAL , "gim_file_obj::unload" , "Some memory issue" , __GIM_ERROR );
 	}

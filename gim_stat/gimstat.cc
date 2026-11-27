@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,8 +26,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
@@ -49,6 +48,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 #define MIN_SIZE	256
 /* files at least this big get one thread per test and a progress bar on stderr */
@@ -434,6 +434,57 @@ static int gim_stderr_is_terminal( void ) {
 #endif
 }
 
+/* -q (minimal): only the GKaos line reaches the screen, as a single line. stdout and stderr go to the null device
+   and the line is written to the original stdout. The Gim log is not affected: it stays complete. */
+static int gs_minimal = 0;
+static int gs_out = 1;
+
+static void gs_write_out( const char * text ) {
+#ifdef _WIN32
+	_write( gs_out , text , (unsigned int) strlen( text ) );
+#else
+	(void) write( gs_out , text , strlen( text ) );
+#endif
+}
+
+static void gim_stat_say( const char * text ) {
+	if ( !gs_minimal ) {
+		puts( text );
+		return;
+	}
+	gs_write_out( text );
+	gs_write_out( "\n" );
+}
+
+static void gim_stat_minimal_on( void ) {
+	fflush( stdout );
+	fflush( stderr );
+#ifdef _WIN32
+	gs_out = _dup( 1 );
+	int nul = _open( "NUL" , _O_WRONLY );
+	_dup2( nul , 1 );
+	_dup2( nul , 2 );
+	_close( nul );
+#else
+	gs_out = dup( 1 );
+	int nul = open( "/dev/null" , O_WRONLY );
+	dup2( nul , 1 );
+	dup2( nul , 2 );
+	close( nul );
+#endif
+}
+
+static void gim_stat_minimal_result( double score ) {
+	char line[ 64 ];
+	if ( !gs_minimal )
+		return;
+	if ( score < 0 )
+		snprintf( line , sizeof( line ) , "GKaos : n/a (file too small for the analysis)" );
+	else
+		snprintf( line , sizeof( line ) , "GKaos : %5.1f / 100" , score );
+	gim_stat_say( line );
+}
+
 static void gim_draw_bar( const std::vector< gim_test_ctx > & ctx ) {
 	long sum = 0;
 	char bar[ 41 ];
@@ -492,7 +543,7 @@ static int gim_pool_size( int max_jobs , long long per_job ) {
 	static int last_max = -1 , last_n = -1;   /* log only when the sizing changes */
 	static long long last_per = -1;
 	if ( max_jobs != last_max || per_job != last_per || n != last_n ) {
-		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "threads: %d for %d jobs (logical processors %d, memory budget %lld MB, %lld MB per job)" , n , max_jobs , hw , budget / 1048576 , per_job / 1048576 );
+		gim_error->app( GIM_ERROR_MESSAGE , "gimstat" , "threads: %d for %d jobs (logical processors %d, memory budget %lld MB, %lld MB per job)" , n , max_jobs , hw , budget / 1048576 , per_job / 1048576 );
 		last_max = max_jobs;  last_per = per_job;  last_n = n;
 	}
 	return n;
@@ -558,9 +609,9 @@ static double gim_stat_tests( const unsigned char * buf , long n ) {
 
 		auto run_job = [ &jobs , &ctx , n ]( int j ) {
 			gim_ctx = &ctx[ j ];
-			gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_test" , "%s: start (%ld bytes)" , gim_test_names[ j ] , n );
+			gim_error->app( GIM_ERROR_MESSAGE , "gimstat_test" , "%s: start (%ld bytes)" , gim_test_names[ j ] , n );
 			jobs[ j ]();
-			gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_test" , "%s: end" , gim_test_names[ j ] );
+			gim_error->app( GIM_ERROR_MESSAGE , "gimstat_test" , "%s: end" , gim_test_names[ j ] );
 			gim_ctx = NULL;
 			ctx[ j ].progress.store( 1000 );
 			ctx[ j ].done.store( true );
@@ -692,21 +743,39 @@ static void gim_run_blocks( int nb , int workers , bool show , const std::functi
 	for ( auto & x : th )
 		x.join();
 }
-static double gim_stat_blocks( const unsigned char * buf , long n , int nb ) {
+/* Block analysis. Below GIM_LC_MIN_BYTES the blocks have a fixed size of GIM_BLOCK_MIN_BYTES, spread evenly over the file;
+   their number is n / GIM_BLOCK_MIN_BYTES, at most nb. From GIM_LC_MIN_BYTES on the file is cut into nb contiguous blocks,
+   so that each block is big enough for the linear complexity test (gim_test_linear needs 40000 words per block). */
+#define GIM_BLOCK_MIN_BYTES	8192
+#define GIM_LC_MIN_BYTES	( 16L * 1024 * 1024 )
+static double gim_stat_blocks( const unsigned char * buf , long n , int nb_req ) {
 	double * sc;
-	long bs = n / nb , i;
+	long bs , stride;
+	int nb;
 	double mean;
-	if ( bs < 8192 ) {
+	if ( n < GIM_BLOCK_MIN_BYTES ) {
 		puts( "file too small for the block analysis" );
-		return 0.0;
+		return -1.0;   /* not evaluable: -1 (exit code 255), not a score */
+	}
+	if ( n >= GIM_LC_MIN_BYTES ) {
+		nb = nb_req;
+		bs = n / nb;
+		stride = bs;
+	}
+	else {
+		nb = (int) ( n / GIM_BLOCK_MIN_BYTES );
+		if ( nb > nb_req )
+			nb = nb_req;
+		bs = GIM_BLOCK_MIN_BYTES;
+		stride = n / nb;
 	}
 	sc = (double *) gim_mem_alloc( sizeof( double ) * nb );
 	gim_stat_threads_allowed();   /* decided here, in the main thread */
 	gim_quiet = 1;
 	gim_run_blocks( nb , gim_pool_size( nb , 11LL * bs ) , gim_stderr_is_terminal() != 0 , [ & ]( int j ) {
-		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_block" , "block %d of %d: start (%ld bytes)" , j + 1 , nb , bs );
-		sc[ j ] = gim_stat_tests( buf + j * bs , bs );
-		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_block" , "block %d of %d: end, score %.1f" , j + 1 , nb , sc[ j ] );
+		gim_error->app( GIM_ERROR_MESSAGE , "gimstat_block" , "block %d of %d: start (%ld bytes)" , j + 1 , nb , bs );
+		sc[ j ] = gim_stat_tests( buf + (long) j * stride , bs );
+		gim_error->app( GIM_ERROR_MESSAGE , "gimstat_block" , "block %d of %d: end, score %.1f" , j + 1 , nb , sc[ j ] );
 	} );
 	gim_quiet = 0;
 	mean = gim_print_blocks( sc , nb , bs );
@@ -742,11 +811,11 @@ static double gim_stat_big( const char * path , long long size ) {
 		size_t got;
 		fseeko64( f , (off64_t) ( i * stride ) , SEEK_SET );
 		got = fread( buf , 1 , (size_t) bs , f );
-		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_sample" , "sample %d of %d: start at offset %lld (%lu bytes)" , i + 1 , nb , (long long) ( i * stride ) , (unsigned long) got );
+		gim_error->app( GIM_ERROR_MESSAGE , "gimstat_sample" , "sample %d of %d: start at offset %lld (%lu bytes)" , i + 1 , nb , (long long) ( i * stride ) , (unsigned long) got );
 		gim_quiet = 1;
 		sc[ i ] = gim_stat_tests( buf , (long) got );
 		gim_quiet = 0;
-		gim_error->Set( GIM_ERROR_MESSAGE , "gimstat_sample" , "sample %d of %d: end, score %.1f" , i + 1 , nb , sc[ i ] );
+		gim_error->app( GIM_ERROR_MESSAGE , "gimstat_sample" , "sample %d of %d: end, score %.1f" , i + 1 , nb , sc[ i ] );
 		if ( show )
 			gim_draw_progress( (double) ( i + 1 ) / nb , "samples" );
 	}
@@ -765,6 +834,7 @@ int main ( int argc , char *argv[] ) {
 	if ( argc < 2 ) {
 		puts( "gimstat V0.1 usage :" );
 		puts( "gimstat filename \n" );
+		puts( "gimstat -q filename   (only the GKaos score, one line; the log stays complete)\n" );
 		puts( "gimstat coded by asyntote" );
 		puts( "asyntote@gkript.org" );
 		exit( -1 );
@@ -774,7 +844,31 @@ int main ( int argc , char *argv[] ) {
 	gim_set_application_version( "0.1" );
 
 	gim_obj		* gim = new gim_obj;
-	gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "run start: %s (%lld bytes)" , argv[ 1 ] , gim_file_size64( argv[ 1 ] ) );
+
+	/* options through the Gim scanner (gim_getopt_obj). The scanner puts the options first: the file name is then argv[ optind ] */
+	gim_getopt_obj * gsopt = new gim_getopt_obj;
+	gsopt->scanopt( argc , argv , ":q" );
+	gs_minimal = ( gsopt->search( 'q' ) == __GIM_YES );
+	if ( optind > 1 ) {
+		argv[ optind - 1 ] = argv[ 0 ];
+		argv += optind - 1;
+		argc -= optind - 1;
+	}
+	delete gsopt;
+	if ( argc < 2 ) {
+		puts( "gimstat filename  |  gimstat -q filename" );
+		delete gim;
+		exit( -1 );
+	}
+	if ( gs_minimal && ( argc > 2 ) ) {
+		puts( "gimstat -q works on one file only" );
+		delete gim;
+		exit( -1 );
+	}
+	if ( gs_minimal )
+		gim_stat_minimal_on();
+
+	gim_error->app( GIM_ERROR_MESSAGE , "gimstat" , "run start: %s (%lld bytes)%s" , argv[ 1 ] , gim_file_size64( argv[ 1 ] ) , gs_minimal ? ", minimal output" : "" );
 	auto gim_t0 = std::chrono::steady_clock::now();
 
 	/* files over 1 GiB: sampled from disk; done after the Gim environment is up (gim_error, conf and memory are used) */
@@ -782,8 +876,9 @@ int main ( int argc , char *argv[] ) {
 		long long fsz = gim_file_size64( argv[1] );
 		if ( fsz > (long long) 1 << 30 ) {
 			double g = gim_stat_big( argv[1] , fsz );
-			gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "run end: exit %d, %.1f s" , (int) g , std::chrono::duration< double >( std::chrono::steady_clock::now() - gim_t0 ).count() );
+			gim_error->app( GIM_ERROR_MESSAGE , "gimstat" , "run end: exit %d, %.1f s" , (int) g , std::chrono::duration< double >( std::chrono::steady_clock::now() - gim_t0 ).count() );
 			delete gim;
+			gim_stat_minimal_result( g );
 			exit( (int) g );
 		}
 	}
@@ -816,7 +911,7 @@ int main ( int argc , char *argv[] ) {
 	_gim_flag   multisin=0;
 
 	if( gim->file_manager->exist( argv[1]) == __GIM_NOT_EXIST ) {
-		puts("File not exists\n");
+		gim_stat_say( "File not exists" );
 		delete gim;
 		exit(1);
 	}
@@ -1094,9 +1189,10 @@ int main ( int argc , char *argv[] ) {
 		
 	}
 	
-	gim_error->Set( GIM_ERROR_MESSAGE , "gimstat" , "run end: exit %d, %.1f s" , (int) gqcaos , std::chrono::duration< double >( std::chrono::steady_clock::now() - gim_t0 ).count() );
+	gim_error->app( GIM_ERROR_MESSAGE , "gimstat" , "run end: exit %d, %.1f s" , (int) gqcaos , std::chrono::duration< double >( std::chrono::steady_clock::now() - gim_t0 ).count() );
 	delete gim;
 	
+	gim_stat_minimal_result( gqcaos );
 	exit( (int)gqcaos);
 }
 

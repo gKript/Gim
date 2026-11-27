@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,15 +26,35 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4
 //
 
+#define GIM_VERSION_INTERNAL		// the only file that sees gim_gkmake.h (see gim_version.h)
+/*!     \file       gim_version.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
+
 #include "../include/gim_version.h"
+
+
+int		gim_version_subminor	( void ) {
+	return GIM_SUBMINOR;
+}
+
+const char *	gim_version_build_last	( void ) {
+#ifdef GIM_BUILD_LAST
+	return GIM_BUILD_LAST;
+#else
+	return "";
+#endif
+}
 
 
 #ifdef GKMAKE_VERSIONING

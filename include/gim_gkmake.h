@@ -1,8 +1,8 @@
 /***************************************************************************
  *            gim_gkmake.h
  *
- *  Thursday 26-11-2026 16:20:18
- *  Copyright  2006  gKript.org
+ *  Friday 27-11-2026 18:29:05
+ *  Copyright (C) 2006-2026 gKript.org
  *  gkmake version : 0.8-5
  *  asyntote@gkript.org
  ***************************************************************************
@@ -10,7 +10,7 @@
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
@@ -19,9 +19,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place
- *  Suite 330, Boston, MA 02111-1307, USA.
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
     /*!
@@ -38,9 +36,9 @@
 #define	GIM_GKMAKE_VERSIONING
 
    #define GIM_AUTHOR                       "gKript.org"
-   #define GIM_GKMAKE_TOTAL_BUILD           1676
-   #define GIM_GKMAKE_BUILD                 1486
-   #define GIM_GKMAKE_LAST_BUILD            "Thursday 26-11-2026 16:20:18"
+   #define GIM_GKMAKE_TOTAL_BUILD           1703
+   #define GIM_GKMAKE_BUILD                 1511
+   #define GIM_GKMAKE_LAST_BUILD            "Friday 27-11-2026 18:29:05"
    #define GIM_GKMAKE_RELEASE               "0.8-5"
 
 #endif

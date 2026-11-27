@@ -1,0 +1,4 @@
+db use test_records_perm
+select clienti
+delete clienti where codice > 0
+exit

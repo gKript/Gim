@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003
+	Copyright (C) 2002-2026
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,18 +26,17 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
 /*!	\file		gim_db_structures.h
 	\version	2.5-0
 	\brief		Data structures and constants of the Gim database (gim_db_obj).
-				Copyright (C) 2002, 2003<BR>
+				Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
-				[ http://www.gkript.org/gkript-gpl.html ]
+				Released under the terms of the GNU General Public License v3<BR>
+				[ https://www.gnu.org/licenses/gpl-3.0.html ]
 */
 
 #ifndef _GIM_DB_STRUCTURES_H_
@@ -72,6 +71,9 @@
 		__GDBS_PIN_TABLE,		/*!< PIN TABLE */
 		__GDBS_UNPIN_TABLE,		/*!< UNPIN TABLE */
 		__GDBS_INSERT,			/*!< INSERT */
+		__GDBS_UPDATE,			/*!< UPDATE <table> SET <field> <value> [...] WHERE <field> <value> [AND ...] */
+		__GDBS_DELETE,			/*!< DELETE <table> WHERE <field> <value> [AND ...] */
+		__GDBS_DROP_TABLE,		/*!< DROP TABLE <table> */
 	};
 
 
@@ -182,13 +184,13 @@
 		char			file_name_data[512];		/*!< name of the data file */
 		char			file_name_struct_long[512];	/*!< full path of the structure file */
 		char			file_name_data_long[512];	/*!< full path of the data file */
-		_gim_flag		type;							//  Permanent, volatile or virtual
-		_gim_int32		items;							//  numero di records presenti
-		_gim_Uint8		fields_number;					//  number of fields per record
-		_gim_int16		key_field_number;				//  numero del campo KEY
-		_gim_int16		autoincrementl_field_number;	//  numero del campo KEY
-		_gim_int16		unique_field_number;			//  numero del campo KEY
-		_gim_Uint32		sizeof_per_record;				//  da valutare
+		_gim_flag		type;							/*!< kind of the table (gim_db_table_properties) */
+		_gim_int32		items;							/*!< number of records */
+		_gim_Uint8		fields_number;					/*!< number of fields per record */
+		_gim_int16		key_field_number;				/*!< id of the KEY field (fields are numbered from 1), -1 when there is none */
+		_gim_int16		autoincrementl_field_number;	/*!< id of the AUTOINCREMENTAL field, -1 when there is none */
+		_gim_int16		unique_field_number;		/*!< id of the UNIQUE field, -1 when there is none */
+		_gim_Uint32		sizeof_per_record;				/*!< not used yet */
 
 		_gim_list *		fields;			/*!< list of the _gim_db_field of the table */
 		_gim_list *		records;		/*!< list of the _gim_db_record of the table */
@@ -231,8 +233,17 @@
 		_gim_flag				fvalue;			/*!< type of the first parameter */
 		_gim_flag				svalue;			/*!< type of the second parameter */
 		_gim_flag				tvalue;			/*!< type of the third parameter */
-		_gim_list *				ins;			/*!< pairs of label and value of an INSERT command */
+		_gim_list *				ins;			/*!< pairs of label and value of an INSERT or UPDATE command (the fields to set) */
+		_gim_list *				cnd;			/*!< conditions of an UPDATE or DELETE command (field and value, equality only) */
 	};
 
+
+	/*! One condition of a record search: field, operator and value.
+		\a op is one of  =  !=  <  <=  >  >=  . Numbers (INT, FLOAT) are compared as numbers, the other types as text. */
+	struct _gim_db_cond {
+		const char *	field;		/*!< name of the field */
+		const char *	op;			/*!< operator */
+		const char *	value;		/*!< value to compare with, as text */
+	};
 
 #endif // _GIM_DB_STRUCTURES_H_

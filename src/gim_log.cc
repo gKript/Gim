@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,27 +26,68 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4
 //
 
-#include	"../include/gim_log.h"
-#include <atomic>
+/*!     \file       gim_log.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
-/* thread column: blank on the main thread, T1 T2 ... on the others, numbered from 1 in the order they first write to the log */
+#include	"../include/gim_log.h"
+#include <mutex>
+#include <set>
+
+/* Pool of the thread numbers. A thread takes the smallest free number on its first log line and gives it back when it ends,
+   so the next thread reuses it: T# is a slot (how many threads run at the same time), the thread id of the system is the unique key. */
+struct gim_thread_slots_obj {
+	std::mutex		lock;
+	std::set< int >	free_numbers;
+	int				next = 1;
+	int take( void ) {
+		std::lock_guard< std::mutex > guard( lock );
+		if ( !free_numbers.empty() ) {
+			int number = *free_numbers.begin();
+			free_numbers.erase( free_numbers.begin() );
+			return number;
+		}
+		return next++;
+	}
+	void give( int number ) {
+		std::lock_guard< std::mutex > guard( lock );
+		free_numbers.insert( number );
+	}
+};
+
+static gim_thread_slots_obj & gim_thread_slots( void ) {
+	static gim_thread_slots_obj slots;
+	return slots;
+}
+
+/* one per thread: the destructor runs when the thread ends and returns its number to the pool */
+struct gim_thread_number_obj {
+	int number = 0;
+	~gim_thread_number_obj() {
+		if ( number > 0 )
+			gim_thread_slots().give( number );
+	}
+};
+
+/* thread column: blank on the main thread, T1 T2 ... on the others */
 static const char * gim_thread_tag( void ) {
-	static std::atomic<int> counter( 0 );
-	static thread_local int number = 0;
+	static thread_local gim_thread_number_obj slot;
 	static thread_local char tag[ 8 ];
 	if ( gim_is_main_thread() )
 		return "   ";
-	if ( number == 0 )
-		number = ++counter;
-	sprintf( tag , "T%-2d" , number );
+	if ( slot.number == 0 )
+		slot.number = gim_thread_slots().take();
+	sprintf( tag , "T%-2d" , slot.number );
 	return tag;
 }
 
@@ -71,7 +112,7 @@ static void gim_write_log_header( FILE * fd , const char * file_name , const cha
 		if ( fmt[ i ] == '$' ) {
 			i++;
 			switch ( fmt[ i ] ) {
-				case 't' : sprintf( piece , "%-11s" , "time(s)" ); break;
+				case 't' : sprintf( piece , "%11s" , "time(s)" ); break;
 				case 'p' : sprintf( piece , "%5s" , "tid" ); break;
 				case 'T' : sprintf( piece , "%-3s" , "thr" ); break;
 				case 'k' : sprintf( piece , "%-4s" , "kind" ); break;
@@ -221,11 +262,8 @@ void	gim_log_obj::addline( pid_t cur_pid , const char *t , const char *func , co
 void	gim_log_obj::addline_format( const char *t , const char *func , const char *mess , int val ) {
 	if ( enabled ) {
 		if ( initialized == __GIM_YES ) {
-			if ( log_fd != NULL ) {
-			}
-			else {
-				gim_error->set( "gim_log_obj::addline_format" , 7 );
-			}
+			if ( log_fd == NULL )
+				return;
 			char tmp[1024];
 			int c, len;
 			strcpy( tmp , "" );
@@ -234,7 +272,7 @@ void	gim_log_obj::addline_format( const char *t , const char *func , const char 
 					case '$' : {
 						switch ( format[++c] ) {
 							case 't' : {
-								sprintf( tmp , "%s%s" , tmp , debug_timer.get_usec() );
+								sprintf( tmp , "%s%11s" , tmp , debug_timer.get_usec() );
 								break;
 							}
 							case 'p' : {
@@ -294,11 +332,8 @@ void	gim_log_obj::addline_format( const char *t , const char *func , const char 
 void	gim_log_obj::addline_format( pid_t cur_pid , const char *t , const char *func , const char *mess , int val ) {
 	if ( enabled ) {
 		if ( initialized == __GIM_YES ) {
-			if ( log_fd != NULL ) {
-			}
-			else {
-				gim_error->set( "gim_log_obj::addline_format" , 7 );
-			}
+			if ( log_fd == NULL )
+				return;
 			char tmp[1024];
 			int c, len;
 			strcpy( tmp , "" );
@@ -307,7 +342,7 @@ void	gim_log_obj::addline_format( pid_t cur_pid , const char *t , const char *fu
 					case '$' : {
 						switch ( format[++c] ) {
 							case 't' : {
-								sprintf( tmp , "%s%s" , tmp , debug_timer.get_usec() );
+								sprintf( tmp , "%s%11s" , tmp , debug_timer.get_usec() );
 								break;
 							}
 							case 'p' : {

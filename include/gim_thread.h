@@ -1,17 +1,20 @@
 //
 //  gim_thread.h
 //
-//  Gim  -  Generic Information Manager
-//  A background thread that the program starts and stops explicitly.
-//  Gim never starts a thread by itself: a thread exists only when your program calls start().
+//  Gim - Generic Information Manager
+//
+//  [http://www.gkript.org]
 //
 /*#############################################################################
+
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -19,7 +22,20 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
+
 #############################################################################*/
+//  Gim  -  Generic Information Manager
+//  A background thread that the program starts and stops explicitly.
+//  Gim never starts a thread by itself: a thread exists only when your program calls start().
+
+/*!     \file       gim_thread.h
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #ifndef _GIM_THREAD_OBJ_H_
 #define _GIM_THREAD_OBJ_H_

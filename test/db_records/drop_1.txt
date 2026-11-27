@@ -1,0 +1,9 @@
+db create test_records_drop %SEED_DROP%
+insert alpha codice 1
+insert beta codice 2
+insert beta codice 3
+table list
+table drop alpha
+table list
+table drop nope
+exit

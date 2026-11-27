@@ -2,18 +2,19 @@
 //  gim_rpi_gpio.h
 //
 //  Gim - Generic Information Manager
-//  GPIO pins (Raspberry Pi and other Linux boards). Digital input / output only.
 //
-//  Linux backend: sysfs (/sys/class/gpio). Pin numbers are the BCM / global GPIO numbers.
-//  On Windows there are no GPIO pins: every call returns an error.
+//  [http://www.gkript.org]
 //
 /*#############################################################################
+
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -21,7 +22,20 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
+
 #############################################################################*/
+//  GPIO pins (Raspberry Pi and other Linux boards). Digital input / output only.
+//  Linux backend: sysfs (/sys/class/gpio). Pin numbers are the BCM / global GPIO numbers.
+//  On Windows there are no GPIO pins: every call returns an error.
+
+/*!     \file       gim_rpi_gpio.h
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #ifndef _GIM_RPI_GPIO_H_
 #define _GIM_RPI_GPIO_H_

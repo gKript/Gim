@@ -9,14 +9,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -25,13 +25,19 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4
 //
+
+/*!     \file       gim_environment.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include "../include/gim.h"
 #include "../include/gim_thread.h"
@@ -186,7 +192,7 @@ void	gim_home_obj::up( void ) {
 			gim_conf->AddKey(		"version" 			, "minor"				, GIM_MINOR );
 			gim_conf->AddKey(		"version" 			, "subminor"			, GIM_SUBMINOR );
 			#ifdef GKMAKE_VERSIONING
-				gim_conf->AddKey(	"version" 			, "built"				, GIM_GKMAKE_BUILD );
+				gim_conf->AddKey(	"version" 			, "built"				, gim_version_subminor() );
 			#endif
 			gim_conf->AddKey(		"version" 			, "version"				, gim_version_small() );
 			gim_conf->AddKeyFlag(	"system" 			, "sig_trap"			, __GIM_ON );
@@ -348,8 +354,8 @@ void	gim_home_obj::up( void ) {
 			}
 			#ifdef GKMAKE_VERSIONING
 				IF_EXIST_KEY_IN_CONF( "version" , "built" ) {
-					if ( gim_conf->GetKeyINT( "version" , "built" ) != GIM_GKMAKE_BUILD ) {
-						gim_conf->ChangeKey( "version" , "built" , GIM_GKMAKE_BUILD );
+					if ( gim_conf->GetKeyINT( "version" , "built" ) != gim_version_subminor() ) {
+						gim_conf->ChangeKey( "version" , "built" , gim_version_subminor() );
 						changed = __GIM_YES;
 						gim_error->set( GIM_ERROR_MESSAGE , "gim_home_obj::up" , "Gim built version updated" , __GIM_ERROR );
 					}

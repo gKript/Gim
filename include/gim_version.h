@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,17 +26,16 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
 /*!	\file		gim_version.h
 	\version	2.0-0
-	\brief		Copyright (C) 2002, 2003<BR>
+	\brief		Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
-				[ http://www.gkript.org/gkript-gpl.html ]
+				Released under the terms of the GNU General Public License v3<BR>
+				[ https://www.gnu.org/licenses/gpl-3.0.html ]
 */ 		
 
 #ifndef _GIM_VERSION_H
@@ -87,15 +86,36 @@
 	#define	GIM_MAJOR				2			/*!<	The major version of Gim	*/
 	#define	GIM_MINOR				9			/*!<	The minor version of Gim	*/
 
+	/*	Build counters (gim_gkmake.h) change at every gkmake run. They are read only by
+		src/gim_version.cc (which defines GIM_VERSION_INTERNAL); every other file gets them
+		through the functions below, so a new build recompiles one file instead of the whole library. */
 	#if ( GIM_VERSION_STATE == __GIM_DEVELOP )				/*!<	When defined Gim include the bmake file generetad by bmake that is a built counter */
 		#define	GKMAKE_VERSIONING
-		#include	"gim_gkmake.h"
-		#define GIM_SUBMINOR		GIM_GKMAKE_BUILD
-		#define	GIM_BUILD_LAST		GIM_GKMAKE_LAST_BUILD
-	#elif ( GIM_VERSION_STATE == __GIM_RELEASE )
-		#define GIM_SUBMINOR		1
 	#endif
-	
+
+	#ifdef GIM_VERSION_INTERNAL
+		#if ( GIM_VERSION_STATE == __GIM_DEVELOP )
+			#include	"gim_gkmake.h"
+			#define GIM_SUBMINOR		GIM_GKMAKE_BUILD
+			#define	GIM_BUILD_LAST		GIM_GKMAKE_LAST_BUILD
+		#elif ( GIM_VERSION_STATE == __GIM_RELEASE )
+			#define GIM_SUBMINOR		1
+		#endif
+	#else
+		#define GIM_SUBMINOR		gim_version_subminor()		/*!<	Same value as before, now read at run time */
+		#define	GIM_BUILD_LAST		gim_version_build_last()
+	#endif
+
+	/*!	\fn		int gim_version_subminor( void )
+		\brief	The subminor version of Gim (the successful build number in develop state)
+	*/
+	int			gim_version_subminor	( void );
+
+	/*!	\fn		const char * gim_version_build_last( void )
+		\brief	Date of the last build written by gkmake (empty string in release state)
+	*/
+	const char *	gim_version_build_last	( void );
+
 
 
 	/*!	\fn		char * gim_version( void )

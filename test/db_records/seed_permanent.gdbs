@@ -1,0 +1,10 @@
+CREATE DB test_records_perm;
+SET DB PERMANENT;
+CREATE TABLE clienti;
+PIN TABLE clienti;
+ADD FIELD 1 INT codice;
+SET FIELD 1 KEY;
+ADD FIELD 2 STRING nome;
+ADD FIELD 3 FLOAT temperatura;
+ADD FIELD 4 BOOL attivo;
+UNPIN TABLE;

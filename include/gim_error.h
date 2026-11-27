@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003
+	Copyright (C) 2002-2026
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,18 +26,17 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
 /*!	\file		gim_error.h
 	\version	2.0-0
 	\brief		Error management of Gim: messages, levels and the behavior on fatal errors.
-				Copyright (C) 2002, 2003<BR>
+				Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
-				[ http://www.gkript.org/gkript-gpl.html ]
+				Released under the terms of the GNU General Public License v3<BR>
+				[ https://www.gnu.org/licenses/gpl-3.0.html ]
 */
 
 /*! \class 		gim_error_obj
@@ -139,7 +138,7 @@
 
 			/*! \fn		void set( char * type , char * function , char * message , int value )
 				\brief	With this method you can set an error in Gim style from your program.
-				\param	type	It is a string of 3 bytes and it describe the error type. Gim has his string \n
+				\param	type	It is a short text, up to 31 characters: use the GIM_ERROR_* macros. Gim has his string \n
 								but you can use yours. For a \a FATAL error you must use \a GIM_ERROR_FATAL
 				\param	function	It is the name of the function generate the error.
 				\param	message	The message of the error.
@@ -156,7 +155,7 @@
 			void		set( const char * function , const char * message );
 
 			/*! \fn		void Set( char * type , char * function , char * format , ... )
-				\brief	Like set(), but the message is a printf-style format followed by its arguments.
+				\brief	Like set(), but the message is a printf-style format followed by its arguments. Keep the text under 500 characters: see the errors page.
 				\param	type		The type of the error (see GIM_ERROR_*)
 				\param	function	It is the name of the function generate the error.
 				\param	format		The format of the message.
@@ -275,5 +274,101 @@
 	extern gim_error_obj		* gim_error;
 	/*! The most common errors, used by gim_error_obj::set( function , index ). */
 	extern gim_error_list_str	gim_error_list[];
+
+/*!	\page	gimdoc_error	Errors and log
+
+	Every message of Gim goes through \ref gim_error_obj and from there to the log. Global object: \c gim_error.
+	Header: gim_error.h
+
+	\tableofcontents
+
+	\section	gimdoc_err_what	What it is for
+
+	A message has a type, the name of the function that reports it, a text and a value. It is written to the log, it can be
+	printed on the screen, and a FATAL message ends the program (by default).
+
+	\section	gimdoc_err_types	Types
+
+	| Macro | In the log | Rank | Value given by Set() |
+	|-------|------------|------|----------------------|
+	| \c GIM_ERROR_DEBUG | " d " | 0 | __GIM_OK |
+	| \c GIM_ERROR_MESSAGE | "    " | 1 | __GIM_OK |
+	| \c GIM_ERROR_WARNING | " w " | 2 | __GIM_NOT_OK |
+	| \c GIM_ERROR_CRITICAL | " C " | 3 | __GIM_ERROR |
+	| \c GIM_ERROR_FATAL | " F " (with colour codes on a terminal) | 4 | __GIM_ERROR |
+	| \c GIM_ERROR_PRG_MESSAGE | "--->" | 1 | __GIM_OK |
+
+	\c GIM_ERROR_OK (" ok ") and \c GIM_ERROR_UNKNOWN (" UU ") exist too. Set() does not accept \c GIM_ERROR_OK: it becomes
+	\c GIM_ERROR_UNKNOWN. Use set() for it.
+
+	\section	gimdoc_err_report	How to report
+
+	Three forms:
+	- set( type , function , message , value ): the message is already a text.
+	- Set( type , function , format , ... ): like printf. The value follows from the type.
+	- app( type , function , format , ... ): for the programs that use Gim. The function column shows the name of the
+	  program, for example "[GimUI] main()", so the lines of the program are easy to tell from those of Gim.
+
+	The function name gets "()" added by the log.
+
+	\code{.cpp}
+	gim_error->Set( GIM_ERROR_CRITICAL , "station::load" , "file %s cannot be read" , name );
+	gim_error->app( GIM_ERROR_MESSAGE , "main" , "started with %d argument(s)" , argc );
+	\endcode
+
+	\section	gimdoc_err_level	Minimum level
+
+	Messages below the minimum level are not written, and Set() does not even format them. The minimum is read from
+	\c debug::min_type in \ref gimdoc_files_conf : DEBUG, MESSAGE, WARNING, CRITICAL or FATAL. The default is MESSAGE, so DEBUG
+	messages are hidden. In code:
+	\code{.cpp}
+	gim_error->set_min_type( GIM_ERROR_WARNING );
+	\endcode
+
+	\section	gimdoc_err_fatal	Fatal errors
+
+	A FATAL message is written to the log. When on_fatal_verbose is on, it is printed on stderr. When on_fatal_exit is on
+	(the default), the program ends with the value of the message. The program ends only when the value is not 0 (see the
+	warnings), so report a FATAL error with Set() or set() and \c __GIM_ERROR.
+
+	The behaviour is changed with set( command , __GIM_YES or __GIM_NO ) and read with get( command ):
+
+	| Command | Default | Meaning |
+	|---------|---------|---------|
+	| \c GIM_ON_FATAL_EXIT | YES | end the program on a FATAL message |
+	| \c GIM_ON_FATAL_VERBOSE | YES | print a FATAL message on stderr |
+	| \c GIM_ALWAYSE_VERBOSE | NO | print every message on stderr |
+	| \c GIM_AUTOGET | YES | call get() after every message |
+	| \c GIM_VERBOSE_ON_CRITICAL | YES | print CRITICAL messages on stderr (key \c error::verbose_on_critical) |
+
+	\section	gimdoc_err_log	The log
+
+	The messages are written to the log file. Until the file is open they are kept in memory: the next message written
+	after the file opens writes them out (see the warnings). Each line has the format of \c debug::debug_format in
+	\ref gimdoc_files_conf (\ref gimdoc_conf_log describes the codes).
+
+	\section	gimdoc_err_threads	Threads
+
+	All the methods take the global lock of Gim, so the calls are serialized. A FATAL message from any thread ends the
+	whole program. The text of the last message is kept in the object and can be read with get().
+
+	\section	gimdoc_err_warnings	Warnings and limits
+
+	- The formatted text of Set() goes into a buffer of 1024 characters without a check: a longer text overwrites the stack.
+	  Keep messages under 500 characters.
+	- A message that is not CRITICAL is copied into a buffer of 512 characters: from 512 characters on, the copy overflows
+	  it. Keep messages under 500 characters.
+	- char_filter() removes nothing: it returns the original text, so the newlines of a message stay in the log.
+	- When the log is open and messages are waiting in memory, the waiting messages are written and the message that
+	  caused the write is not: it is lost.
+	- app() with \c GIM_ERROR_FATAL passes the value 0. The message is logged, but the program does not end and nothing is
+	  printed on stderr. Use Set() with \c GIM_ERROR_FATAL, which passes \c __GIM_ERROR.
+	- set( function , index ), the form used for the common messages, decides whether a message is FATAL by the type of the
+	  message before it. The exit depends on the message before.
+	- Set() accepts six types only. Any other type, for example \c GIM_ERROR_OK, becomes \c GIM_ERROR_UNKNOWN.
+	- The type is compared as text: a string that is not one of the macros is never FATAL.
+	- Before the log file opens, the messages are kept in memory with no limit. A program that never opens the log keeps
+	  them all.
+*/
 
 #endif /* _GIM_ERROR_H_ */

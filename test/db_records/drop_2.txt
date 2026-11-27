@@ -1,0 +1,4 @@
+db use test_records_drop
+table list
+select beta
+exit

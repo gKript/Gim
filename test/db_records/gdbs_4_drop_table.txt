@@ -1,0 +1,3 @@
+db create gdbs_drop %SCRIPT%
+table list
+exit

@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,14 +26,20 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 //
 // Gim is developed with Anjuta version 1.2.4  - 2.32.1.1
 //
 
+
+/*!     \file       gim_list.cc
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #include    "../include/gim_base_header.h"
 #include    "../include/gim_list.h"
@@ -100,6 +106,9 @@ _gim_flag	gim_list_obj::del_item( _gim_Uint32 index ) {
 				afterlist->previtem = beforelist;
 			if ( currentlist == tmplist )
 				currentlist = afterlist;
+			// the index is the position of the item (see gim_list_item): the items after it move down by one
+			for ( _gim_list_item * t = afterlist ; t != NULL ; t = t->nextitem )
+				t->index--;
 			gim_memory->Unlock_and_free ( tmplist );
 			item_counter--;
 			gim_error->set( "gim_list_obj::add_item" , "Item found and deleted" );
@@ -189,7 +198,7 @@ _gim_flag   gim_list_obj::next_item( void ) {
 
 _gim_flag	gim_list_obj::rewind( void ) {
 	if ( startlist == NULL ) {
-		gim_error->set( GIM_ERROR_CRITICAL , "gim_list_obj::rewind" , "The list is empty" , __GIM_ERROR );
+		gim_error->set( GIM_ERROR_WARNING , "gim_list_obj::rewind" , "The list is empty" , __GIM_ERROR ); // empty list is a normal state, not an error for the caller
 		return __GIM_NOT_OK;
 	}
 	currentlist = startlist;

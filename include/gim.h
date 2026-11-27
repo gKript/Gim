@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003
+	Copyright (C) 2002-2026
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,8 +26,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
@@ -35,9 +34,9 @@
 	\version	2.5-x
 	\brief		Main header of the Gim library: it includes all the modules and defines the
 				gim_obj base object, the GKFP and GKDP file classes.
-				Copyright (C) 2002, 2003<BR>
+				Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
+				Released under the terms of the GNU General Public License v3<BR>
 				[ http://gkript.org/gk_gpl_v2.php ]
 */
 
@@ -283,6 +282,12 @@
 	typedef void (*gim_gkfp_progress_fn)( int done , int total , const char * name );
 	extern gim_gkfp_progress_fn gim_gkfp_progress;
 
+/*! Worker progress hook of gkfp: called with the state of each worker (see write_fog_batches). worker = index of the thread
+	    (0 .. gkfp_write_threads() - 1); bytes_done / bytes_total = progress of the current file (long long: files can be over 2 GB);
+	    name = the file (empty when the worker is free); step = "Reading", "Hashing", "Crypting" or "Flushing". It can be called from
+	    several threads at once: it must be thread-safe and quick. */
+typedef void (*gim_gkfp_worker_progress_fn)( int worker , long long bytes_done , long long bytes_total , const char * name , const char * step );
+
 	/*! \class 		gim_gkfp_obj
 		\brief		Generic Information Manager Documentation gkfp object\n\n
 					<b>GKP</b> - GKript Package\n
@@ -348,6 +353,20 @@
 				\return	__GIM_OK on success
 			*/
 			_gim_flag	write_data( _gim_handler * out , _gim_gkp_flist * startlist );
+			/*!	Writes the encrypted (FOG) chunks in batches: the files of a batch are read and encrypted in parallel, the
+				package is written in file order, so the output is the same as with one thread.
+				\param	threads	how many files are encrypted at the same time (1 = sequential)
+			*/
+			_gim_flag	write_fog_batches( _gim_handler * out , _gim_gkp_flist * startlist , int threads );
+
+			/*! Sets the worker progress hook of this object (NULL = none, the default). It is per object, not global. */
+			void		set_worker_progress( gim_gkfp_worker_progress_fn fn );
+
+			private:
+			/*! Worker progress hook of this object (NULL = none). */
+			gim_gkfp_worker_progress_fn	worker_progress = NULL;
+
+			public:
 
 			/*! \fn	void read( _gim_map map , _gim_gkp_flist * startlist )
 				\brief	Use this to read the content of the files present in the file list into an existing gkp file
@@ -620,6 +639,7 @@
 			*/
 			_gim_map			lread( _gim_map map );
 
+		public:
 			/*! \fn		_gim_gkp_flist * lget( void )
 				\brief	This method is useful to get the first member of the file list.
 						With this member you can brows the list.
@@ -636,6 +656,8 @@
 				\see	get( void )
 			*/
 			_gim_gkp_flist *	next( _gim_gkp_flist * tmplist );
+		private:
+
 
 			/*! \fn	void	write_gkdp( _gim_handler * out )
 				\brief	Use this to write the content of the files present in the file list into a new gkp file

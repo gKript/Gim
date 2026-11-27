@@ -2,18 +2,19 @@
 //  gim_serial.h
 //
 //  Gim - Generic Information Manager
-//  Serial port (RS-232 / USB-serial / UART of a Raspberry Pi).
-//  Same interface on Windows (COMn) and on Linux (/dev/ttyXXX, /dev/serial0).
 //
-//  Used by the PC side of SSP and GCP (SYNC/COMM_CONTRACT.md).
+//  [http://www.gkript.org]
 //
 /*#############################################################################
+
+	Copyright (C) 2002-2026
+	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -21,7 +22,20 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
+	You should have received a copy of the GNU General Public License
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
+
 #############################################################################*/
+//  Serial port (RS-232 / USB-serial / UART of a Raspberry Pi).
+//  Same interface on Windows (COMn) and on Linux (/dev/ttyXXX, /dev/serial0).
+//  Used by the PC side of SSP and GCP (SYNC/COMM_CONTRACT.md).
+
+/*!     \file       gim_serial.h
+		\brief      Copyright (C) 2002-2026<BR>
+				    Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
+					Released under the terms of the GNU General Public License v3<BR>
+					[ https://www.gnu.org/licenses/gpl-3.0.html ]
+*/
 
 #ifndef _GIM_SERIAL_H_
 #define _GIM_SERIAL_H_

@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,16 +26,15 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
 /*!	\file		gim_file.h
 	\version	2.0-0
-	\brief		Copyright (C) 2002, 2003<BR>
+	\brief		Copyright (C) 2002-2026<BR>
 				Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)<BR>
-				Released under the terms of the GNU General Public License v2<BR>
+				Released under the terms of the GNU General Public License v3<BR>
 				[ http://gkript.org/gk_gpl_v2.php ]
 */ 		
 
@@ -310,7 +309,7 @@
 			gim_file_obj( const char * fname , _gim_flag Method , _gim_flag Mode );
 		
 			/*!	\fn		void name( char * filename )
-				\brief	To set the file name
+				\brief	NOT IMPLEMENTED: declared only, a call does not link. To set the file name
 				\param	The name of the file
 			*/
 			void			name		( const char * filename );
@@ -371,7 +370,7 @@
 			_gim_flag		error		( void );
 
 			/*! \fn		_gim_flag type( void )
-				\brief	Use this method to know wich kind of file is it.
+				\brief	NOT RELIABLE: it uses a member that is never set. See the files page.
 				\return	One of define listed in \a ::item_type enum.
 			*/
 			_gim_flag		type		( void );
@@ -397,7 +396,7 @@
 
 
 			/*!	\fn		_gim_flag put( const char * string )
-				\brief	Use this method if you want tu put a string into a file opened in \a __GIM_WRITE
+				\brief	Use this method if you want tu put a string into a file opened in \a __GIM_WRITE. A newline is added with the buffered method only.
 				\param	string		The string to append in the opened file
 				\return	\a __GIM_OK if ok and \a __GIM_NOT_OK if some error happens
 			*/
@@ -448,5 +447,145 @@
 	
 	extern gim_file_obj				* gim_file;
 	extern gim_file_manager_obj		* gim_file_manager;
+
+/*!	\page	gimdoc_file	Files
+
+	Opening, reading, writing and removing files through one manager that keeps track of every open file. \n
+	Classes: \ref gim_file_manager_obj (global object \c gim_file_manager) and \ref gim_file_obj (a file used as an object,
+	type \c _gim_file). Header: gim_file.h
+
+	\tableofcontents
+
+	\section	gimdoc_file_what	What it is for
+
+	A program that works on files needs the same few things again and again: open a file in the right mode, read all of it
+	into memory, write some text, know whether a file exists and how big it is, and close everything at the end. Gim gathers
+	these operations in one place. Every file opened through the manager is recorded in a list, so the manager can close
+	whatever is still open when the program ends, and every access to the list is under the global lock of Gim.
+
+	Use it for the configuration and data files of a program, for files that must be read whole (for example a model or a
+	package), and for large files that are only read, which can be mapped in memory instead of being read in pieces.
+
+	\section	gimdoc_file_before	Before you start
+
+	- Create the ::gim_obj first: the manager is created with it, and \ref gim_file_obj stops with a FATAL error without it.
+	- Every path is a plain C string. Gim does not expand \c ~ or environment variables.
+	- The methods of the manager are thread-safe because they take the global lock. The objects of \ref gim_file_obj are not:
+	  use one object from one thread.
+
+	\section	gimdoc_file_example	Examples
+
+	Reading a whole file with the object, and checking its size first:
+	\code{.cpp}
+	_gim_file config( "settings.conf" );
+	if ( config.check() == __GIM_EXIST ) {
+		_gim_buffer text = config.load();
+		if ( text != NULL )
+			printf( "%u bytes read\n" , config.size() );
+	}
+	config.close();   // close() frees the buffer: do not call unload() as well (see the warnings)
+	\endcode
+
+	Writing a text file. put() appends the string and a newline, and the file is created or truncated when it is opened:
+	\code{.cpp}
+	_gim_file log( "report.txt" , __GIM_FILE_POINTER , __GIM_WRITE );
+	if ( log.error() == __GIM_OK ) {
+		log.put( "first line" );
+		log.put( "second line" );
+	}
+	log.close();
+	\endcode
+
+	The manager directly, for a copy of a file with a buffer read in mapping:
+	\code{.cpp}
+	_gim_handler * src = gim_file_manager->open( "data.bin" , __GIM_FILE_MAPPING , __GIM_READ );
+	_gim_handler * dst = gim_file_manager->open( "copy.bin" , __GIM_FILE_POINTER , __GIM_WRITE );
+	if ( ( src != NULL ) && ( dst != NULL ) )
+		gim_file_manager->flush( dst , src->fm , src->size );
+	if ( src != NULL ) gim_file_manager->close( src );
+	if ( dst != NULL ) gim_file_manager->close( dst );
+	\endcode
+
+	Removing a file, after checking that it exists:
+	\code{.cpp}
+	if ( gim_file_manager->exist( "old.tmp" ) == __GIM_EXIST )
+		gim_file_manager->DELETE( "old.tmp" );
+	\endcode
+
+	\section	gimdoc_file_methods	The methods, by purpose
+
+	| Purpose | Methods |
+	|---------|---------|
+	| Open and close | open(), close() (by handle or by name) |
+	| Read | load(), unload() (on \ref gim_file_obj), load() of the manager |
+	| Write | flush(), put() (on \ref gim_file_obj) |
+	| Information | exist(), length(), size(), check(), error(), type() |
+	| Remove | DELETE() |
+	| Low level | fp(), fd(), fm(), buffer(), get_handler() |
+
+	The details of each one are in \ref gim_file_manager_obj and \ref gim_file_obj.
+
+	\section	gimdoc_file_methods_open	How a file is opened
+
+	| Method | Read | Write | Append | Notes |
+	|--------|------|-------|--------|-------|
+	| \c __GIM_FILE_POINTER (buffered) | yes | yes | yes | write mode creates the file, or empties it if it exists |
+	| \c __GIM_FILE_DESCRIPTOR (unbuffered) | yes | yes, only if the file exists | yes, only if the file exists | does not create files: see the warnings |
+	| \c __GIM_FILE_MAPPING | yes | no | no | read-only, memory mapped; the file must not be empty |
+
+	A file that does not exist is refused in read mode. The handle returned by open() is a \ref _gim_handler : its \c name,
+	\c size and \c fp, \c fd or \c fm fields give access to the file.
+
+	\section	gimdoc_file_buffers	Buffers
+
+	load() reads the whole file into a buffer of \c size + 1 bytes, and writes a terminating zero after the last byte, so a
+	text file can be used as a string. The buffer belongs to the file: unload() frees it. close() frees it too, so the
+	buffer must be unloaded \b or closed with the file, not both (see the warnings).
+
+	\section	gimdoc_file_returns	Return values
+
+	| Method | Returns |
+	|--------|---------|
+	| open() | the handle, or NULL when the file cannot be opened |
+	| exist() | __GIM_EXIST or __GIM_NOT_EXIST |
+	| length() | the size in bytes, or __GIM_ERROR when the file cannot be opened |
+	| flush(), put() | __GIM_OK, or __GIM_NOT_OK / __GIM_ERROR |
+	| DELETE() | __GIM_OK when the file existed; the removal itself is not checked (see the warnings) |
+	| load() | the buffer, or NULL |
+	| type() | one of the values of \ref item_type (not reliable: see the warnings) |
+
+	\section	gimdoc_file_threads	Threads
+
+	The methods of \ref gim_file_manager_obj take the global lock of Gim, so the list of the open files is consistent. The
+	objects of \ref gim_file_obj and the buffers they return are not protected: one object, one thread. Two threads that
+	use the same file through different handles must coordinate with a lock of their own.
+
+	\section	gimdoc_file_warnings	Warnings and limits
+
+	- \b Closing \b a \b file \b by \b name \b frees its handle twice. close( name ) removes the entry from the list, which
+	  already frees the handle, and then frees the same handle again: the memory can be reused by another block, and the
+	  second free then releases it by mistake. Corrected in the source on 2026-11-27, not compiled yet: close the file with its handle until this is verified on a build.
+	- \b unload() \b does \b not \b clear the buffer pointer. After unload(), a new load() returns the freed buffer, and a
+	  close() after unload() frees it a second time. Corrected on 2026-11-27, not compiled: unload() now clears the pointer, so a later load() reads the file again. Do not use the buffer after unload().
+	- \b Unbuffered \b write \b does \b not \b create \b files: the file must exist. The error is not reported: open() returns a
+	  handle with a wrong descriptor. Corrected on 2026-11-27, not compiled: the unbuffered write now creates the file and empties it, as the buffered one does.
+	- For the unbuffered method, open() checked the descriptor against 0 instead of -1: corrected on 2026-11-27, not compiled.
+	- A file can be opened only once per name: the manager finds the entry by name, so a second open of the same file is
+	  confused with the first when one of them is closed.
+	- Opening a file in write mode with the buffered method empties it. There is no append-with-create on the unbuffered
+	  method either.
+	- A file of zero bytes cannot be mapped: open() with \c __GIM_FILE_MAPPING fails. gim_file_obj then reports "File not
+	  found", which is misleading.
+	- Using a \ref gim_file_obj after a failed open (name(), size(), load(), flush(), close()) dereferences a NULL handle.
+	  Check error() or check() first. close() on a failed object crashes.
+	- type() used a member that is never set: corrected on 2026-11-27, not compiled, it now uses the name of the handle. get_stat() always returns NULL.
+	- DELETE() returns __GIM_OK even when the system does not remove the file.
+	- length() opens the file in text mode: on Windows the size of a file with CRLF line endings can differ from the bytes on disk.
+	- put() writes the string followed by a newline, for the buffered method only. The unbuffered method writes the string without the newline.
+	- flush() of the manager dereferences the entry of the handle without a check: a handle that is not in the list crashes the program (corrected on 2026-11-27, not compiled: now it returns an error).
+	- Writes are not checked: flush() and put() return __GIM_OK even if the system write fails.
+	- The name setter of \ref gim_file_obj is declared but not defined: calling it does not link.
+*/
+
 
 #endif	//_GIMFILEOBJ_H_

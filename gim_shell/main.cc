@@ -10,14 +10,14 @@
 //
 /*#############################################################################
 
-	Copyright (C) 2002, 2003 
+	Copyright (C) 2002-2026 
 	Danilo Zannoni (AsYntote) - Corrado Tumiati (SkyMatrix)
 
 	This file is part of Gim library.
 
 	Gim is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
+	the Free Software Foundation; either version 3 of the License, or
 	(at your option) any later version.
 
 	Gim is distributed in the hope that it will be useful,
@@ -26,8 +26,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Gim; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	along with Gim.  If not, see <https://www.gnu.org/licenses/>.
 
 #############################################################################*/
 
@@ -45,6 +44,7 @@ int main( int argc , char **argv ) {
 		exit( -1 );
     }
 	gim_set_application_name( "GimShell" );
+	gim_set_application_version( "0.1.2" );
 	gim = new gim_obj;
 //	memory = new _gim_mempage;				// test puorpose only
 	
@@ -53,7 +53,7 @@ int main( int argc , char **argv ) {
 	ndb->create_table( "second" );
 	ndb->create_table( "third" );
 */
-//	gim_error->Set( GIM_ERROR_FATAL , "::main" , "test di error con : %s - %s" , gim_version_small() , gim_version_micro() );
+//	gim_error->app( GIM_ERROR_FATAL , "::main" , "test di error con : %s - %s" , gim_version_small() , gim_version_micro() );
 
 	puts( "Gim shell 0.1.2" );
 	puts( gim_version_small() );

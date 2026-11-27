@@ -1,0 +1,3 @@
+db create gdbs_upd %SCRIPT%
+select clienti
+exit

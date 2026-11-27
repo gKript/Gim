@@ -4,8 +4,7 @@ cp ../gim_gkfp/gkfp.cc .
 
 doxygen
 
-cp Logo_gKript_documentazione.png html/
-cp Logo_gKript_documentazione_small.png html/
+cp gkript_logo_site.png html/
 
 cp *.conf html/
 cp *.gkk html/
